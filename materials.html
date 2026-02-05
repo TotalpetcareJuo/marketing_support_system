@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주오 세일즈 라이브러리 - 주오컴퍼니</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .text-juo-orange { color: #FF7A00; }
+        .bg-juo-orange { background-color: #FF7A00; }
+        .border-juo-orange { border-color: #FF7A00; }
+        
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .category-btn.active {
+            background-color: #FF7A00;
+            color: white;
+            font-weight: 700;
+        }
+        .category-btn:hover:not(.active) {
+            background-color: #fff7ed;
+            color: #FF7A00;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 h-screen overflow-hidden flex flex-col">
+
+    <header class="bg-white border-b border-slate-200 h-16 shrink-0 z-20">
+        <div class="h-full px-6 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                </a>
+                <h1 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="library" class="w-5 h-5 text-juo-orange"></i>
+                    주오 세일즈 라이브러리
+                </h1>
+            </div>
+            <div class="text-sm text-slate-400 font-medium hidden md:block">
+                주오컴퍼니 마케팅 지원 시스템
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
+            <div class="p-6 border-b border-slate-100">
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Categories</h2>
+                <nav class="space-y-2">
+                    <button class="category-btn active w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i> 전체 보기
+                    </button>
+                    <button class="category-btn w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
+                        <i data-lucide="heart-handshake" class="w-4 h-4"></i> 입양 상담
+                    </button>
+                    <button class="category-btn w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i> 멤버십/케어
+                    </button>
+                    <button class="category-btn w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
+                        <i data-lucide="book-open" class="w-4 h-4"></i> 양육 가이드
+                    </button>
+                    <button class="category-btn w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> 계약 서식
+                    </button>
+                </nav>
+            </div>
+            <div class="p-6 mt-auto bg-slate-50 border-t border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-bold text-slate-700">담당자 모드</div>
+                        <div class="text-xs text-slate-400">자료 업데이트 가능</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 bg-slate-50/50 p-8 overflow-y-auto custom-scroll">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-black text-slate-800">전체 자료 <span class="text-slate-400 font-normal text-lg ml-2">(8)</span></h2>
+                <div class="flex gap-3">
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                        <input type="text" placeholder="자료 검색..." class="pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-juo-orange/20 focus:border-juo-orange text-sm w-64">
+                    </div>
+                    <button class="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-500">
+                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+                    </button>
+                    <button class="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-500">
+                        <i data-lucide="layout" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                
+                <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
+                    <div class="aspect-video bg-orange-50 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-orange-100 transition">
+                        <i data-lucide="file-bar-chart-2" class="w-10 h-10 text-juo-orange mb-1"></i>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">미리보기</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-start justify-between mb-1">
+                            <span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded uppercase tracking-wide">입양 상담</span>
+                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 mb-1 truncate">2024년 상반기 분양 가이드</h3>
+                        <p class="text-xs text-slate-400">PDF • 2.4 MB • 2024.01.15</p>
+                    </div>
+                </div>
+
+                <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
+                    <div class="aspect-video bg-blue-50 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-blue-100 transition">
+                        <i data-lucide="shield" class="w-10 h-10 text-blue-500 mb-1"></i>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">미리보기</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-start justify-between mb-1">
+                            <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wide">멤버십</span>
+                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 mb-1 truncate">주오 멤버십 혜택 상세(VIP)</h3>
+                        <p class="text-xs text-slate-400">PDF • 1.1 MB • 2024.01.20</p>
+                    </div>
+                </div>
+
+                <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
+                    <div class="aspect-video bg-green-50 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-green-100 transition">
+                        <i data-lucide="book-open" class="w-10 h-10 text-green-500 mb-1"></i>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">미리보기</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-start justify-between mb-1">
+                            <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded uppercase tracking-wide">양육 가이드</span>
+                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 mb-1 truncate">초보 견주를 위한 첫 2주 케어</h3>
+                        <p class="text-xs text-slate-400">PPTX • 5.8 MB • 2023.12.10</p>
+                    </div>
+                </div>
+
+                 <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
+                    <div class="aspect-video bg-slate-100 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-slate-200 transition">
+                        <i data-lucide="image" class="w-10 h-10 text-slate-400 mb-1"></i>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">확대보기</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-start justify-between mb-1">
+                            <span class="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded uppercase tracking-wide">기타</span>
+                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 mb-1 truncate">매장 홍보용 이미지 소스</h3>
+                        <p class="text-xs text-slate-400">ZIP • 24.5 MB • 2023.11.05</p>
+                    </div>
+                </div>
+
+                 <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
+                    <div class="aspect-video bg-purple-50 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-purple-100 transition">
+                        <i data-lucide="play-circle" class="w-10 h-10 text-purple-500 mb-1"></i>
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">재생하기</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-start justify-between mb-1">
+                            <span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded uppercase tracking-wide">교육 영상</span>
+                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 mb-1 truncate">배변 훈련 교육 영상 (15분)</h3>
+                        <p class="text-xs text-slate-400">MP4 • 120 MB • 2024.01.02</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        const cards = document.querySelectorAll('.group');
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                alert('자료 뷰어 기능을 준비 중입니다.\n(실제 구현 시 PDF 뷰어나 이미지 갤러리가 열립니다)');
+            });
+        });
+
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
