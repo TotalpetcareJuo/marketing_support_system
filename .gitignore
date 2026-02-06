@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test results
+test-results/
+
+# Optional: Development-only files (uncomment if needed)
+# .opencode/
+# .sisyphus/drafts/
+# tests/
+
+# Optional: Lock files (if using only one package manager)
+# package-lock.json  # Use this if using npm
+# bun.lock          # Use this if using bun
+# yarn.lock         # Use this if using yarn

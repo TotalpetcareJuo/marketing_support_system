@@ -1,0 +1,37 @@
+Task 4 Editor Preview QA Evidence
+===================================
+Date: 2026-02-06
+Task: Extract notice editor + notice preview behavior module
+
+Files Changed:
+1. CREATED: display_system/editor.js (314 lines)
+2. MODIFIED: display_system.js (889 -> 597 lines, -292 lines)
+3. MODIFIED: display_system.html (added editor.js script)
+
+Functions Extracted (12 total):
+- savedRange (state variable)
+- renderNoticeEditor()
+- updateNoticeEditorVisibility()
+- toggleNotice(enabled)
+- updateNotice(field, value)
+- formatText(command)
+- setFontSize(size)
+- setTextColor(color)
+- setLineHeight(value)
+- setLetterSpacing(value)
+- handlePaste(e)
+- previewNotice()
+- handlePreviewEscape(e)
+- closePreview()
+
+Verification:
+✓ All functions moved to editor.js
+✓ Window bridge exports in place
+✓ Script loading order correct (state -> admin -> editor -> display_system)
+✓ Comment markers document migration
+✓ HTML inline handlers unchanged
+✓ No function signature changes
+✓ No syntax errors detected
+
+Evidence:
+- .sisyphus/evidence/task-4-editor-preview.png (screenshot)

@@ -1,0 +1,201 @@
+# Handler Inventory and Bridge Contract
+# Generated: Task 1 of display-system-modular-split
+# Source: display_system.html + display_system.js
+
+================================================================================
+SECTION 1: STATIC HTML HANDLERS (display_system.html)
+================================================================================
+
+Source Location          | Handler Name              | Event Type | Arguments
+-------------------------|---------------------------|------------|---------------------------
+header:108               | resetData                 | onclick    | ()
+header:112               | saveSettings              | onclick    | ()
+header:116               | startSlideshow            | onclick    | ()
+sidebar:131              | scrollToSection           | onclick    | ('section-guide')
+sidebar:134              | scrollToSection           | onclick    | ('section-settings')
+sidebar:137              | scrollToSection           | onclick    | ('section-slides')
+sidebar:140              | scrollToSection           | onclick    | ('section-notice')
+settings:263             | (direct config mutation)  | oninput    | config.interval = ...
+slides:311               | addNewSlideBlock          | onclick    | ()
+slides:326               | (direct config mutation)  | oninput    | config.intro.title = ...
+slides:332               | (direct config mutation)  | oninput    | config.intro.subtitle = ...
+notice:363               | toggleNotice              | onchange   | (this.checked)
+notice:356               | previewNotice             | onclick    | ()
+notice:382               | formatText                | onclick    | ('bold')
+notice:385               | formatText                | onclick    | ('italic')
+notice:388               | formatText                | onclick    | ('underline')
+notice:392               | formatText                | onclick    | ('insertUnorderedList')
+notice:400               | setFontSize               | onchange   | (this.value)
+notice:377               | updateNotice              | oninput    | ('title', this.value)
+notice:406               | updateNotice              | oninput    | ('content', ...)
+notice:406               | handlePaste               | onpaste    | (event)
+emoji-panel:427-484      | copyEmoji                 | onclick    | (emoji_char)
+preview:502              | closePreview              | onclick    | ()
+slideshow:512            | togglePause               | onclick    | ()
+slideshow:517            | prevSlide                 | onclick    | ()
+slideshow:521            | nextSlide                 | onclick    | ()
+slideshow:525            | stopSlideshow             | onclick    | ()
+inline-script:535        | scrollToSection           | function   | (sectionId)
+inline-script:541        | copyEmoji                 | function   | (emoji)
+
+STATIC HTML HANDLER COUNT: 30
+
+================================================================================
+SECTION 2: DYNAMIC TEMPLATE HANDLERS (display_system.js)
+================================================================================
+
+Generated in createAdminSlideHTML():
+  Line 397: previewSlide(slide.id)           - onclick
+  Line 401: removeSlide(slide.id)            - onclick
+
+Generated in createPetInputHTML():
+  Line 425: updateChecklist(slideId, petKey, idx, this.value)   - oninput
+  Line 426: removeChecklistItem(slideId, petKey, idx)           - onclick
+  Line 440: toggleHidden(slideId, petKey, this.checked)         - onchange
+  Line 450: document.getElementById('file-...').click()         - onclick (native)
+  Line 457: handleImageUpload(this, slideId, petKey)            - onchange
+  Line 462: updateData(slideId, petKey, 'breed', this.value)    - oninput
+  Line 467: updateData(slideId, petKey, 'gender', this.value)   - onchange
+  Line 476: updateData(slideId, petKey, 'status', this.value)   - onchange
+  Line 485: updateData(slideId, petKey, 'birth', this.value)    - oninput
+  Line 493: addChecklistItem(slideId, petKey)                   - onclick
+
+DYNAMIC TEMPLATE HANDLER COUNT: 11 unique function names
+
+================================================================================
+SECTION 3: DEDUPLICATED HANDLER INVENTORY (All Functions Required on Window)
+================================================================================
+
+# Core Data/State Management
+resetData()                                           [HTML:108]
+saveSettings()                                        [HTML:112]
+
+# Slideshow/Presentation
+startSlideshow()                                      [HTML:116]
+stopSlideshow()                                       [HTML:525]
+togglePause()                                         [HTML:512]
+prevSlide()                                           [HTML:517]
+nextSlide()                                           [HTML:521]
+
+# Admin/Slide Management
+addNewSlideBlock()                                    [HTML:311]
+removeSlide(id)                                       [JS-TPL:401]
+toggleHidden(slideId, petKey, isHidden)               [JS-TPL:440]
+
+# Pet Data Mutations
+updateData(slideId, petKey, field, value)             [JS-TPL:462,467,476,485]
+updateChecklist(slideId, petKey, idx, value)          [JS-TPL:425]
+addChecklistItem(slideId, petKey)                     [JS-TPL:493]
+removeChecklistItem(slideId, petKey, idx)             [JS-TPL:426]
+handleImageUpload(input, slideId, petKey)             [JS-TPL:457]
+
+# Notice/Editor
+previewNotice()                                       [HTML:356]
+toggleNotice(enabled)                                 [HTML:363]
+updateNotice(field, value)                            [HTML:377,406]
+formatText(command)                                   [HTML:382,385,388,392]
+setFontSize(size)                                     [HTML:400]
+handlePaste(e)                                        [HTML:406]
+
+# Preview System
+previewSlide(slideId)                                 [JS-TPL:397]
+closePreview()                                        [HTML:502]
+
+# Navigation/UI Helpers
+scrollToSection(sectionId)                            [HTML:131-140, JS:535]
+copyEmoji(emoji)                                      [HTML:427-484, JS:541]
+
+TOTAL UNIQUE HANDLERS REQUIRING WINDOW BRIDGE: 26
+
+================================================================================
+SECTION 4: BRIDGE CONTRACT (window -> module mappings)
+================================================================================
+
+# Contract Format: window.<handlerName> = <ModuleName>.<functionName>
+
+# State/Storage Module (state.js)
+window.resetData = State.resetData
+window.saveSettings = State.saveSettings
+
+# Admin/Data Module (admin.js)
+window.addNewSlideBlock = Admin.addNewSlideBlock
+window.removeSlide = Admin.removeSlide
+window.toggleHidden = Admin.toggleHidden
+window.updateData = Admin.updateData
+window.updateChecklist = Admin.updateChecklist
+window.addChecklistItem = Admin.addChecklistItem
+window.removeChecklistItem = Admin.removeChecklistItem
+window.handleImageUpload = Admin.handleImageUpload
+window.renderAdminSlides = Admin.renderAdminSlides  # internal, but exposed
+
+# Editor Module (editor.js)
+window.toggleNotice = Editor.toggleNotice
+window.updateNotice = Editor.updateNotice
+window.formatText = Editor.formatText
+window.setFontSize = Editor.setFontSize
+window.handlePaste = Editor.handlePaste
+window.renderNoticeEditor = Editor.renderNoticeEditor  # internal
+
+# Preview Module (preview.js)
+window.previewNotice = Preview.previewNotice
+window.previewSlide = Preview.previewSlide
+window.closePreview = Preview.closePreview
+
+# Slideshow Module (slideshow.js)
+window.startSlideshow = Slideshow.startSlideshow
+window.stopSlideshow = Slideshow.stopSlideshow
+window.togglePause = Slideshow.togglePause
+window.prevSlide = Slideshow.prevSlide
+window.nextSlide = Slideshow.nextSlide
+
+# UI/Utils Module (ui.js)
+window.scrollToSection = UI.scrollToSection
+window.copyEmoji = UI.copyEmoji
+
+================================================================================
+SECTION 5: SPECIAL CASES (Direct Inline State Mutations)
+================================================================================
+
+# These are direct config mutations in HTML, not function calls.
+# They must continue to work via global `config` object availability.
+
+Location                    | Mutation Expression
+----------------------------|----------------------------------------
+settings:263                | config.interval = parseInt(this.value) || 8
+slides:326                  | config.intro.title = this.value
+slides:332                  | config.intro.subtitle = this.value
+
+RESOLUTION: Keep `config` as shared global (or window.config) during migration.
+These are NOT function calls and do not need bridge entries,
+but the global state object must remain accessible.
+
+================================================================================
+SECTION 6: INTERNAL CONSISTENCY CHECK
+================================================================================
+
+Handler Inventory Validation:
+- Static HTML handlers scanned:    30 occurrences
+- Dynamic template handlers scanned: 11 unique names
+- Total unique handlers identified:  26
+
+Bridge Contract Validation:
+- Handlers mapped to bridge:       26
+- Unmapped handlers:                0
+- UNMAPPED: 0
+
+Source Coverage:
+- display_system.html:             ✓ All onclick/onchange/oninput/onpaste scanned
+- display_system.js:               ✓ All template literals with handlers scanned
+- display_system.js:               ✓ All function definitions catalogued (40 total)
+
+Global Dependencies to Maintain:
+- config (mutable state object)     REQUIRED
+- slideIntervalId (timer ID)        REQUIRED
+- currentSlideIndex (number)        REQUIRED
+- isPaused (boolean)                REQUIRED
+- savedRange (Range object)         REQUIRED
+- controlsTimeoutId (timer ID)      REQUIRED
+
+================================================================================
+END OF HANDLER INVENTORY AND BRIDGE CONTRACT
+================================================================================

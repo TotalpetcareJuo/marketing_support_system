@@ -134,11 +134,11 @@
                     <button onclick="scrollToSection('section-settings')" class="nav-item w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
                         <i data-lucide="settings" class="w-4 h-4"></i> 시스템 설정
                     </button>
-                    <button onclick="scrollToSection('section-slides')" class="nav-item w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
-                        <i data-lucide="images" class="w-4 h-4"></i> 소개 슬라이드
-                    </button>
                     <button onclick="scrollToSection('section-notice')" class="nav-item w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
                         <i data-lucide="megaphone" class="w-4 h-4"></i> 매장 공지
+                    </button>
+                    <button onclick="scrollToSection('section-slides')" class="nav-item w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
+                        <i data-lucide="images" class="w-4 h-4"></i> 소개 슬라이드
                     </button>
                 </nav>
             </div>
@@ -299,48 +299,8 @@
                 </div>
             </section>
 
-            <!-- Slides Section -->
-            <section id="section-slides" class="mb-8">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 class="text-xl font-black text-slate-800">소개할 아이 슬라이드</h2>
-                        <p class="text-sm text-slate-400 mt-1">등록된 순서대로 슬라이드가 송출됩니다. 각 슬라이드에 최대 2마리의 아이를 등록할 수 있습니다.</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-sm text-slate-400">총 <span id="slide-count" class="font-bold text-slate-700">1</span>개 슬라이드</span>
-                        <button onclick="addNewSlideBlock()" class="px-4 py-2 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-700 transition flex items-center gap-2">
-                            <i data-lucide="plus" class="w-4 h-4"></i>
-                            소개할 아이 슬라이드 추가
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Slide Title Settings -->
-                <div class="bg-white rounded-xl border border-slate-200 p-4 mb-6">
-                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">섹션 제목 설정</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <input type="text" id="intro-title"
-                                class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold text-slate-700 focus:outline-none focus:border-juo-orange focus:ring-2 focus:ring-juo-orange/20 transition"
-                                placeholder="영문 타이틀"
-                                oninput="config.intro.title = this.value">
-                        </div>
-                        <div>
-                            <input type="text" id="intro-subtitle"
-                                class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold text-slate-700 focus:outline-none focus:border-juo-orange focus:ring-2 focus:ring-juo-orange/20 transition"
-                                placeholder="한글 타이틀"
-                                oninput="config.intro.subtitle = this.value">
-                        </div>
-                    </div>
-                </div>
-
-                <div id="admin-slides-list" class="space-y-6">
-                    <!-- Slides injected here -->
-                </div>
-            </section>
-
             <!-- Notice Section -->
-            <section id="section-notice" class="mb-8">
+            <section id="section-notice" class="mb-8 mt-12">
                 <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                     <div class="p-6 border-b border-slate-100 flex items-center justify-between">
                         <div class="flex items-center gap-3">
@@ -407,6 +367,49 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Section Divider -->
+            <div class="border-t-2 border-dashed border-slate-200 my-12"></div>
+
+            <!-- Slides Section -->
+            <section id="section-slides" class="mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-800">소개할 아이 슬라이드</h2>
+                        <p class="text-sm text-slate-400 mt-1">등록된 순서대로 슬라이드가 송출됩니다. 각 슬라이드에 최대 2마리의 아이를 등록할 수 있습니다.</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm text-slate-400">총 <span id="slide-count" class="font-bold text-slate-700">1</span>개 슬라이드</span>
+                        <button onclick="addNewSlideBlock()" class="px-4 py-2 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-700 transition flex items-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            소개할 아이 슬라이드 추가
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Slide Title Settings -->
+                <div class="bg-white rounded-xl border border-slate-200 p-4 mb-6">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">섹션 제목 설정</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <input type="text" id="intro-title"
+                                class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold text-slate-700 focus:outline-none focus:border-juo-orange focus:ring-2 focus:ring-juo-orange/20 transition"
+                                placeholder="영문 타이틀"
+                                oninput="config.intro.title = this.value">
+                        </div>
+                        <div>
+                            <input type="text" id="intro-subtitle"
+                                class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold text-slate-700 focus:outline-none focus:border-juo-orange focus:ring-2 focus:ring-juo-orange/20 transition"
+                                placeholder="한글 타이틀"
+                                oninput="config.intro.subtitle = this.value">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="admin-slides-list" class="space-y-6">
+                    <!-- Slides injected here -->
                 </div>
             </section>
 
@@ -530,6 +533,10 @@
         </div>
     </div>
 
+    <script src="display_system/state.js"></script>
+    <script src="display_system/admin.js"></script>
+    <script src="display_system/editor.js"></script>
+    <script src="display_system/slideshow.js"></script>
     <script src="display_system.js"></script>
     <script>
         function scrollToSection(sectionId) {
