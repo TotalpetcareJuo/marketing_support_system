@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f8fafc;
+}
+
+/* Presentation Specific Styles */
+#presentation-container {
+    overflow: hidden;
+}
+
+.slide {
+    display: none;
+    height: 100vh;
+    width: 100vw;
+}
+
+.slide.active {
+    display: flex;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.bg-juo-orange {
+    background-color: #FF7A00;
+}
+
+.text-juo-orange {
+    color: #FF7A00;
+}
+
+.bg-juo-green {
+    background-color: #2D6A4F;
+}
+
+.card-shadow {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Admin Specific Styles (Standard CSS Replacement for @apply) */
+.admin-section {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    margin-bottom: 2rem;
+    transition: all 0.3s;
+}
+
+.admin-section:hover {
+    box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.08);
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.input-label {
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-left: 0.25rem;
+}
+
+.input-field {
+    border: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #334155;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #FF7A00;
+    background-color: white;
+    box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.2);
+}
+
+.input-field::placeholder {
+    color: #cbd5e1;
+}
+
+/* Editor Custom Scrollbar */
+#notice-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+#notice-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+#notice-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+#notice-content {
+    min-height: 280px;
+}
+
+/* Editor Typography Reset Fix */
+#notice-content ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1em;
+}
+
+#notice-content ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1em;
+}
+
+#notice-content li {
+    margin-bottom: 0.5em;
+}
+
+/* Toggle Checkbox Logic */
+.toggle-checkbox:checked {
+    right: 0;
+    border-color: #FF7A00;
+}
+
+.toggle-checkbox:checked+.toggle-label {
+    background-color: #FF7A00;
+}
+
+.section-divider {
+    border-top: 1px solid #f1f5f9;
+    margin: 2rem 0;
+}
