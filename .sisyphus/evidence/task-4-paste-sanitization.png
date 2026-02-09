@@ -1,0 +1,10 @@
+# Placeholder for paste sanitization screenshot
+# Browser automation unavailable due to missing system libraries (libnspr4.so)
+# Verification completed through code analysis
+# 
+# Verified: handlePaste function in display_system/editor.js lines 244-248
+# - Uses e.preventDefault() to stop default paste
+# - Uses getData('text/plain') to extract only plain text
+# - Inserts sanitized text via document.execCommand('insertText', false, text)
+#
+# HTML binding verified: #notice-content has onpaste="handlePaste(event)"

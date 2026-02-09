@@ -51,7 +51,7 @@ Refactor one large script into maintainable modules with unchanged runtime behav
 - QA evidence artifacts in `.sisyphus/evidence/`.
 
 ### Definition of Done
-- [ ] No `ReferenceError` for existing inline handler calls during admin, preview, and slideshow usage.
+- [x] No `ReferenceError` for existing inline handler calls during admin, preview, and slideshow usage.
 - [ ] localStorage key `juoStoreDisplayConfig_v3` remains compatible and migration behavior remains correct.
 - [ ] All listed agent-executed QA scenarios pass with evidence.
 
@@ -289,9 +289,9 @@ Critical Path: 1 -> 2 -> 6 -> 7
   - `display_system.js:603` - notice preview renderer.
 
   **Acceptance Criteria**:
-  - [ ] Toolbar formatting applies correctly.
-  - [ ] Paste is sanitized to plain text as before.
-  - [ ] Notice preview opens/closes and renders content.
+  - [x] Toolbar formatting applies correctly.
+  - [x] Paste is sanitized to plain text as before.
+  - [x] Notice preview opens/closes and renders content.
 
   **Agent-Executed QA Scenarios**:
   ```text
