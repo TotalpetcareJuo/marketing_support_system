@@ -32,15 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
 // ------------------------------------
 
 function renderNoticeEditor() {
-    document.getElementById('notice-enabled').checked = config.notice.enabled;
-    document.getElementById('notice-title').value = config.notice.title;
-    document.getElementById('notice-content').innerHTML = config.notice.content;
+    document.getElementById('notice-enabled').checked = pendingConfig.notice.enabled;
+    document.getElementById('notice-title').value = pendingConfig.notice.title;
+    document.getElementById('notice-content').innerHTML = pendingConfig.notice.content;
     updateNoticeEditorVisibility();
 }
 
 function updateNoticeEditorVisibility() {
     const wrapper = document.getElementById('notice-editor-wrapper');
-    if (config.notice.enabled) {
+    if (pendingConfig.notice.enabled) {
         wrapper.classList.remove('opacity-40', 'pointer-events-none');
     } else {
         wrapper.classList.add('opacity-40', 'pointer-events-none');
@@ -48,13 +48,12 @@ function updateNoticeEditorVisibility() {
 }
 
 function toggleNotice(enabled) {
-    config.notice.enabled = enabled;
+    pendingConfig.notice.enabled = enabled;
     updateNoticeEditorVisibility();
 }
 
 function updateNotice(field, value) {
-    config.notice[field] = value;
-    // Removed character limit logic as requested
+    pendingConfig.notice[field] = value;
 }
 
 function formatText(command) {

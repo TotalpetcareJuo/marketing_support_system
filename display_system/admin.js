@@ -6,7 +6,7 @@ function renderAdminSlides() {
     const container = document.getElementById('admin-slides-list');
     container.innerHTML = '';
 
-    config.slides.forEach((slide, index) => {
+    pendingConfig.slides.forEach((slide, index) => {
         const div = document.createElement('div');
         div.innerHTML = createAdminSlideHTML(slide, index);
         container.appendChild(div);
@@ -16,7 +16,7 @@ function renderAdminSlides() {
     });
 
     const slideCount = document.getElementById('slide-count');
-    if (slideCount) slideCount.textContent = config.slides.length;
+    if (slideCount) slideCount.textContent = pendingConfig.slides.length;
 
     lucide.createIcons();
 }
@@ -123,7 +123,7 @@ function createPetInputHTML(slideId, petData, petKey, number, title, colorClass)
                                 <label class="text-xs font-bold text-slate-400 mb-1 block">상태</label>
                                 <select class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-${colorClass} focus:ring-2 focus:ring-${colorClass}/20 transition bg-white" onchange="updateData(${slideId}, '${petKey}', 'status', this.value)">
                                   <option value="🏠 가족 찾는 중" ${petData.status === '🏠 가족 찾는 중' ? 'selected' : ''}>🏠 가족 찾는 중</option>
-                                  <option value="🌷 꽃단장 중" ${petData.status === '🌷 꽃단장 중' ? 'selected' : ''}>🌷 꽃단장 중</option>
+                                  <option value="🌷 가족 맞이 준비중" ${petData.status === '🌷 가족 맞이 준비중' ? 'selected' : ''}>🌷 가족 맞이 준비중</option>
                                   <option value="🌻 행복한 집으로" ${petData.status === '🌻 행복한 집으로' ? 'selected' : ''}>🌻 행복한 집으로</option>
                                 </select>
                             </div>
@@ -153,7 +153,7 @@ function createPetInputHTML(slideId, petData, petKey, number, title, colorClass)
 // ------------------------------------
 
 function addNewSlideBlock() {
-    config.slides.push({
+    pendingConfig.slides.push({
         id: Date.now(),
         pet1: { hidden: false, image: '', status: '🏠 가족 찾는 중', breed: '', gender: '여아', birth: '', checklist: [''] },
         pet2: { hidden: false, image: '', status: '🏠 가족 찾는 중', breed: '', gender: '남아', birth: '', checklist: [''] }
@@ -163,13 +163,13 @@ function addNewSlideBlock() {
 
 function removeSlide(id) {
     if (confirm('정말 이 슬라이드를 삭제하시겠습니까?')) {
-        config.slides = config.slides.filter(s => s.id !== id);
+        pendingConfig.slides = pendingConfig.slides.filter(s => s.id !== id);
         renderAdminSlides();
     }
 }
 
 function toggleHidden(slideId, petKey, isHidden) {
-    const slide = config.slides.find(s => s.id === slideId);
+    const slide = pendingConfig.slides.find(s => s.id === slideId);
     if (slide) {
         slide[petKey].hidden = isHidden;
         renderAdminSlides();
@@ -177,17 +177,17 @@ function toggleHidden(slideId, petKey, isHidden) {
 }
 
 function updateData(slideId, petKey, field, value) {
-    const slide = config.slides.find(s => s.id === slideId);
+    const slide = pendingConfig.slides.find(s => s.id === slideId);
     if (slide) slide[petKey][field] = value;
 }
 
 function updateChecklist(slideId, petKey, idx, value) {
-    const slide = config.slides.find(s => s.id === slideId);
+    const slide = pendingConfig.slides.find(s => s.id === slideId);
     if (slide) slide[petKey].checklist[idx] = value;
 }
 
 function addChecklistItem(slideId, petKey) {
-    const slide = config.slides.find(s => s.id === slideId);
+    const slide = pendingConfig.slides.find(s => s.id === slideId);
     if (slide) {
         slide[petKey].checklist.push('');
         renderAdminSlides();
@@ -195,7 +195,7 @@ function addChecklistItem(slideId, petKey) {
 }
 
 function removeChecklistItem(slideId, petKey, idx) {
-    const slide = config.slides.find(s => s.id === slideId);
+    const slide = pendingConfig.slides.find(s => s.id === slideId);
     if (slide) {
         slide[petKey].checklist.splice(idx, 1);
         renderAdminSlides();
@@ -208,7 +208,7 @@ function handleImageUpload(input, slideId, petKey) {
         const reader = new FileReader();
         reader.onload = function (e) {
             const result = e.target.result;
-            const slide = config.slides.find(s => s.id === slideId);
+            const slide = pendingConfig.slides.find(s => s.id === slideId);
             if (slide) {
                 slide[petKey].image = result;
                 restorePreview(slideId, petKey, result);

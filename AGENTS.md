@@ -70,10 +70,12 @@ Frontend-only marketing support system for JUO COMPANY (pet adoption business). 
 - Migration comments for data version updates
 
 ### Naming Conventions
-- **Files**: lowercase with underscores (`display_system.js`)
+- **Root Files**: lowercase with underscores (`display_system.js`, `materials.html`)
+- **Module Files**: lowercase (`state.js`, `admin.js`, `editor.js`, `slideshow.js`)
 - **Variables/Functions**: camelCase (`renderLastSaved`, `currentSlideIndex`)
 - **CSS Classes**: kebab-case (`.slide-card`, `.text-juo-orange`)
 - **Data Keys**: snake_case within objects (`pet1`, `checklist`)
+- **Constants**: UPPER_SNAKE_CASE (`STORAGE_KEY`)
 
 ### Error Handling
 - Use `try/catch` for DOM manipulation that might fail
@@ -86,6 +88,26 @@ Frontend-only marketing support system for JUO COMPANY (pet adoption business). 
 - Version migration logic for localStorage updates
 - State management with global config object
 - Image storage: Base64/DataURL in localStorage
+- Use `STORAGE_KEY` constant for localStorage key name
+
+### Image Handling Pattern
+```javascript
+// Store as Base64 via FileReader
+reader.onload = function (e) {
+    const result = e.target.result;  // Base64 DataURL
+    slide[petKey].image = result;
+    restorePreview(slideId, petKey, result);
+};
+reader.readAsDataURL(file);
+
+// Restore preview on render
+function restorePreview(slideId, petKey, imageData) {
+    const p = document.getElementById(`preview-${petKey}-${slideId}`);
+    if (p && imageData) {
+        p.style.backgroundImage = `url(${imageData})`;
+    }
+}
+```
 
 ### Comments
 - Section headers: `// ---- Section Name ----`
@@ -102,6 +124,14 @@ Frontend-only marketing support system for JUO COMPANY (pet adoption business). 
 - All modules communicate via global `window` object
 - Add new `<script src="...">` tags before `display_system.js`
 
+### Exposing Functions to Window
+All modules must expose their functions to `window` for inline HTML handlers:
+```javascript
+// At end of module files
+window.functionName = functionName;
+window.ObjectName = ObjectName;
+```
+
 ## Key Implementation Notes
 
 ### Display System (display_system.js)
@@ -110,7 +140,7 @@ Frontend-only marketing support system for JUO COMPANY (pet adoption business). 
 - Checklist array for pet health info
 - Status values use emoji prefixes:
   - `🏠 가족 찾는 중` (Available)
-  - `🌷 꽃단장 중` (Reserved)
+  - `🌷 가족 맞이 준비중` (Reserved)
   - `🌻 행복한 집으로` (Adopted)
 
 ### State Management
@@ -121,10 +151,17 @@ config.field = value;
 renderSpecificComponent();
 ```
 
+### State Module Pattern (state.js)
+- Use `State` object with getter/setter methods
+- Keep local variables private, expose via methods
+- Example: `State.getConfig()`, `State.saveConfig()`, `State.updateTimestamp()`
+
 ### DOM Manipulation
 - Use `document.getElementById()` for single elements
 - Use `querySelector`/`querySelectorAll` for complex selectors
 - Save selections before toolbar interactions (rich text editor pattern)
+- Use inline event handlers (`onclick="functionName()"`) for simplicity
+- Check element existence before manipulation to avoid errors
 
 ### UI Patterns
 - Cards with hover lift effect: `transform: translateY(-2px)`
@@ -141,3 +178,9 @@ renderSpecificComponent();
 - Images stored as Base64 in localStorage (monitor size)
 - No bundling or minification currently
 - Tailwind CDN includes all utilities (no purging)
+
+## Testing
+- Playwright configured but no test files exist yet
+- Tests should be placed in project root or `tests/` directory
+- Use `npx playwright test <file>.spec.js` for single test
+- Example: `npx playwright test display.spec.js`

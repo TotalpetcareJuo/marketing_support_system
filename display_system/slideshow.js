@@ -4,6 +4,7 @@
 
 function startSlideshow() {
     generatePresentationSlides();
+    lucide.createIcons();
     document.getElementById('admin-container').classList.add('hidden');
     document.getElementById('presentation-container').classList.remove('hidden');
 
@@ -101,22 +102,85 @@ function generatePresentationSlides() {
     container.innerHTML = '';
     let slideIndex = 1;
 
-    // Slide 1
+    // Slide 1 - Premium Hero
     container.innerHTML += `
-        <div id="slide-0" class="slide active flex-col items-center justify-center text-center p-10 bg-white">
-            <div class="mb-8">
-                <i data-lucide="heart" class="w-20 h-20 text-juo-orange mx-auto mb-4"></i>
-                <h1 class="text-6xl font-black mb-6 leading-tight">당신과 아이의 행복한 20년</h1>
-                <p class="text-3xl text-gray-600 font-light">주오컴퍼니가 시작부터 끝까지 함꺼합니다.</p>
-            </div>
-            <div class="flex gap-8 mt-12">
-                <div class="flex flex-col items-center"><div class="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center mb-2"><i data-lucide="home" class="text-juo-orange"></i></div><span class="text-lg font-bold">안심입양</span></div>
-                <div class="w-12 h-px bg-gray-300 self-center mt-[-20px]"></div>
-                <div class="flex flex-col items-center"><div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-2"><i data-lucide="stethoscope" class="text-blue-600"></i></div><span class="text-lg font-bold">건강관리</span></div>
-                <div class="w-12 h-px bg-gray-300 self-center mt-[-20px]"></div>
-                <div class="flex flex-col items-center"><div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-2"><i data-lucide="shopping-bag" class="text-green-600"></i></div><span class="text-lg font-bold">정기구독</span></div>
-                <div class="w-12 h-px bg-gray-300 self-center mt-[-20px]"></div>
-                <div class="flex flex-col items-center"><div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-2"><i data-lucide="sunset" class="text-purple-600"></i></div><span class="text-lg font-bold">장례서비스</span></div>
+        <div id="slide-0" class="slide active p-0 relative overflow-hidden bg-slate-900">
+            <style>
+                @keyframes slide1-float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-15px); }
+                }
+                @keyframes slide1-glow {
+                    0%, 100% { opacity: 0.4; }
+                    50% { opacity: 0.6; }
+                }
+                @keyframes slide1-fadeInUp {
+                    from { opacity: 0; transform: translateY(30px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes slide1-popIn {
+                    0% { opacity: 0; transform: scale(0.8); }
+                    70% { transform: scale(1.05); }
+                    100% { opacity: 1; transform: scale(1); }
+                }
+                .slide1-orb-blue { animation: slide1-glow 8s ease-in-out infinite; }
+                .slide1-orb-orange { animation: slide1-glow 10s ease-in-out infinite 2s; }
+                .slide1-title { animation: slide1-fadeInUp 1s ease-out forwards; }
+                .slide1-subtitle { animation: slide1-fadeInUp 1s ease-out 0.3s forwards; opacity: 0; }
+                .slide1-card { animation: slide1-popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; }
+                .slide1-card-1 { animation-delay: 0.6s; }
+                .slide1-card-2 { animation-delay: 0.75s; }
+                .slide1-card-3 { animation-delay: 0.9s; }
+                .slide1-card-4 { animation-delay: 1.05s; }
+            </style>
+
+            <!-- Dynamic Background Orbs -->
+            <div class="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-blue-500/30 rounded-full blur-[100px] slide1-orb-blue"></div>
+            <div class="absolute top-[40%] left-[50%] w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[80px]"></div>
+
+            <!-- Content -->
+            <div class="relative z-10 w-full h-full flex flex-col items-center justify-center text-center px-12">
+                
+                <!-- Main Title Block -->
+                <div class="mb-16">
+                    <p class="text-2xl font-bold text-orange-300/80 tracking-[0.4em] uppercase mb-6 slide1-title">Premium Companion Care</p>
+                    <h1 class="text-8xl font-black text-white leading-tight tracking-tight mb-6 slide1-title">
+                        당신과 아이의 <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-400">행복한 20년</span>
+                    </h1>
+                    <p class="text-4xl text-slate-400 font-medium slide1-subtitle">주오컴퍼니가 시작부터 끝까지 함께합니다.</p>
+                </div>
+
+                <!-- Service Cards (Glassmorphism Dock) -->
+                <div class="flex gap-8 mt-8">
+                    <!-- Card 1: 안심입양 -->
+                    <div class="slide1-card slide1-card-1 group flex flex-col items-center gap-4 p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 transition-all duration-300 cursor-default">
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-transform">
+                            <i data-lucide="home" class="w-10 h-10 text-white"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white">안심입양</span>
+                    </div>
+                    <!-- Card 2: 건강관리 -->
+                    <div class="slide1-card slide1-card-2 group flex flex-col items-center gap-4 p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 transition-all duration-300 cursor-default">
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform">
+                            <i data-lucide="stethoscope" class="w-10 h-10 text-white"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white">건강관리</span>
+                    </div>
+                    <!-- Card 3: 정기구독 -->
+                    <div class="slide1-card slide1-card-3 group flex flex-col items-center gap-4 p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 transition-all duration-300 cursor-default">
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-green-500/30 group-hover:scale-110 transition-transform">
+                            <i data-lucide="shopping-bag" class="w-10 h-10 text-white"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white">정기구독</span>
+                    </div>
+                    <!-- Card 4: 펫택시/훈련 -->
+                    <div class="slide1-card slide1-card-4 group flex flex-col items-center gap-4 p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 transition-all duration-300 cursor-default">
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-400 flex items-center justify-center shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
+                            <i data-lucide="car" class="w-10 h-10 text-white"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white">펫택시/훈련</span>
+                    </div>
+                </div>
             </div>
         </div>`;
 
@@ -546,289 +610,525 @@ function generatePresentationSlides() {
     // Slide 5 - Bridge 2 (Puzzle: Pet Insurance -> Membership)
     addStaticSlide(`
         <style>
-            @keyframes puzzle-float {
+            @keyframes spin-slow {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            @keyframes pulse-core {
+                0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 50px rgba(251, 191, 36, 0.3); }
+                50% { transform: scale(1.05); opacity: 0.9; box-shadow: 0 0 80px rgba(251, 191, 36, 0.6); }
+            }
+            @keyframes float-label {
                 0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-8px); }
-            }
-            @keyframes puzzle-connect-left {
-                from { transform: translateX(-40px); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes puzzle-connect-right {
-                from { transform: translateX(40px); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            
-            .puzzle-piece {
-                position: relative;
-                width: 340px;
-                height: 380px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-start;
-                padding-top: 3rem;
-                padding-bottom: 2rem;
-                border-radius: 2.5rem;
-                box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.25);
-                z-index: 10;
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                border-top: 1px solid rgba(255, 255, 255, 0.6);
-            }
-            
-            .puzzle-knob-right::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                right: -45px;
-                transform: translateY(-50%);
-                width: 90px;
-                height: 90px;
-                background: #2b70ed;
-                border-radius: 50%;
-                z-index: 20;
-                box-shadow: 5px 0 15px rgba(0,0,0,0.05);
-            }
-
-            .puzzle-socket-left {
-                padding-left: 2rem;
-            }
-            
-            .puzzle-animate-left { animation: puzzle-connect-left 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.3s, puzzle-float 6s ease-in-out infinite 1.5s; }
-            .puzzle-animate-right { animation: puzzle-connect-right 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.3s, puzzle-float 6s ease-in-out infinite 1.5s; animation-delay: 0.3s, 1.7s; }
-            
-            .icon-box {
-                width: 7rem;
-                height: 7rem;
-                background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
-                border: 1px solid rgba(255,255,255,0.4);
-                border-radius: 1.5rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-top: auto;
-                margin-bottom: 1.5rem;
-                backdrop-filter: blur(8px);
-                box-shadow: inset 0 0 15px rgba(255,255,255,0.1);
-            }
-            @keyframes arrow-fade-in-final {
-                0% { opacity: 0; }
-                100% { opacity: 1; }
+                50% { transform: translateY(-10px); }
             }
         </style>
 
-        <div class="w-full h-full flex flex-col items-center justify-center bg-[#f0f7ff] relative overflow-hidden">
-            <!-- Decorations -->
-            <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-100/50 to-indigo-100/50 rounded-full blur-3xl opacity-60 translate-x-1/3 -translate-y-1/3"></div>
-            
-            <!-- Header -->
-            <div class="absolute top-16 flex flex-col items-center z-20">
-                <img src="display_system/LOGO.png" alt="TOTAL PETCARE MEMBERSHIP SERVICE" class="h-28 w-auto object-contain drop-shadow-sm opacity-90" />
+        <div class="w-full h-full flex flex-col items-center justify-center bg-slate-50 relative overflow-hidden">
+            <!-- Background Decorations -->
+            <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-50 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
+            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-50 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
+
+            <!-- Headline Area -->
+            <div class="text-center z-20 mb-16 relative">
+                 <h2 class="text-6xl font-black text-slate-800 mb-6 tracking-tight leading-tight">
+                    펫보험이 채워주지 못하는 <span class="text-blue-500 relative inline-block">빈틈을<svg class="absolute w-full h-4 -bottom-1 left-0 text-blue-200" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 12 100 5" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round" /></svg></span>
+                </h2>
+                <h2 class="text-[6rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600 tracking-tighter leading-none drop-shadow-sm">
+                    안심 보장 솔루션
+                </h2>
+                <h2 class="text-6xl font-bold text-slate-700 mt-4">이 <span class="underline decoration-4 decoration-orange-300 underline-offset-8">완벽하게</span> 채워드립니다</h2>
             </div>
 
-            <!-- Headline -->
-            <div class="text-center z-20 mb-14 mt-8">
-                <h2 class="text-6xl font-extrabold text-slate-700 mb-2 tracking-tight">
-                    펫보험이 채워주지 못하는
-                </h2>
-                <h2 class="text-[7rem] font-black text-[#2563eb] tracking-tighter leading-none filter drop-shadow-sm relative inline-block">
-                    <span class="relative">
-                        빈틈
-                         <svg class="absolute w-[110%] h-6 -bottom-2 -left-[5%] text-blue-400 opacity-80" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 15 100 5" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" /></svg>
-                    </span>
-                    <span class="text-6xl font-bold text-slate-700 tracking-tight ml-4 align-middle">을 채워드립니다.</span>
-                </h2>
-            </div>
-
-            <div class="relative flex items-center justify-center z-10 scale-110 mt-24">
-                <!-- Central Glow/Burst (z-0) -->
-                <div class="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
-                     <div class="w-[100px] h-[500px] bg-white blur-[60px] opacity-60 mix-blend-overlay"></div>
-                     <div class="w-[300px] h-[300px] bg-blue-400 blur-[100px] opacity-40 animate-pulse"></div>
-                     <!-- Sparkles -->
-                     <div class="absolute w-2 h-2 bg-white rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_20px_white]"></div>
-                </div>
-
-                <!-- Swoosh Arrows (z-0) -->
-                <!-- Top Arrow (Right Top -> Left Top) -->
-                <svg class="absolute -top-20 left-1/2 -translate-x-1/2 w-[700px] h-[350px] z-0 pointer-events-none drop-shadow-[0_0_5px_rgba(59,130,246,0.2)]"
-                     style="animation: arrow-fade-in-final 1s ease-out both 1.2s;">
-                    <path d="M 580 80 Q 350 -50 120 80" fill="none" stroke="url(#grad_swoosh_top)" stroke-width="14" stroke-linecap="round" />
-                    <!-- Arrowhead (Larger Sharp, Rotated 150deg) -->
-                    <path d="M 120 80 L 85 65 L 95 80 L 85 95 Z" fill="#3b82f6" transform="rotate(150 120 80)" />
-                    <defs>
-                        <linearGradient id="grad_swoosh_top" x1="100%" y1="0%" x2="0%" y2="0%">
-                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.1" />
-                            <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:0.6" />
-                            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.1" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-
-                <!-- Bottom Arrow (Left Bottom -> Right Bottom) -->
-                <svg class="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[700px] h-[350px] z-0 pointer-events-none drop-shadow-[0_0_5px_rgba(59,130,246,0.2)]"
-                     style="animation: arrow-fade-in-final 1s ease-out both 1.4s;">
-                     <path d="M 120 270 Q 350 400 580 270" fill="none" stroke="url(#grad_swoosh_bottom)" stroke-width="14" stroke-linecap="round" />
-                     <!-- Arrowhead (Larger Sharp, Rotated -30deg) -->
-                     <path d="M 580 270 L 545 255 L 555 270 L 545 285 Z" fill="#3b82f6" transform="rotate(-30 580 270)" />
-                     <defs>
-                        <linearGradient id="grad_swoosh_bottom" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.1" />
-                            <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:0.6" />
-                            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.1" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-
-                <div class="puzzle-piece puzzle-animate-left relative w-[360px] h-[360px] flex flex-col items-center justify-center text-white z-10"
-                     style="
-                        background: linear-gradient(145deg, #3b82f6, #1d4ed8);
-                        border-radius: 2.5rem;
-                        mask-image: radial-gradient(circle 45px at 0% 50%, transparent 99%, white 100%);
-                        -webkit-mask-image: radial-gradient(circle 45px at 0% 50%, transparent 99%, white 100%);
-                        margin-right: -4px;
-                        box-shadow: 0 20px 40px rgba(37, 99, 235, 0.4);
-                     ">
-                    <div class="absolute -top-[45px] left-1/2 -translate-x-1/2 w-[90px] h-[90px] rounded-full z-10"
-                         style="background: linear-gradient(to bottom, #3b82f6, #3b82f6);"></div>
-                         
-                    <div class="absolute -right-[45px] top-1/2 -translate-y-1/2 w-[90px] h-[90px] rounded-full z-20 shadow-lg"
-                         style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);"></div>
-
-                    <div class="relative z-30 flex flex-col items-center pt-8">
-                        <div class="text-2xl font-bold text-center leading-snug opacity-95 mb-6 drop-shadow-md">
-                            큰 수술비는<br>
-                            <span class="text-yellow-300">펫보험</span>으로!
-                        </div>
-                        
-                        <div class="mb-6 relative">
-                            <i data-lucide="shield" class="w-28 h-28 text-white fill-white/20"></i>
-                            <i data-lucide="paw-print" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 text-white fill-white"></i>
-                        </div>
-                        
-                        <div class="text-5xl font-black tracking-tight drop-shadow-lg">펫보험</div>
+            <!-- Main Visual: Three Column Layout -->
+            <div class="flex items-center justify-center gap-12 z-10">
+                
+                <!-- Left: Pet Insurance -->
+                <div class="w-[280px] flex flex-col items-center gap-4 animate-[float-label_6s_ease-in-out_infinite]">
+                     <div class="w-24 h-24 rounded-2xl bg-blue-100 flex items-center justify-center shadow-lg">
+                        <i data-lucide="shield" class="w-12 h-12 text-blue-600"></i>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-400 mb-1">큰 수술비는</p>
+                        <p class="text-5xl font-black text-blue-600">펫보험</p>
                     </div>
                 </div>
-                <div class="puzzle-piece puzzle-animate-right relative w-[360px] h-[360px] flex flex-col items-center justify-center text-white z-10"
-                     style="
-                        background: linear-gradient(145deg, #60a5fa, #3b82f6);
-                        border-radius: 2.5rem;
-                        mask-image: radial-gradient(circle 45px at 0% 50%, transparent 99%, white 100%);
-                        -webkit-mask-image: radial-gradient(circle 45px at 0% 50%, transparent 99%, white 100%);
-                        margin-left: -50px; /* Overlap to fit the knob into the socket mask */
-                        box-shadow: 0 20px 40px rgba(37, 99, 235, 0.4);
-                     ">
-                    <div class="absolute -bottom-[45px] left-1/2 -translate-x-1/2 w-[90px] h-[90px] rounded-full z-10"
-                         style="background: linear-gradient(to top, #3b82f6, #60a5fa);"></div>
 
-                    <div class="relative z-30 flex flex-col items-center pt-8 pl-10">
-                        <div class="text-2xl font-bold text-center leading-snug opacity-95 mb-6 drop-shadow-md">
-                            매월 드는 사료/병원비는<br>
-                            <span class="text-white border-b-2 border-white/50">안심보장솔루션</span>으로!
-                        </div>
-                        
-                        <div class="mb-6">
-                            <i data-lucide="heart" class="w-28 h-28 text-white fill-white"></i>
-                        </div>
-                        
-                        <div class="text-4xl font-black tracking-tight drop-shadow-lg">안심보장솔루션</div>
+                <!-- Center: Circle -->
+                <div class="w-[320px] h-[320px] rounded-full bg-gradient-to-br from-amber-300 via-orange-400 to-amber-500 shadow-2xl flex items-center justify-center text-white animate-[pulse-core_3s_ease-in-out_infinite] flex-shrink-0">
+                     <div class="text-center">
+                        <i data-lucide="check-circle-2" class="w-24 h-24 mx-auto mb-4 text-white drop-shadow-md"></i>
+                        <div class="text-5xl font-black tracking-tight drop-shadow-md">빈틈없는<br>보장</div>
+                    </div>
+                </div>
+
+                <!-- Right: Ansim Solution -->
+                <div class="w-[280px] flex flex-col items-center gap-4 animate-[float-label_6s_ease-in-out_infinite_reverse]">
+                    <div class="w-24 h-24 rounded-2xl bg-orange-100 flex items-center justify-center shadow-lg">
+                        <i data-lucide="heart-handshake" class="w-12 h-12 text-orange-600"></i>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-400 mb-1">매월 병원비/용품은</p>
+                        <p class="text-5xl font-black text-orange-600">안심솔루션</p>
                     </div>
                 </div>
             </div>
             
+            <!-- Bottom Text -->
+             <div class="absolute bottom-12 text-slate-400 text-xl font-medium tracking-wide">
+                * 펫보험과 안심보장솔루션이 만나 완벽한 반려생활을 만듭니다
+            </div>
         </div>
     `, 'p-0');
 
-    // Slide 6 - Membership
+    // Slide 6-A - White & Silver Membership (Redesigned)
     addStaticSlide(`
-        <h2 class="text-center text-5xl font-black mb-12 uppercase tracking-tight">주오 멤버십 <span class="text-juo-orange">3대 라인업</span></h2>
-            <div class="grid grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-3xl card-shadow border-t-8 border-gray-300">
-                    <h3 class="text-3xl font-black mb-2 text-gray-500">White</h3>
-                    <p class="text-slate-400 mb-6 font-bold">실속형 관리</p>
-                    <div class="text-4xl font-black mb-8">50,000<span class="text-xl font-normal">원/월</span></div>
-                    <ul class="space-y-4 mb-8 text-slate-600">
-                        <li class="flex items-center gap-2"><i data-lucide="package" class="w-5 h-5 text-gray-400"></i> 사료+간식 정기배송</li>
-                        <li class="flex items-center gap-2"><i data-lucide="tag" class="w-5 h-5 text-gray-400"></i> 쇼핑몰 상시 20% 할인</li>
-                        <li class="flex items-center gap-2"><i data-lucide="message-circle" class="w-5 h-5 text-gray-400"></i> AI 건강 상담 지원</li>
-                    </ul>
-                </div>
-                <div class="bg-white p-8 rounded-3xl card-shadow border-8 border-juo-orange scale-105 relative z-10">
-                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-juo-orange text-white px-6 py-2 rounded-full font-black">매장 추천</div>
-                    <h3 class="text-3xl font-black mb-2 text-juo-orange">Silver</h3>
-                    <p class="text-slate-400 mb-6 font-bold">육아 집중 케어</p>
-                    <div class="text-4xl font-black mb-8 text-juo-orange">100,000<span class="text-xl font-normal text-slate-800">원/월</span></div>
-                    <ul class="space-y-4 mb-8 text-slate-800 font-bold">
-                        <li class="flex items-center gap-2"><i data-lucide="syringe" class="w-6 h-6 text-juo-orange"></i> 초기 접종 + 중성화 0원</li>
-                        <li class="flex items-center gap-2"><i data-lucide="package" class="w-6 h-6 text-juo-orange"></i> 사료+용품 매달 배송</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-6 h-6 text-juo-orange"></i> 2년차 건강검진 지원</li>
-                    </ul>
-                </div>
-                <div class="bg-white p-8 rounded-3xl card-shadow border-t-8 border-yellow-500">
-                    <h3 class="text-3xl font-black mb-2 text-yellow-600">VIP</h3>
-                    <p class="text-slate-400 mb-6 font-bold">프리미엄 올인원</p>
-                    <div class="text-4xl font-black mb-8">160,000<span class="text-xl font-normal">원/월</span></div>
-                    <ul class="space-y-4 mb-8 text-slate-600 font-bold">
-                        <li class="flex items-center gap-2"><i data-lucide="star" class="w-5 h-5 text-yellow-500"></i> Silver 모든 혜택 포함</li>
-                        <li class="flex items-center gap-2"><i data-lucide="graduation-cap" class="w-5 h-5 text-yellow-500"></i> 전문가 방문 교육 1회</li>
-                        <li class="flex items-center gap-2"><i data-lucide="shopping-cart" class="w-5 h-5 text-yellow-500"></i> 30% 할인 + 무료배송</li>
-                    </ul>
-                </div>
-            </div>`, 'p-16 bg-slate-50 justify-center');
+        <style>
+            @keyframes float-card {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            @keyframes shine {
+                0% { background-position: 200% center; }
+                100% { background-position: -200% center; }
+            }
+            @keyframes card-entrance {
+                from { opacity: 0; transform: translateY(50px) scale(0.95); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            .card-entrance-1 { animation: card-entrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+            .card-entrance-2 { animation: card-entrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s forwards; opacity: 0; }
+            
+            .text-gradient-white {
+                background: linear-gradient(to right, #94a3b8, #334155, #94a3b8);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: shine 5s linear infinite;
+            }
+            .text-gradient-silver {
+                background: linear-gradient(to right, #3b82f6, #60a5fa, #3b82f6);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: shine 5s linear infinite;
+            }
+        </style>
 
-    // Slide 7 - Insurance vs Membership Comparison
+    <div class="w-full h-full flex flex-col justify-center items-center bg-slate-50 relative overflow-hidden p-8">
+        <!-- Background Elements -->
+        <div class="absolute top-0 left-0 w-full h-[40%] bg-gradient-to-b from-blue-50/50 to-transparent"></div>
+        <div class="absolute -top-20 -left-20 w-[600px] h-[600px] bg-blue-100 rounded-full blur-[100px] opacity-40"></div>
+        <div class="absolute bottom-0 right-0 w-[800px] h-[800px] bg-slate-100 rounded-full blur-[120px] opacity-60"></div>
+
+        <div class="relative z-10 w-full max-w-[1600px] h-[90%] grid grid-cols-2 gap-12">
+
+            <!-- White Tier -->
+            <div class="card-entrance-1 relative group animate-[float-card_6s_ease-in-out_infinite]">
+                <div class="absolute inset-0 bg-white rounded-[3rem] shadow-2xl border border-slate-100"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-slate-100 opacity-50 rounded-[3rem]"></div>
+
+                <div class="relative h-full flex flex-col p-12 overflow-hidden rounded-[3rem]">
+                    <div class="absolute -right-10 -top-10 w-64 h-64 bg-slate-100 rounded-full blur-3xl opacity-50"></div>
+
+                    <div class="flex justify-between items-start mb-4 relative z-10">
+                        <span class="px-6 py-2 bg-slate-100 text-slate-500 rounded-full font-black text-lg tracking-wide uppercase">Essential Plan</span>
+                        <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center shadow-inner">
+                            <i data-lucide="box" class="w-8 h-8 text-slate-400"></i>
+                        </div>
+                    </div>
+
+                    <h2 class="text-[7rem] font-black text-slate-800 leading-none mb-2 tracking-tighter" style="font-family: 'Inter', sans-serif;">WHITE</h2>
+                    <p class="text-2xl text-slate-400 font-bold mb-10 pl-2">매달 필요한 용품을 집앞까지 배송 🚚</p>
+
+                    <div class="bg-slate-50 rounded-3xl p-8 mb-10 border border-slate-100 shadow-md">
+                        <span class="block text-slate-500 font-bold text-lg mb-2">프리미엄 구독 서비스</span>
+                        <div class="text-4xl font-black text-slate-700 leading-tight">
+                            매월 <span class="text-slate-900 border-b-4 border-slate-200">5만원 상당</span><br>프리미엄 패키지
+                        </div>
+                    </div>
+
+                    <ul class="flex-grow space-y-6">
+                        <li class="flex items-start gap-5">
+                            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                                <i data-lucide="check" class="w-6 h-6 text-slate-400"></i>
+                            </div>
+                            <div>
+                                <span class="block text-2xl font-black text-slate-700 mb-1">더주오 시그니처 유기농 사료</span>
+                                <span class="text-lg text-slate-400 font-medium">입맛 까다로운 아이도 잘 먹는, 믿을 수 있는 휴먼그레이드</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-5">
+                            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                                <i data-lucide="check" class="w-6 h-6 text-slate-400"></i>
+                            </div>
+                            <div>
+                                <span class="block text-2xl font-black text-slate-700 mb-1">최고급 배변용품</span>
+                                <span class="text-lg text-slate-400 font-medium">강아지용 '응가해주오' / 고양이용 '두부모래'</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-5">
+                            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                                <i data-lucide="check" class="w-6 h-6 text-slate-400"></i>
+                            </div>
+                            <div>
+                                <span class="block text-2xl font-black text-slate-700 mb-1">프리미엄 수제간식</span>
+                                <span class="text-lg text-slate-400 font-medium">첨가물 없는, 당일생산 더주오 수제간식</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Silver Tier -->
+            <div class="card-entrance-2 relative group animate-[float-card_6s_ease-in-out_infinite] delay-1000">
+                <div class="absolute inset-0 bg-white rounded-[3rem] shadow-2xl shadow-blue-200/50 border border-blue-100"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-white to-white opacity-80 rounded-[3rem]"></div>
+
+                <div class="relative h-full flex flex-col p-12 overflow-hidden rounded-[3rem]">
+                    <div class="absolute -right-10 -top-10 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50"></div>
+                    <div class="absolute right-8 top-8 animate-[float-y_3s_ease-in-out_infinite]">
+                        <span class="px-5 py-2 bg-blue-600 text-white rounded-full font-black text-sm shadow-lg shadow-blue-300">BEST CHOICE</span>
+                    </div>
+
+                    <div class="flex justify-between items-start mb-4 relative z-10 mt-2">
+                        <span class="px-6 py-2 bg-blue-50 text-blue-600 rounded-full font-black text-lg tracking-wide uppercase border border-blue-100">Intensive Care</span>
+                    </div>
+
+                    <h2 class="text-[7rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400 leading-none mb-2 tracking-tighter" style="font-family: 'Inter', sans-serif;">SILVER</h2>
+                    <p class="text-2xl text-blue-400 font-bold mb-10 pl-2">우리아이 첫 1년, 집중적인 건강관리</p>
+
+                    <div class="bg-blue-50 rounded-3xl p-8 mb-10 border border-blue-100 relative overflow-hidden shadow-sm">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-200 rounded-full blur-2xl opacity-20"></div>
+                        <span class="block text-blue-500 font-bold text-lg mb-2">지원 혜택 환산 가치</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-blue-600 tracking-tight">약 200만원</span>
+                            <span class="text-2xl font-bold text-blue-400">상당</span>
+                        </div>
+                    </div>
+
+                    <ul class="flex-grow space-y-6">
+                        <li class="flex items-center gap-5">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-blue-600">
+                                <i data-lucide="package" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex-1">
+                                <span class="block text-2xl font-black text-slate-700">White 혜택 포함</span>
+                                <span class="text-lg text-slate-400 font-medium">(프리미엄 구독 서비스)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-5">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-blue-600">
+                                <i data-lucide="syringe" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex-1">
+                                <span class="block text-2xl font-black text-slate-700">필수 기초 접종 (1~6차)</span>
+                                <span class="text-lg text-slate-400 font-medium">건강한 성장을 위한 필수 예방접종 지원</span>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-5">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-blue-600">
+                                <i data-lucide="search" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex-1">
+                                <span class="block text-2xl font-black text-slate-700">항체가 확인 검사</span>
+                                <span class="text-lg text-slate-400 font-medium">접종 완료 후 항체 생성 여부 확인</span>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-5">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-blue-600">
+                                <i data-lucide="scissors" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex-1">
+                                <span class="block text-2xl font-black text-slate-700">중성화 수술 + 동물등록(내장형)</span>
+                                <span class="text-lg text-slate-400 font-medium">반려동물 필수 수술 및 시술 지원</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>`, 'p-0');
+
+    const isShelterMode = config.shelterMode;
+    
+    const goldStyles = isShelterMode ? {
+        wrapper: 'animate-[float-card_6s_ease-in-out_infinite]',
+        bg: 'bg-gradient-to-br from-[#fffbeb] to-[#fef3c7]',
+        border: 'border-2 border-amber-200',
+        shadow: 'card-gold-shadow',
+        badge: `<span class="px-6 py-2 bg-amber-100 text-amber-800 rounded-full font-black text-lg tracking-wide border border-amber-200 shadow-sm flex items-center gap-2">
+                    <i data-lucide="heart" class="w-4 h-4 fill-amber-600 text-amber-600"></i> 보호소 입양 가족 전용
+                </span>`,
+        title: 'text-amber-900',
+        subtitle: 'text-amber-700',
+        priceBox: 'bg-white/80 border-amber-200',
+        priceText: 'text-amber-600',
+        iconBg: 'bg-gradient-to-br from-amber-100 to-amber-200',
+        iconColor: 'text-amber-700',
+        itemTitle: 'text-amber-900',
+        itemDesc: 'text-amber-800/80',
+        opacity: 'opacity-100'
+    } : {
+        wrapper: '',
+        bg: 'bg-slate-100',
+        border: 'border border-slate-300',
+        shadow: 'shadow-lg',
+        badge: `<span class="px-4 py-1.5 bg-slate-200 text-slate-600 rounded-full font-bold text-sm flex items-center gap-1">
+                    <i data-lucide="home" class="w-3 h-3"></i> 보호소 전용 상품
+                </span>`,
+        title: 'text-slate-600',
+        subtitle: 'text-slate-500',
+        priceBox: 'bg-slate-50 border-slate-200',
+        priceText: 'text-slate-500',
+        iconBg: 'bg-slate-200',
+        iconColor: 'text-slate-500',
+        itemTitle: 'text-slate-700',
+        itemDesc: 'text-slate-500',
+        opacity: 'opacity-70'
+    };
+    
     addStaticSlide(`
-        <h2 class="text-center text-5xl font-black mb-16 italic underline decoration-juo-orange underline-offset-8">보험인가요? 아니요, <span class="text-juo-orange">관리</span>입니다.</h2>
-    <div class="flex gap-12 flex-grow">
-        <div class="flex-1 bg-slate-800 p-10 rounded-3xl relative overflow-hidden">
-            <div class="absolute -right-10 -top-10 opacity-10"><i data-lucide="gift" class="w-48 h-48 text-white"></i></div>
-            <h3 class="text-3xl font-black mb-8 text-juo-orange flex items-center gap-3"><i data-lucide="smile"></i> 주오 멤버십 (일상)</h3>
-            <div class="space-y-8">
-                <div class="flex gap-4">
-                    <div class="w-12 h-12 bg-juo-orange/20 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="shopping-basket" class="text-juo-orange"></i></div>
-                    <div><h4 class="text-xl font-bold">사료/패드비 0원</h4><p class="text-slate-400">보험에서 안 해주는 생활비 100% 케어</p></div>
+        <style>
+            @keyframes glimmer {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+            .text-gold-gradient {
+                background: linear-gradient(to right, #b45309, #f59e0b, #b45309);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: shine 4s linear infinite;
+            }
+            .text-vip-gradient {
+                background: linear-gradient(to right, #fde68a, #d97706, #fde68a);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: shine 3s linear infinite;
+            }
+            .card-gold-shadow { box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.25); }
+            .card-vip-shadow { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+            @keyframes float-card {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+        </style>
+
+    <div class="w-full h-full flex flex-col justify-center items-center bg-[#0f172a] relative overflow-hidden p-8">
+        <!-- Premium Background -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0f172a] to-black"></div>
+        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-amber-500/10 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-0 left-0 w-[800px] h-[800px] bg-purple-900/10 rounded-full blur-[120px]"></div>
+
+        <div class="relative z-10 w-full max-w-[1600px] h-[90%] grid grid-cols-2 gap-12">
+
+            <!-- Gold Tier -->
+            <div class="card-entrance-1 relative group ${goldStyles.wrapper} ${goldStyles.opacity}">
+                <div class="absolute inset-0 ${goldStyles.bg} rounded-[3rem] ${goldStyles.shadow} ${goldStyles.border}"></div>
+
+                <div class="relative h-full flex flex-col p-12 overflow-hidden rounded-[3rem]">
+                    <div class="absolute -right-20 -top-20 w-80 h-80 bg-gradient-to-br from-amber-200 to-yellow-100 rounded-full blur-3xl opacity-40"></div>
+
+                    <div class="flex justify-between items-start mb-6 relative z-10">
+                        ${goldStyles.badge}
+                    </div>
+
+                    <h2 class="text-[7rem] font-black ${goldStyles.title} leading-none mb-2 tracking-tighter drop-shadow-sm" style="font-family: 'Inter', sans-serif;">GOLD</h2>
+                    <p class="text-2xl ${goldStyles.subtitle} font-bold mb-10 pl-2">${isShelterMode ? '초기 의료부터 일상케어, 질병까지' : '보호소에서 입양 시 가입 가능합니다'}</p>
+
+                    <div class="${goldStyles.priceBox} backdrop-blur-sm rounded-3xl p-8 mb-10 border shadow-xl">
+                        <span class="block ${goldStyles.subtitle} font-bold text-lg mb-2">총 혜택 가치</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-6xl font-black ${goldStyles.priceText} tracking-tight">2,225,000</span>
+                            <span class="text-3xl font-bold ${goldStyles.subtitle}">원</span>
+                        </div>
+                    </div>
+
+                    <ul class="flex-grow space-y-5">
+                        <li class="flex items-start gap-5 group/item">
+                            <div class="w-12 h-12 rounded-full ${goldStyles.iconBg} flex items-center justify-center shrink-0 ${goldStyles.iconColor} shadow-inner">
+                                <i data-lucide="package" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <span class="block text-2xl font-black ${goldStyles.itemTitle} mb-1">White 혜택 포함</span>
+                                <span class="text-lg ${goldStyles.itemDesc} font-medium">(프리미엄 구독 서비스)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-5 group/item">
+                            <div class="w-12 h-12 rounded-full ${goldStyles.iconBg} flex items-center justify-center shrink-0 ${goldStyles.iconColor} shadow-inner">
+                                <i data-lucide="activity" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <span class="block text-2xl font-black ${goldStyles.itemTitle} mb-1">종합 건강검진</span>
+                                <span class="text-lg ${goldStyles.itemDesc} font-medium">60~70만원 상당 (기본, 혈액, 영상)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-5 group/item">
+                            <div class="w-12 h-12 rounded-full ${goldStyles.iconBg} flex items-center justify-center shrink-0 ${goldStyles.iconColor} shadow-inner">
+                                <i data-lucide="syringe" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <span class="block text-2xl font-black ${goldStyles.itemTitle} mb-1">필수 예방 의료</span>
+                                <span class="text-lg ${goldStyles.itemDesc} font-medium">종합백신, 광견병, 심장사상충(연간)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-5 group/item">
+                            <div class="w-12 h-12 rounded-full ${goldStyles.iconBg} flex items-center justify-center shrink-0 ${goldStyles.iconColor} shadow-inner">
+                                <i data-lucide="coins" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <span class="block text-2xl font-black ${goldStyles.itemTitle} mb-1">의료비 지원</span>
+                                <span class="text-lg ${goldStyles.itemDesc} font-medium">연간 50만원 한도 지원</span>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-                <div class="flex gap-4">
-                    <div class="w-12 h-12 bg-juo-orange/20 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="syringe" class="text-juo-orange"></i></div>
-                    <div><h4 class="text-xl font-bold">기초 접종/중성화 지원</h4><p class="text-slate-400">보험 면책 사항인 예방 의학 전액 지원</p></div>
+            </div>
+
+            <!-- VIP Tier -->
+            <div class="card-entrance-2 relative group animate-[float-card_6s_ease-in-out_infinite] delay-1000">
+                <div class="absolute inset-0 bg-[#1e293b] rounded-[3rem] card-vip-shadow border border-slate-700"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-slate-800/50 to-transparent rounded-[3rem]"></div>
+
+                <div class="relative h-full flex flex-col p-12 overflow-hidden rounded-[3rem]">
+                    <div class="absolute -right-20 -top-20 w-96 h-96 bg-purple-600/20 rounded-full blur-[80px]"></div>
+                    <div class="absolute -left-10 bottom-0 w-64 h-64 bg-amber-500/10 rounded-full blur-[60px]"></div>
+
+                    <div class="flex justify-between items-start mb-6 relative z-10">
+                        <span class="px-6 py-2 bg-gradient-to-r from-purple-900 to-slate-900 text-purple-200 rounded-full font-black text-lg tracking-wide border border-purple-700/50 shadow-lg shadow-purple-900/50 flex items-center gap-2">
+                            <i data-lucide="crown" class="w-4 h-4 fill-amber-400 text-amber-400"></i> Premium Care
+                        </span>
+                    </div>
+
+                    <h2 class="text-[7rem] font-black text-vip-gradient leading-none mb-2 tracking-tighter drop-shadow-lg" style="font-family: 'Inter', sans-serif;">VIP</h2>
+                    <p class="text-2xl text-slate-400 font-bold mb-10 pl-2">단 하나도 놓치지 않는 프리미엄 케어</p>
+
+                    <div class="bg-slate-800/50 backdrop-blur-md rounded-3xl p-8 mb-10 border border-slate-700 relative overflow-hidden">
+                        <div class="absolute top-0 w-full h-1 bg-gradient-to-r from-amber-400 via-purple-500 to-amber-400 animate-[shine_3s_linear_infinite]"></div>
+                        <span class="block text-slate-400 font-bold text-lg mb-2">토탈 케어 가치 환산</span>
+                        <div class="text-3xl font-black text-white leading-tight">
+                            모든 혜택을 <span class="text-amber-400 border-b-2 border-amber-400/30">빈틈없이</span> 담았습니다
+                        </div>
+                    </div>
+
+                    <ul class="flex-grow grid grid-cols-2 gap-x-4 gap-y-6 content-start">
+                        <li class="flex items-start gap-4 group/item">
+                            <i data-lucide="crown" class="w-8 h-8 text-amber-400 mt-1 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]"></i>
+                            <div class="flex flex-col">
+                                <span class="text-2xl font-bold text-amber-100">White 혜택 포함</span>
+                                <span class="text-lg font-medium text-purple-200/70">(프리미엄 구독 서비스)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 group/item">
+                            <i data-lucide="scissors" class="w-8 h-8 text-amber-500/80 mt-1 shrink-0 group-hover/item:text-amber-400 transition-colors"></i>
+                            <div class="flex flex-col">
+                                <span class="text-2xl font-bold text-amber-100">중성화 수술 지원</span>
+                                <span class="text-lg font-medium text-purple-200/70">(수술비 및 입원비 포함)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 group/item">
+                            <i data-lucide="activity" class="w-8 h-8 text-amber-500/80 mt-1 shrink-0 group-hover/item:text-amber-400 transition-colors"></i>
+                            <div class="flex flex-col">
+                                <span class="text-2xl font-bold text-amber-100">종합 건강검진 + 키트</span>
+                                <span class="text-lg font-medium text-purple-200/70">(정밀 혈액, 초음파, X-ray)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 group/item">
+                            <i data-lucide="syringe" class="w-8 h-8 text-amber-500/80 mt-1 shrink-0 group-hover/item:text-amber-400 transition-colors"></i>
+                            <div class="flex flex-col">
+                                <span class="text-2xl font-bold text-amber-100">필수 예방 의료</span>
+                                <span class="text-lg font-medium text-purple-200/70">(종합백신, 광견병, 심장사상충)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 group/item">
+                            <i data-lucide="tag" class="w-8 h-8 text-amber-500/80 mt-1 shrink-0 group-hover/item:text-amber-400 transition-colors"></i>
+                            <div class="flex flex-col">
+                                <span class="text-2xl font-bold text-amber-100">동물등록(내장형)</span>
+                                <span class="text-lg font-medium text-purple-200/70">(반려동물 등록비용 전액 지원)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 group/item">
+                            <i data-lucide="graduation-cap" class="w-8 h-8 text-amber-500/80 mt-1 shrink-0 group-hover/item:text-amber-400 transition-colors"></i>
+                            <div class="flex flex-col">
+                                <span class="text-2xl font-bold text-amber-100">전문가 방문 훈련</span>
+                                <span class="text-lg font-medium text-purple-200/70">(1:1 맞춤형 행동 교정)</span>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-        <div class="self-center"><i data-lucide="plus" class="w-12 h-12 text-slate-600"></i></div>
-        <div class="flex-1 border-2 border-slate-700 p-10 rounded-3xl relative overflow-hidden">
-            <div class="absolute -right-10 -top-10 opacity-10"><i data-lucide="shield" class="w-48 h-48 text-white"></i></div>
-            <h3 class="text-3xl font-black mb-8 text-blue-400 flex items-center gap-3"><i data-lucide="activity"></i> 펫보험 (사고/질병)</h3>
-            <div class="space-y-8">
-                <div class="flex gap-4">
-                    <div class="w-12 h-12 bg-blue-400/20 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="alert-triangle" class="text-blue-400"></i></div>
-                    <div><h4 class="text-xl font-bold">갑작스러운 고액 수술</h4><p class="text-slate-400">골절, 이물 섭취 등 예상치 못한 목돈 대비</p></div>
-                </div>
-                <div class="flex gap-4">
-                    <div class="w-12 h-12 bg-blue-400/20 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="hospital" class="text-blue-400"></i></div>
-                    <div><h4 class="text-xl font-bold">만성 질환 보장</h4><p class="text-slate-400">노령기 피부병, 신장병 등 지속적 병원비</p></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="mt-12 text-center text-2xl font-bold text-slate-400 italic">"일상은 <span class="text-juo-orange">멤버십</span>으로, 만약은 <span class="text-blue-400">보험</span>으로 완벽하게"</div>
-    `, 'p-16 bg-slate-900 text-white justify-center');
+    </div>`, 'p-0');
+
+    /* Slide 7 removed as requested */
 
     // Slide 8 - Closing / CTA
+    // Slide 8 - Closing / CTA (Premium Dark Redesign)
     addStaticSlide(`
-        <div class="flex gap-20 items-center">
-        <div class="text-left flex-1">
-            <h2 class="text-6xl font-black mb-8 leading-tight">입양의 행복을<br><span class="text-juo-orange">주오</span>가 지켜드립니다.</h2>
-            <div class="space-y-6 mb-12">
-                <div class="flex items-center gap-4 text-2xl"><i data-lucide="phone-call" class="text-juo-orange"></i> 지금 매니저에게 <strong>Silver 등급</strong>을 문의하세요</div>
-                <div class="flex items-center gap-4 text-2xl"><i data-lucide="qr-code" class="text-juo-orange"></i> QR 스캔으로 <strong>내 아이 건강수첩</strong> 열기</div>
+        <div class="w-full h-full flex flex-col justify-center items-center relative overflow-hidden bg-slate-900">
+            <!--Dynamic Background-->
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-black"></div>
+            <div class="absolute top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-orange-500/10 rounded-full blur-[150px] animate-[pulse_8s_ease-in-out_infinite]"></div>
+            <div class="absolute bottom-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-purple-600/10 rounded-full blur-[150px] animate-[pulse_10s_ease-in-out_infinite] delay-1000"></div>
+            
+            <!--Rotating Light Effect-->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0deg,transparent_100deg,rgba(255,255,255,0.03)_180deg,transparent_260deg)] animate-[spin_60s_linear_infinite]"></div>
+
+            <!--Content -->
+    <div class="relative z-10 text-center w-full max-w-7xl flex flex-col items-center justify-center h-full gap-16">
+
+        <!-- Main Message -->
+        <div class="space-y-2 animate-[float-y_5s_ease-in-out_infinite]">
+            <p class="text-2xl font-bold text-orange-200/60 tracking-[0.5em] uppercase mb-8">Premium Membership</p>
+            <h2 class="text-7xl md:text-8xl font-black text-white leading-tight tracking-tight drop-shadow-2xl">
+                <span class="block mb-2">입양의 <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-200">행복</span>을</span>
+                <span class="inline-flex items-center gap-4">
+                    <span class="text-white relative">
+                        주오
+                        <span class="absolute -bottom-2 left-0 w-full h-2 bg-orange-500 rounded-full opacity-60 blur-sm"></span>
+                    </span>가 지켜드립니다
+                </span>
+            </h2>
+        </div>
+
+        <!-- CTA Card - Exquisite Glassmorphism -->
+        <div class="relative w-full max-w-4xl group">
+            <!-- Glow behind card -->
+            <div class="absolute -inset-1 bg-gradient-to-r from-orange-500 to-purple-600 rounded-[2.5rem] blur opacity-30 animate-pulse"></div>
+
+            <div class="relative bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-12 flex flex-col items-center gap-8 overflow-hidden">
+
+                <!-- Icon -->
+                <div class="w-24 h-24 bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl flex items-center justify-center border border-white/5 shadow-2xl relative animate-[float-card_4s_ease-in-out_infinite_reverse]">
+                    <div class="absolute inset-0 bg-orange-500/20 blur-xl rounded-full"></div>
+                    <i data-lucide="message-circle" class="w-10 h-10 text-orange-400 relative z-10"></i>
+                </div>
+
+                <!-- CTA Text -->
+                <div class="space-y-2">
+                    <h3 class="text-5xl font-black text-white tracking-tight">
+                        지금 <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-200 decoration-wavy decoration-orange-500/30">매니저</span>에게 문의하세요
+                    </h3>
+                    <p class="text-2xl text-slate-400 font-medium">
+                        전문 매니저가 우리 아이를 위한 <span class="text-slate-200 font-bold">최적의 플랜</span>을 설계해 드립니다.
+                    </p>
+                </div>
+
+                <!-- Shine Animation -->
+                <div class="absolute top-0 -left-[100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-25deg] animate-[shine_4s_infinite]"></div>
             </div>
-            <p class="text-slate-400 text-lg">* 본 멤버십 서비스는 1년 의무 약정 상품입니다.</p>
         </div>
-        <div class="w-80 h-80 bg-slate-100 rounded-3xl flex items-center justify-center card-shadow border-4 border-slate-50 relative">
-            <i data-lucide="qr-code" class="w-48 h-48 text-slate-800"></i>
-            <div class="absolute -bottom-4 bg-juo-orange text-white px-6 py-2 rounded-full font-bold">SCAN ME</div>
+
+        <!-- Footer -->
+        <div class="flex items-center gap-3 text-slate-500 text-lg bg-slate-900/80 px-8 py-3 rounded-full border border-white/5 backdrop-blur-sm mt-8">
+            <i data-lucide="info" class="w-5 h-5 opacity-70"></i>
+            <span>본 멤버십 서비스는 1년 의무 약정 상품입니다.</span>
         </div>
-    </div>`, 'items-center justify-center p-16 bg-white');
+    </div>
+        </div>`, 'p-0');
 
 
     // Re-run icons
@@ -837,6 +1137,7 @@ function generatePresentationSlides() {
 
 function showSlide(index) {
     const slides = document.querySelectorAll('.slide');
+    if (!slides || slides.length === 0) return;
     slides.forEach(s => s.classList.remove('active'));
     if (slides[index]) slides[index].classList.add('active');
 }
@@ -854,7 +1155,7 @@ function stopSlideshow() {
 
 function getStatusColor(status) {
     if (status.includes('가족 찾는 중')) return 'bg-juo-orange';
-    if (status.includes('꽃단장 중')) return 'bg-blue-500';
+    if (status.includes('가족 맞이 준비중')) return 'bg-blue-500';
     if (status.includes('행복한 집으로')) return 'bg-emerald-500';
     if (status.includes('가능')) return 'bg-juo-orange';
     if (status.includes('대기') || status.includes('예약')) return 'bg-blue-500';

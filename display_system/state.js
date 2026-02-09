@@ -11,6 +11,7 @@ const defaultData = {
         title: 'New Arrivals',
         subtitle: '이번 주 새로운 가족'
     },
+    shelterMode: false, // New setting for Shelter Mode
     notice: {
         enabled: true,
         title: '📢 매장 공지',
@@ -26,7 +27,7 @@ const defaultData = {
             },
             pet2: {
                 hidden: false,
-                image: '', status: '🌷 꽃단장 중', breed: '포메라니안', gender: '남아', birth: '2024.11.20',
+                image: '', status: '🌷 가족 맞이 준비중', breed: '포메라니안', gender: '남아', birth: '2024.11.20',
                 checklist: ['원구충 2회 완료', '기초 접종 진행 중', '부모견 정보 확인 가능']
             }
         }
@@ -35,6 +36,11 @@ const defaultData = {
 
 function initializeConfig() {
     let config = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData;
+
+    // MIGRATION: Add shelterMode if missing
+    if (typeof config.shelterMode === 'undefined') {
+        config.shelterMode = false;
+    }
 
     // MIGRATION: v2 to v3 (or missing checklist)
     config.slides.forEach(slide => {
@@ -64,8 +70,8 @@ function initializeConfig() {
             const status = slide[petKey].status;
             if (status === '분양 가능' || status === '🌸 새싹 피는 중') {
                 slide[petKey].status = '🏠 가족 찾는 중';
-            } else if (status === '예약 대기') {
-                slide[petKey].status = '🌷 꽃단장 중';
+            } else if (status === '예약 대기' || status === '🌷 꽃단장 중') {
+                slide[petKey].status = '🌷 가족 맞이 준비중';
             } else if (status === '완료' || status === '분양 완료') {
                 slide[petKey].status = '🌻 행복한 집으로';
             }
@@ -76,6 +82,8 @@ function initializeConfig() {
 }
 
 let config = initializeConfig();
+
+let pendingConfig = JSON.parse(JSON.stringify(config));
 
 let slideIntervalId = null;
 let currentSlideIndex = 0;
@@ -94,6 +102,18 @@ const State = {
 
     resetToDefault: () => {
         config = JSON.parse(JSON.stringify(defaultData));
+        pendingConfig = JSON.parse(JSON.stringify(defaultData));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+    },
+
+    getPendingConfig: () => pendingConfig,
+    
+    resetPendingConfig: () => {
+        pendingConfig = JSON.parse(JSON.stringify(config));
+    },
+    
+    commitPendingChanges: () => {
+        config = JSON.parse(JSON.stringify(pendingConfig));
         localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
     },
 
@@ -125,6 +145,7 @@ const State = {
 // Export to window for compatibility with existing inline handlers and non-module scripts
 window.State = State;
 window.config = config;
+window.pendingConfig = pendingConfig;
 window.slideIntervalId = slideIntervalId;
 window.currentSlideIndex = currentSlideIndex;
 window.isPaused = isPaused;

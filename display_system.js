@@ -1,13 +1,14 @@
-lucide.createIcons();
-
 // Init
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('setting-interval').value = config.interval;
-    document.getElementById('intro-title').value = config.intro.title;
-    document.getElementById('intro-subtitle').value = config.intro.subtitle;
+    State.resetPendingConfig();
+    document.getElementById('setting-interval').value = pendingConfig.interval;
+    document.getElementById('intro-title').value = pendingConfig.intro.title;
+    document.getElementById('intro-subtitle').value = pendingConfig.intro.subtitle;
+    document.getElementById('setting-shelter-mode').checked = pendingConfig.shelterMode || false;
     renderLastSaved();
     renderNoticeEditor();
     renderAdminSlides();
+    lucide.createIcons();
 });
 
 function renderLastSaved() {
@@ -30,16 +31,19 @@ function renderLastSaved() {
 // ------------------------------------
 
 function saveSettings() {
-    config.interval = parseInt(document.getElementById('setting-interval').value) || 8;
+    pendingConfig.interval = parseInt(document.getElementById('setting-interval').value) || 8;
+    pendingConfig.shelterMode = document.getElementById('setting-shelter-mode').checked;
+    pendingConfig.intro.title = document.getElementById('intro-title').value || 'New Arrivals';
+    pendingConfig.intro.subtitle = document.getElementById('intro-subtitle').value || '이번 주 새로운 가족';
+    pendingConfig.notice.enabled = document.getElementById('notice-enabled').checked;
+    pendingConfig.notice.title = document.getElementById('notice-title').value || '📢 매장 공지';
+    pendingConfig.notice.content = document.getElementById('notice-content').innerHTML || '<p>공지사항 내용을 입력해주세요.</p>';
 
-    // Update Timestamp
     const now = new Date();
-    config.lastSaved = now.toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    pendingConfig.lastSaved = now.toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-    // Update LocalStorage (using v3 key)
-    localStorage.setItem('juoStoreDisplayConfig_v3', JSON.stringify(config));
+    State.commitPendingChanges();
 
-    // Visual Feedback
     renderLastSaved();
     const btn = document.querySelector('button[onclick="saveSettings()"]');
     const originalText = btn.innerHTML;
@@ -204,7 +208,7 @@ function stopSlideshow() {
 function getStatusColor(status) {
     switch(status) {
         case '🏠 가족 찾는 중': return 'bg-green-500';
-        case '🌷 꽃단장 중': return 'bg-yellow-500';
+        case '🌷 가족 맞이 준비중': return 'bg-yellow-500';
         case '🌻 행복한 집으로': return 'bg-blue-500';
         default: return 'bg-slate-500';
     }
