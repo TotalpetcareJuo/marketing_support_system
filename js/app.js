@@ -126,13 +126,29 @@ async function handleLogout() {
 }
 
 function handleFullscreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-            console.error(`Error attempting to enable fullscreen: ${err.message}`);
-        });
+    const doc = document.documentElement;
+    const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+
+    if (!isFullscreen) {
+        if (doc.requestFullscreen) {
+            doc.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable fullscreen: ${err.message}`);
+            });
+        } else if (doc.webkitRequestFullscreen) { /* Safari */
+            doc.webkitRequestFullscreen();
+        } else if (doc.msRequestFullscreen) { /* IE11 */
+            doc.msRequestFullscreen();
+        } else {
+            // iOS Safari, etc. often don't support programmatic fullscreen
+            alert('이 기기/브라우저는 전체화면 모드를 지원하지 않거나, "홈 화면에 추가"를 통해 실행해야 합니다.');
+        }
     } else {
         if (document.exitFullscreen) {
             document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
         }
     }
 }
@@ -144,7 +160,9 @@ function updateFullscreenIcon() {
     const icon = btn.querySelector('i');
     if (!icon) return;
 
-    if (document.fullscreenElement) {
+    const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+
+    if (isFullscreen) {
         icon.setAttribute('data-lucide', 'minimize-2');
         btn.title = '전체화면 종료';
     } else {
