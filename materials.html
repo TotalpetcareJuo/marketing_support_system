@@ -1,227 +1,552 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>주오 세일즈 라이브러리 - 주오컴퍼니</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
-
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f8fafc;
-        }
-
-        .text-juo-orange { color: #FF7A00; }
-        .bg-juo-orange { background-color: #FF7A00; }
-        .border-juo-orange { border-color: #FF7A00; }
-        
-        .custom-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-
-        .category-btn.active {
-            background-color: #FF7A00;
-            color: white;
-            font-weight: 700;
-        }
-        .category-btn:hover:not(.active) {
-            background-color: #fff7ed;
-            color: #FF7A00;
-        }
-    </style>
+    <link rel="stylesheet" href="css/materials.css">
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-slate-50 h-screen overflow-hidden flex flex-col">
 
-    <header class="bg-white border-b border-slate-200 h-16 shrink-0 z-20">
-        <div class="h-full px-6 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition">
+<body class="bg-slate-50 h-screen flex flex-col overflow-hidden">
+
+    <header class="bg-white border-b border-slate-200 shrink-0 z-20">
+        <div class="h-16 px-4 md:px-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button onclick="history.back()"
+                    class="touch-btn flex items-center justify-center hover:bg-slate-100 rounded-xl text-slate-500 transition">
                     <i data-lucide="arrow-left" class="w-6 h-6"></i>
-                </a>
+                </button>
                 <h1 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                     <i data-lucide="library" class="w-5 h-5 text-juo-orange"></i>
-                    주오 세일즈 라이브러리
+                    <span class="hidden sm:inline">주오 세일즈 라이브러리</span>
+                    <span class="sm:hidden">세일즈 자료</span>
                 </h1>
             </div>
-            <div class="text-sm text-slate-400 font-medium hidden md:block">
-                주오컴퍼니 마케팅 지원 시스템
+
+            <div class="flex items-center gap-4">
+                <div id="header-user-info" class="text-sm font-medium text-slate-600 hidden sm:block"></div>
+                <button id="logout-btn"
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold transition text-sm">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">로그아웃</span>
+                </button>
             </div>
-        </div>
+
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
-        
-        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
-            <div class="p-6 border-b border-slate-100">
-                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Categories</h2>
-                <nav class="space-y-2">
-                    <button class="category-btn active w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
-                        <i data-lucide="layout-grid" class="w-4 h-4"></i> 전체 보기
-                    </button>
-                    <button class="category-btn w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
-                        <i data-lucide="heart-handshake" class="w-4 h-4"></i> 입양 상담
-                    </button>
-                    <button class="category-btn w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i> 멤버십/케어
-                    </button>
-                    <button class="category-btn w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
-                        <i data-lucide="book-open" class="w-4 h-4"></i> 양육 가이드
-                    </button>
-                    <button class="category-btn w-full text-left px-4 py-3 rounded-xl text-slate-600 transition flex items-center gap-3">
-                        <i data-lucide="file-text" class="w-4 h-4"></i> 계약 서식
-                    </button>
-                </nav>
+    <main class="flex-1 overflow-y-auto custom-scroll p-4 md:p-6 pb-24 h-full relative">
+
+        <section id="tab-home" class="animate-fade-in pb-10">
+            <div class="mb-8 flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-black text-slate-800">안녕하세요, 주오님!</h2>
+                    <p class="text-slate-500 font-medium">오늘도 성공적인 상담을 응원합니다.</p>
+                </div>
+                <!-- Business Open Badge Removed -->
             </div>
-            <div class="p-6 mt-auto bg-slate-50 border-t border-slate-100">
+
+            <div class="grid grid-cols-2 gap-4 mb-10">
+                <button data-action="go-to-membership"
+                    class="quick-action-btn bg-white py-12 px-6 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center gap-4 group">
+                    <div
+                        class="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center text-blue-500 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-black text-slate-800 text-lg">멤버십 상담</span>
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-tighter">Membership
+                            counseling</span>
+                    </div>
+                </button>
+                <button data-action="go-to-contracts"
+                    class="quick-action-btn bg-white py-12 px-6 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-green-200 transition-all duration-300 flex flex-col items-center gap-4 group">
+                    <div
+                        class="w-20 h-20 bg-green-50 rounded-3xl flex items-center justify-center text-green-500 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300">
+                        <i data-lucide="file-signature" class="w-10 h-10"></i>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-black text-slate-800 text-lg">계약서 작성</span>
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-tighter">e-Contract
+                            tools</span>
+                    </div>
+                </button>
+            </div>
+
+            <div class="mb-8">
+                <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                            <i data-lucide="bell" class="w-6 h-6 text-juo-orange"></i> 주요 공지사항
+                        </h3>
+                        <span class="text-sm text-slate-400 cursor-pointer hover:text-slate-600 font-medium"
+                            onclick="document.querySelector('.nav-tab[data-tab=notices]').click()">전체보기</span>
+                    </div>
+                    <ul id="home-notice-list" class="space-y-4">
+                        <!-- Dynamic Content -->
+                        <div class="p-6 text-center text-slate-400">
+                            <i data-lucide="loader-2" class="w-6 h-6 mx-auto mb-2 animate-spin text-juo-orange"></i>
+                            <p class="text-sm">로딩중...</p>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-counseling"
+            class="hidden animate-fade-in h-[calc(100vh-185px)] md:h-[calc(100vh-210px)] flex flex-col">
+            <!-- Storyboard Header -->
+            <div class="flex items-center justify-between mb-4 h-14 shrink-0 px-2">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
-                        <i data-lucide="user" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <div class="text-sm font-bold text-slate-700">담당자 모드</div>
-                        <div class="text-xs text-slate-400">자료 업데이트 가능</div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-800 flex items-center gap-2">
+                        멤버십 상담
+                        <span
+                            class="hidden sm:inline text-xs font-medium text-juo-orange bg-orange-50 px-2 py-1 rounded-lg">Storyboard
+                            Mode</span>
+                    </h2>
+
+                    <!-- Integrated Drawing Toolbar -->
+                    <div class="relative flex items-center gap-1 bg-slate-100 p-1 rounded-2xl">
+                        <button id="sb-tool-pen"
+                            class="tool-btn active w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center bg-white text-slate-900 shadow-sm active:scale-95 transition">
+                            <i data-lucide="pen-tool" class="w-4 h-4 md:w-5 md:h-5"></i>
+                        </button>
+                        <button id="sb-tool-eraser"
+                            class="tool-btn w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center text-slate-400 hover:bg-white/50 active:scale-95 transition">
+                            <i data-lucide="eraser" class="w-4 h-4 md:w-5 md:h-5"></i>
+                        </button>
+                        <div class="w-px h-6 bg-slate-200 mx-1"></div>
+                        <button id="sb-tool-clear"
+                            class="tool-btn w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center text-red-400 hover:bg-red-50 transition">
+                            <i data-lucide="trash-2" class="w-4 h-4 md:w-5 md:h-5"></i>
+                        </button>
+
+                        <!-- Pen Settings Popover -->
+                        <div id="sb-pen-settings"
+                            class="hidden absolute top-full mt-2 left-0 bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-5 z-50 w-64 animate-fade-in">
+                            <div class="mb-4">
+                                <label
+                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">Color</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="color-swatch w-8 h-8 rounded-full border-2 border-transparent active"
+                                        data-color="#FF7A00" style="background-color: #FF7A00;"></button>
+                                    <button class="color-swatch w-8 h-8 rounded-full border-2 border-transparent"
+                                        data-color="#000000" style="background-color: #000000;"></button>
+                                    <button class="color-swatch w-8 h-8 rounded-full border-2 border-transparent"
+                                        data-color="#3B82F6" style="background-color: #3B82F6;"></button>
+                                    <button class="color-swatch w-8 h-8 rounded-full border-2 border-transparent"
+                                        data-color="#EF4444" style="background-color: #EF4444;"></button>
+                                    <button class="color-swatch w-8 h-8 rounded-full border-2 border-transparent"
+                                        data-color="#10B981" style="background-color: #10B981;"></button>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label
+                                        class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Thickness</label>
+                                    <span id="pen-width-value" class="text-xs font-bold text-slate-600">3px</span>
+                                </div>
+                                <input type="range" id="pen-width-slider" min="1" max="20" value="3"
+                                    class="w-full accent-juo-orange">
+                            </div>
+                        </div>
+
+                        <!-- Eraser Settings Popover -->
+                        <div id="sb-eraser-settings"
+                            class="hidden absolute top-full mt-2 left-10 md:left-12 bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-5 z-50 w-64 animate-fade-in">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Eraser
+                                    Size</label>
+                                <span id="eraser-size-value" class="text-xs font-bold text-slate-600">20px</span>
+                            </div>
+                            <input type="range" id="eraser-size-slider" min="5" max="100" value="20"
+                                class="w-full accent-slate-400">
+                        </div>
                     </div>
                 </div>
-            </div>
-        </aside>
 
-        <main class="flex-1 bg-slate-50/50 p-8 overflow-y-auto custom-scroll">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-black text-slate-800">전체 자료 <span class="text-slate-400 font-normal text-lg ml-2">(8)</span></h2>
-                <div class="flex gap-3">
-                    <div class="relative">
-                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                        <input type="text" placeholder="자료 검색..." class="pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-juo-orange/20 focus:border-juo-orange text-sm w-64">
-                    </div>
-                    <button class="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-500">
-                        <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+                <!-- In-Tab Navigation -->
+                <div class="flex items-center gap-2">
+                    <button id="sb-prev-btn"
+                        class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
                     </button>
-                    <button class="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-500">
-                        <i data-lucide="layout" class="w-4 h-4"></i>
+                    <div id="sb-page-indicators" class="flex gap-1 px-2">
+                        <!-- Dots injected by JS -->
+                    </div>
+                    <button id="sb-next-btn"
+                        class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition">
+                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                
-                <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
-                    <div class="aspect-video bg-orange-50 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-orange-100 transition">
-                        <i data-lucide="file-bar-chart-2" class="w-10 h-10 text-juo-orange mb-1"></i>
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">미리보기</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-start justify-between mb-1">
-                            <span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded uppercase tracking-wide">입양 상담</span>
-                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 mb-1 truncate">2024년 상반기 분양 가이드</h3>
-                        <p class="text-xs text-slate-400">PDF • 2.4 MB • 2024.01.15</p>
-                    </div>
-                </div>
+            <!-- Storyboard Container (Fill Remaining Height) -->
+            <div id="storyboard-container"
+                class="relative w-full flex-1 bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden shadow-inner flex items-center justify-center">
 
-                <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
-                    <div class="aspect-video bg-blue-50 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-blue-100 transition">
-                        <i data-lucide="shield" class="w-10 h-10 text-blue-500 mb-1"></i>
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">미리보기</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-start justify-between mb-1">
-                            <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wide">멤버십</span>
-                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 mb-1 truncate">주오 멤버십 혜택 상세(VIP)</h3>
-                        <p class="text-xs text-slate-400">PDF • 1.1 MB • 2024.01.20</p>
-                    </div>
-                </div>
+                <!-- Layer 1: Scenario Image -->
+                <img id="sb-image"
+                    class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none p-4" src=""
+                    alt="Counseling Scenario">
 
-                <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
-                    <div class="aspect-video bg-green-50 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-green-100 transition">
-                        <i data-lucide="book-open" class="w-10 h-10 text-green-500 mb-1"></i>
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">미리보기</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-start justify-between mb-1">
-                            <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded uppercase tracking-wide">양육 가이드</span>
-                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 mb-1 truncate">초보 견주를 위한 첫 2주 케어</h3>
-                        <p class="text-xs text-slate-400">PPTX • 5.8 MB • 2023.12.10</p>
-                    </div>
-                </div>
+                <!-- Layer 2: Drawing Canvas -->
+                <canvas id="sb-canvas" class="absolute inset-0 w-full h-full touch-none cursor-crosshair"></canvas>
+            </div>
+        </section>
 
-                 <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
-                    <div class="aspect-video bg-slate-100 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-slate-200 transition">
-                        <i data-lucide="image" class="w-10 h-10 text-slate-400 mb-1"></i>
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">확대보기</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-start justify-between mb-1">
-                            <span class="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded uppercase tracking-wide">기타</span>
-                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 mb-1 truncate">매장 홍보용 이미지 소스</h3>
-                        <p class="text-xs text-slate-400">ZIP • 24.5 MB • 2023.11.05</p>
-                    </div>
+        <section id="tab-tools" class="hidden animate-fade-in">
+            <div class="mb-8 text-center py-10">
+                <div
+                    class="w-20 h-20 bg-orange-50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-juo-orange">
+                    <i data-lucide="sparkles" class="w-10 h-10"></i>
                 </div>
-
-                 <div class="group bg-white rounded-2xl p-4 border border-slate-200 hover:shadow-lg hover:border-juo-orange/30 transition-all cursor-pointer">
-                    <div class="aspect-video bg-purple-50 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-purple-100 transition">
-                        <i data-lucide="play-circle" class="w-10 h-10 text-purple-500 mb-1"></i>
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                            <span class="bg-white px-3 py-1 rounded-full text-xs font-bold text-slate-700 shadow-sm">재생하기</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-start justify-between mb-1">
-                            <span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded uppercase tracking-wide">교육 영상</span>
-                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300 hover:text-slate-600"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 mb-1 truncate">배변 훈련 교육 영상 (15분)</h3>
-                        <p class="text-xs text-slate-400">MP4 • 120 MB • 2024.01.02</p>
-                    </div>
-                </div>
-
+                <h2 class="text-2xl font-black text-slate-800 mb-2">스마트 세일즈 툴</h2>
+                <p class="text-slate-500">대화의 물꼬를 트는 재미있는 도구들</p>
             </div>
 
-        </main>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div
+                    class="bg-white p-6 rounded-3xl border border-slate-200 hover:border-juo-orange/30 transition shadow-sm group cursor-pointer">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div
+                            class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition">
+                            <i data-lucide="info" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">반려동물 이름 짓기</h4>
+                            <p class="text-xs text-slate-400">테마별로 추천하는 예쁜 이름들</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl space-y-3">
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar">
+                            <span
+                                class="bg-white px-3 py-1.5 rounded-lg text-sm text-slate-600 border border-slate-100">#순우리말</span>
+                            <span
+                                class="bg-white px-3 py-1.5 rounded-lg text-sm text-slate-600 border border-slate-100">#영어이름</span>
+                            <span
+                                class="bg-white px-3 py-1.5 rounded-lg text-sm text-slate-600 border border-slate-100">#먹거리</span>
+                        </div>
+                    </div>
+                </div>
 
+                <div
+                    class="bg-white p-6 rounded-3xl border border-slate-200 hover:border-juo-orange/30 transition shadow-sm group cursor-pointer">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div
+                            class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-500 group-hover:bg-green-100 transition">
+                            <i data-lucide="dog" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">품종 궁합 테스트</h4>
+                            <p class="text-xs text-slate-400">생활 패턴에 딱 맞는 아이를 찾아드려요</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl">
+                        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                            <div class="bg-green-500 h-full w-1/3"></div>
+                        </div>
+                        <div class="flex justify-between mt-2">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase">준비 단계</span>
+                            <span class="text-[10px] text-green-600 font-bold">GO!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-contracts" class="hidden animate-fade-in">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800">계약 관리</h2>
+                    <p class="text-sm text-slate-500">효율적인 계약 관리와 전자 서명 시스템</p>
+                </div>
+                <button
+                    class="bg-juo-orange text-white px-4 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-orange-100 flex items-center gap-2 active:scale-95 transition">
+                    <i data-lucide="plus" class="w-5 h-5"></i> 새 계약 작성
+                </button>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">최근 계약 목록</div>
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4 text-slate-400"></i>
+                </div>
+                <div class="divide-y divide-slate-50">
+                    <div
+                        class="p-4 flex items-center justify-between group cursor-pointer hover:bg-slate-50/50 transition">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
+                                <i data-lucide="file-check" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-slate-700">C20240210-001</div>
+                                <div class="text-xs text-slate-400">고객명: 김주오 • 폼피츠</div>
+                            </div>
+                        </div>
+                        <span
+                            class="px-2 py-1 rounded-lg bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-tight">계약
+                            완료</span>
+                    </div>
+                    <div
+                        class="p-4 flex items-center justify-between group cursor-pointer hover:bg-slate-50/50 transition">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
+                                <i data-lucide="file-signature" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-slate-700">C20240210-002</div>
+                                <div class="text-xs text-slate-400">고객명: 이주오 • 벤갈</div>
+                            </div>
+                        </div>
+                        <span
+                            class="px-2 py-1 rounded-lg bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-tight">서명
+                            대기</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-notices" class="hidden animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-black text-slate-800">공지사항</h2>
+                <p class="text-sm text-slate-500">주오의 새로운 소식을 확인하세요.</p>
+            </div>
+            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                <div id="notice-list" class="divide-y divide-slate-100">
+                    <!-- Dynamic Content -->
+                    <div class="p-12 text-center text-slate-400">
+                        <i data-lucide="loader-2" class="w-8 h-8 mx-auto mb-4 animate-spin text-juo-orange"></i>
+                        <p>공지사항을 불러오는 중입니다...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-admin" class="hidden animate-fade-in">
+            <div class="mb-8 p-4">
+                <h2 class="text-2xl font-black text-slate-800">시스템 관리</h2>
+                <p class="text-sm text-slate-500 font-medium">전체 매장 및 자료 관리 (최고 관리자 전용)</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center text-juo-orange">
+                            <i data-lucide="store" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-700">전체 매장</h4>
+                    </div>
+                    <div class="text-3xl font-black text-slate-800">24</div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500">
+                            <i data-lucide="files" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-700">자료 관리</h4>
+                    </div>
+                    <div class="text-3xl font-black text-slate-800">156</div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-green-500">
+                            <i data-lucide="file-signature" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-700">계약 통계</h4>
+                    </div>
+                    <div class="text-3xl font-black text-slate-800">342</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-30 safe-area-bottom">
+        <div class="flex justify-around items-center h-16 md:h-20 max-w-4xl mx-auto">
+            <button class="nav-tab active flex-1 flex flex-col items-center justify-center gap-1 h-full touch-btn"
+                data-tab="home">
+                <div class="nav-icon w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center transition">
+                    <i data-lucide="home" class="w-5 h-5 md:w-6 md:h-6"></i>
+                </div>
+                <span class="text-[10px] md:text-xs font-medium">홈</span>
+            </button>
+
+            <button class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full touch-btn"
+                data-tab="counseling">
+                <div class="nav-icon w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center transition">
+                    <i data-lucide="users" class="w-5 h-5 md:w-6 md:h-6"></i>
+                </div>
+                <span class="text-[10px] md:text-xs font-medium">멤버십 상담</span>
+            </button>
+
+            <button class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full touch-btn"
+                data-tab="tools">
+                <div class="nav-icon w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center transition">
+                    <i data-lucide="sparkles" class="w-5 h-5 md:w-6 md:h-6"></i>
+                </div>
+                <span class="text-[10px] md:text-xs font-medium">스마트 툴</span>
+            </button>
+
+            <button class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full touch-btn"
+                data-tab="contracts">
+                <div class="nav-icon w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center transition">
+                    <i data-lucide="file-signature" class="w-5 h-5 md:w-6 md:h-6"></i>
+                </div>
+                <span class="text-[10px] md:text-xs font-medium">계약 관리</span>
+            </button>
+
+            <button class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full touch-btn"
+                data-tab="notices">
+                <div class="nav-icon w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center transition">
+                    <i data-lucide="bell" class="w-5 h-5 md:w-6 md:h-6"></i>
+                </div>
+                <span class="text-[10px] md:text-xs font-medium">공지사항</span>
+            </button>
+
+            <!-- Admin Tab (Hidden by default) -->
+            <button id="nav-tab-admin"
+                class="nav-tab hidden flex-1 flex flex-col items-center justify-center gap-1 h-full touch-btn"
+                data-tab="admin">
+                <div class="nav-icon w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center transition">
+                    <i data-lucide="settings" class="w-5 h-5 md:w-6 md:h-6"></i>
+                </div>
+                <span class="text-[10px] md:text-xs font-medium">관리자</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="viewer-overlay" class="viewer-overlay fixed inset-0 bg-slate-900/95 z-50 hidden flex-col">
+        <div class="flex items-center justify-between px-4 md:px-6 h-16 shrink-0">
+            <div class="flex items-center gap-3 text-white">
+                <span id="viewer-category" class="text-xs font-bold px-2 py-1 rounded bg-white/20">카테고리</span>
+                <h3 id="viewer-title" class="font-bold text-lg truncate max-w-[200px] md:max-w-md">자료 제목</h3>
+            </div>
+            <button id="viewer-close"
+                class="touch-btn w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden">
+            <button id="prev-btn"
+                class="touch-btn hidden md:flex absolute left-4 w-12 h-12 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition z-10">
+                <i data-lucide="chevron-left" class="w-8 h-8"></i>
+            </button>
+
+            <div id="viewer-content"
+                class="relative w-full h-full max-w-4xl max-h-[80vh] bg-white rounded-2xl flex items-center justify-center animate-fade-in overflow-hidden shadow-2xl">
+                <!-- Layer 1: Scenario Image -->
+                <img id="scenario-image"
+                    class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none" src=""
+                    alt="Scenario Page">
+
+                <!-- Layer 2: Drawing Canvas -->
+                <canvas id="consult-canvas" class="absolute inset-0 w-full h-full touch-none cursor-crosshair"></canvas>
+
+                <!-- Floating Toolbar -->
+                <div
+                    class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md px-6 py-3 rounded-full flex items-center gap-4 shadow-xl z-20 border border-white/10">
+                    <button id="tool-pen"
+                        class="tool-btn w-10 h-10 rounded-full flex items-center justify-center bg-white text-slate-900 shadow-lg active:scale-95 transition">
+                        <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                    </button>
+                    <button id="tool-eraser"
+                        class="tool-btn w-10 h-10 rounded-full flex items-center justify-center bg-white/10 text-white hover:bg-white/20 active:scale-95 transition">
+                        <i data-lucide="eraser" class="w-5 h-5"></i>
+                    </button>
+                    <div class="w-px h-6 bg-white/20"></div>
+                    <button id="tool-clear"
+                        class="tool-btn w-10 h-10 rounded-full flex items-center justify-center bg-red-500/20 text-red-400 hover:bg-red-500/30 active:scale-95 transition">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button id="next-btn"
+                class="touch-btn hidden md:flex absolute right-4 w-12 h-12 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition z-10">
+                <i data-lucide="chevron-right" class="w-8 h-8"></i>
+            </button>
+        </div>
+
+        <div class="h-16 shrink-0 flex items-center justify-center gap-2">
+            <div class="flex gap-2" id="page-indicators"></div>
+        </div>
     </div>
 
-    <script>
-        lucide.createIcons();
-        
-        const cards = document.querySelectorAll('.group');
-        cards.forEach(card => {
-            card.addEventListener('click', () => {
-                alert('자료 뷰어 기능을 준비 중입니다.\n(실제 구현 시 PDF 뷰어나 이미지 갤러리가 열립니다)');
-            });
-        });
+    <div id="login-overlay"
+        class="fixed inset-0 bg-slate-900 z-[100] hidden flex-col items-center justify-center p-4 animate-fade-in">
+        <div class="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl">
+            <div class="text-center mb-8">
+                <div
+                    class="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-juo-orange">
+                    <i data-lucide="lock" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-800 mb-2">로그인</h2>
+                <p class="text-slate-500 text-sm">JUO 마케팅 지원 시스템에 접속하세요</p>
+            </div>
 
-        const categoryBtns = document.querySelectorAll('.category-btn');
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                categoryBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            });
-        });
-    </script>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1 ml-1">이메일</label>
+                    <input type="email" id="login-email" required
+                        class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-juo-orange focus:ring-2 focus:ring-orange-100 outline-none transition font-medium"
+                        placeholder="example@juo.co.kr">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1 ml-1">비밀번호</label>
+                    <input type="password" id="login-password" required
+                        class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-juo-orange focus:ring-2 focus:ring-orange-100 outline-none transition font-medium"
+                        placeholder="••••••••">
+                </div>
+
+                <div id="login-error"
+                    class="hidden p-3 bg-red-50 text-red-500 text-xs font-bold rounded-xl text-center">
+                    로그인 정보가 올바르지 않습니다.
+                </div>
+
+                <button type="submit"
+                    class="w-full py-4 bg-juo-orange text-white rounded-xl font-bold hover:bg-orange-600 active:scale-95 transition shadow-lg shadow-orange-200">
+                    로그인하기
+                </button>
+            </form>
+
+            <p class="mt-6 text-center text-xs text-slate-400">
+                &copy; JUO COMPANY. All rights reserved.
+            </p>
+        </div>
+    </div>
+
+    <!-- Notice Detail Modal -->
+    <div id="notice-modal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white rounded-3xl w-full max-w-2xl max-h-[80vh] overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300">
+            <!-- Header -->
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <div class="flex items-center gap-3">
+                    <span id="notice-modal-badge" class="px-2 py-1 rounded text-xs font-bold"></span>
+                    <span id="notice-modal-date" class="text-sm text-slate-400"></span>
+                </div>
+                <button id="notice-modal-close" class="p-2 hover:bg-slate-200 rounded-full transition">
+                    <i data-lucide="x" class="w-5 h-5 text-slate-500"></i>
+                </button>
+            </div>
+            <!-- Content -->
+            <div class="p-8 overflow-y-auto max-h-[calc(80vh-80px)]">
+                <h2 id="notice-modal-title" class="text-2xl font-bold text-slate-800 mb-6 leading-tight"></h2>
+                <div id="notice-modal-content" class="text-slate-600 leading-relaxed whitespace-pre-line text-lg"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
 </body>
+
 </html>
