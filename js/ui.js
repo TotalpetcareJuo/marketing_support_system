@@ -1,4 +1,4 @@
-import { getMaterials, getColorMap, getMaterialsByCategory, getScenarioById, getContracts, getNotices } from './store.js';
+import { getMaterials, getColorMap, getMaterialsByCategory, getScenarioById, getContracts, getNotices, saveContract, generateContractId, getUserProfile } from './store.js';
 import { DrawingManager } from './drawing.js';
 
 let currentMaterialIndex = 0;
@@ -8,6 +8,12 @@ let colorMap = {};
 let drawingManager = null;
 let currentScenario = null;
 let currentScenarioPage = 0;
+
+// Contract Form State
+let currentContractStep = 1;
+let contractSignatureManager = null;
+let currentContractId = null;
+let currentContractNumber = null;
 
 export const AppState = {
     user: {
@@ -23,7 +29,12 @@ const elements = {
     viewerCategory: () => document.getElementById('viewer-category'),
     viewerTitle: () => document.getElementById('viewer-title'),
     viewerContent: () => document.getElementById('viewer-content'),
-    pageIndicators: () => document.getElementById('page-indicators')
+    pageIndicators: () => document.getElementById('page-indicators'),
+    // Contract Elements
+    contractListView: () => document.getElementById('contracts-list-view'),
+    contractFormView: () => document.getElementById('contract-form-view'),
+    contractForm: () => document.getElementById('contract-form'),
+    stepProgressBar: () => document.getElementById('step-progress-bar')
 };
 
 export async function initData() {
@@ -37,6 +48,430 @@ export async function initData() {
         renderNotices(),
         renderHomeNotices()
     ]);
+
+    // Initialize Contract Form UI
+    initContractForm();
+}
+
+export function initContractForm() {
+    const btnNew = document.getElementById('btn-new-contract');
+    const btnClose = document.getElementById('btn-close-contract');
+    const btnNext = document.getElementById('btn-next-step');
+    const btnPrev = document.getElementById('btn-prev-step');
+    const btnSave = document.getElementById('btn-save-contract');
+    const btnClearSig = document.getElementById('btn-clear-signature');
+
+    if (btnNew) btnNew.addEventListener('click', () => openContractForm('create'));
+    if (btnClose) btnClose.addEventListener('click', closeContractForm);
+    if (btnNext) btnNext.addEventListener('click', handleNextStep);
+    if (btnPrev) btnPrev.addEventListener('click', handlePrevStep);
+    if (btnSave) btnSave.addEventListener('click', saveContractForm);
+
+    if (btnClearSig) {
+        btnClearSig.addEventListener('click', () => {
+            if (contractSignatureManager) contractSignatureManager.clear();
+        });
+    }
+
+    // Preview buttons
+    const btnPrint = document.getElementById('btn-print-contract');
+    const btnClosePreview = document.getElementById('btn-close-preview');
+    if (btnPrint) btnPrint.addEventListener('click', () => {
+        document.body.classList.add('printing');
+        setTimeout(() => {
+            window.print();
+            document.body.classList.remove('printing');
+        }, 100);
+    });
+    if (btnClosePreview) btnClosePreview.addEventListener('click', closeContractPreview);
+}
+
+function showContractPreview(contractData) {
+    const overlay = document.getElementById('contract-preview-overlay');
+    if (!overlay) return;
+
+    // Populate preview fields
+    const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value || '-';
+    };
+
+    // Contract number & date
+    setText('preview-contract-number', `계약번호: ${contractData.contract_number || ''}`);
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+    setText('preview-date', dateStr);
+
+    // Manager Info
+    setText('preview-manager-branch', contractData.manager_branch_name || '');
+    setText('preview-manager-address', contractData.manager_branch_address || '');
+    setText('preview-manager-name', contractData.manager_name || '');
+    setText('preview-manager-phone', contractData.manager_phone || '');
+
+    // Pet Info
+    setText('preview-pet-name', contractData.pet_name || '');
+    setText('preview-pet-species', contractData.pet_species || '');
+    setText('preview-pet-breed', contractData.pet_breed || '');
+    setText('preview-pet-color', contractData.pet_color || '');
+
+    const genderMap = { 'male': '수컷', 'female': '암컷', 'unknown': '미상' };
+    setText('preview-pet-gender', genderMap[contractData.pet_gender] || contractData.pet_gender || '');
+    setText('preview-pet-birthdate', contractData.pet_birthdate || '');
+    setText('preview-pet-intake', contractData.pet_acquisition_date || '');
+
+    // Adopter Info
+    setText('preview-adopter-name', contractData.adopter_name || '');
+    setText('preview-adopter-phone', contractData.adopter_phone || '');
+    setText('preview-adopter-id', contractData.adopter_id_num || '');
+    setText('preview-adopter-address', contractData.adopter_address || '');
+
+    const fee = contractData.adoption_fee;
+    setText('preview-adoption-fee', fee ? `${Number(fee).toLocaleString()}원` : '-');
+
+    // Signer name
+    setText('preview-signer-name', contractData.adopter_name || '');
+
+    // Signature image
+    const sigImg = document.getElementById('preview-signature-img');
+    if (sigImg && contractData.signature_url) {
+        sigImg.src = contractData.signature_url;
+        sigImg.style.display = 'block';
+    } else if (sigImg) {
+        sigImg.style.display = 'none';
+    }
+
+    // Show overlay
+    overlay.classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeContractPreview() {
+    const overlay = document.getElementById('contract-preview-overlay');
+    if (overlay) overlay.classList.add('hidden');
+    closeContractForm();
+}
+
+export async function openContractForm(mode = 'create', data = null) {
+    const listView = elements.contractListView();
+    const formView = elements.contractFormView();
+    const formTitle = document.getElementById('contract-form-title');
+    const form = elements.contractForm();
+    const saveBtn = document.getElementById('btn-save-contract');
+
+    if (listView) listView.classList.add('hidden');
+    if (formView) {
+        formView.classList.remove('hidden');
+        formView.classList.add('flex');
+    }
+
+    // Reset State
+    currentContractStep = 1;
+    if (form) form.reset();
+
+    // Reset Readonly/Disabled
+    Array.from(form.elements).forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+            el.disabled = false;
+            el.readOnly = false;
+        }
+    });
+
+    if (mode === 'create') {
+        currentContractId = null;
+        formTitle.textContent = '새 계약서 작성';
+        saveBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4 inline mr-1"></i> 서명 및 계약 완료';
+
+        // Auto-fill Adoption Date with today
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = form.querySelector('[name="pet_acquisition_date"]');
+        if (dateInput) dateInput.value = today;
+
+        // Auto-fill Manager Profile if available
+        if (AppState.user && AppState.user.id) {
+            getUserProfile(AppState.user.id).then(profile => {
+                if (profile) {
+                    const managerFields = {
+                        'manager_name': profile.user_name || AppState.user.name,
+                        'manager_branch_name': profile.branch_name || AppState.user.branch_name,
+                        'manager_branch_address': profile.branch_address || '',
+                        'manager_phone': profile.phone_number || ''
+                    };
+                    Object.entries(managerFields).forEach(([name, value]) => {
+                        const input = form.querySelector(`[name="${name}"]`);
+                        if (input && !input.value) input.value = value;
+                    });
+                }
+            });
+        }
+
+    } else {
+        currentContractId = data.id;
+        currentContractNumber = data.contract_number;
+        formTitle.textContent = '계약서 상세 (수정)';
+        saveBtn.innerHTML = '<i data-lucide="save" class="w-4 h-4 inline mr-1"></i> 수정 저장';
+
+        // Populate Form
+        // Map DB columns to Form fields
+        const mapping = {
+            // DB Column : Form Field Name
+            'adopter_resident_no': 'adopter_id_num',
+            'pet_intake_date': 'pet_acquisition_date',
+            'pet_reg_number': 'pet_microchip_no',
+            'manager_name': 'manager_name',
+            'manager_phone': 'manager_phone',
+            'manager_branch_name': 'manager_branch_name',
+            'manager_branch_address': 'manager_branch_address'
+            // Others match directly (pet_name, pet_species, etc.)
+        };
+
+        const formData = { ...data };
+        // Apply mapping for mismatched keys
+        Object.entries(mapping).forEach(([dbKey, formKey]) => {
+            if (data[dbKey] !== undefined) {
+                formData[formKey] = data[dbKey];
+            }
+        });
+
+        Object.keys(formData).forEach(key => {
+            const input = form.querySelector(`[name="${key}"]`);
+            if (input) {
+                if (input.type === 'radio') {
+                    const radio = form.querySelector(`[name="${key}"][value="${formData[key]}"]`);
+                    if (radio) radio.checked = true;
+                } else if (input.type === 'checkbox') {
+                    // Checkbox handling if needed
+                } else {
+                    input.value = formData[key] || '';
+                }
+            }
+        });
+
+        // Set Readonly for non-staff fields
+        Array.from(form.elements).forEach(el => {
+            if (el.name !== 'staff_memo' && el.name !== 'status' && !el.classList.contains('admin-editable')) {
+                el.disabled = true;
+                // For better UI, we might want to make them look readonly but readable
+            }
+        });
+
+        // Check "Agree" checkbox automatically for view mode
+        const agree = document.getElementById('contract-agree');
+        if (agree) agree.checked = true;
+
+        // TODO: Load Signature Image if exists
+        // Since we only have a canvas, we can't easily "edit" the signature image on canvas without complex logic.
+        // For now, we might just show it or leave it empty if they want to re-sign.
+        // Or we block Step 3 signature if already signed.
+    }
+
+    updateContractStepUI();
+}
+
+export function closeContractForm() {
+    const listView = elements.contractListView();
+    const formView = elements.contractFormView();
+
+    if (formView) {
+        formView.classList.add('hidden');
+        formView.classList.remove('flex');
+    }
+    if (listView) listView.classList.remove('hidden');
+
+    // Reset Signature Manager
+    contractSignatureManager = null;
+    currentContractId = null;
+}
+
+async function handleNextStep() {
+    const currentStepDiv = document.querySelector(`.form-step[data-step="${currentContractStep}"]`);
+    if (!currentStepDiv) return;
+
+    // Validate only fields in the current step
+    const inputs = currentStepDiv.querySelectorAll('input, select, textarea');
+    let isValid = true;
+
+    for (const input of inputs) {
+        if (!input.checkValidity()) {
+            input.reportValidity();
+            isValid = false;
+            break; // Stop at first invalid field to show popup
+        }
+    }
+
+    if (!isValid) return;
+
+    if (currentContractStep < 4) {
+        currentContractStep++;
+        updateContractStepUI();
+    }
+}
+
+function handlePrevStep() {
+    if (currentContractStep > 1) {
+        currentContractStep--;
+        updateContractStepUI();
+    }
+}
+
+async function saveContractForm() {
+    const form = elements.contractForm();
+    // If disabled (edit mode), checkValidity might skip them or fail?
+    // Disabled fields are not validated.
+    // We only need to validate staff_memo if it's the only thing editable.
+
+    // If creation, validate everything.
+    // If edit, validated inputs are disabled, so they are fine.
+
+    /*
+    const agree = document.getElementById('contract-agree');
+    if (!agree.checked) {
+        alert('약관에 동의해야 합니다.');
+        return;
+    }
+    */
+    // In edit mode, agreement is already checked/disabled.
+
+    // Capture Signature
+    const canvas = document.getElementById('signature-canvas');
+    let signatureUrl = null;
+
+    if (contractSignatureManager) {
+        signatureUrl = canvas.toDataURL();
+    }
+
+    console.log('Captured Signature URL Length:', signatureUrl ? signatureUrl.length : 'null');
+
+    const formData = new FormData(form);
+    const contractData = Object.fromEntries(formData.entries());
+
+    // Merge manual fields
+    if (signatureUrl) {
+        contractData.signature_url = signatureUrl;
+    }
+
+    contractData.branch_name = AppState.user.branch_name; // Ensure branch is set
+
+    if (currentContractId) {
+        contractData.id = currentContractId;
+        if (currentContractNumber) {
+            contractData.contract_number = currentContractNumber;
+        }
+        contractData.updated_at = new Date();
+    } else {
+        // New Contract
+        contractData.contract_number = await generateContractId();
+        contractData.status = 'completed';
+        contractData.created_at = new Date();
+    }
+
+    // Determine message
+    const modeText = currentContractId ? '수정' : '저장';
+
+    // Show Loading
+    const btnSave = document.getElementById('btn-save-contract');
+    const originalText = btnSave.innerHTML;
+    btnSave.disabled = true;
+    btnSave.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin inline mr-1"></i> ${modeText} 중...`;
+
+    const result = await saveContract(contractData);
+
+    if (result.success) {
+        // Show contract preview instead of closing
+        showContractPreview(contractData);
+        renderContracts(AppState.user); // Refresh list in background
+    } else {
+        console.error('Save failed:', result.message);
+        alert(`${modeText}에 실패했습니다: ${result.message || '알 수 없는 오류'}`);
+    }
+
+    btnSave.disabled = false;
+    btnSave.innerHTML = originalText;
+    lucide.createIcons();
+}
+
+function updateContractStepUI() {
+    // 1. Progress Bar
+    const progressBar = elements.stepProgressBar();
+    if (progressBar) {
+        const percentage = ((currentContractStep - 1) / 3) * 100;
+        progressBar.style.width = `${percentage}%`;
+    }
+
+    // 2. Step Circles
+    document.querySelectorAll('.step-item').forEach(item => {
+        const step = parseInt(item.dataset.step);
+        const circle = item.querySelector('.step-circle');
+        const label = item.querySelector('.step-label');
+
+        if (step < currentContractStep) {
+            // Completed
+            item.classList.add('active');
+            circle.classList.remove('bg-slate-100', 'text-slate-400', 'border-slate-300');
+            circle.classList.add('bg-juo-orange', 'text-white', 'border-juo-orange');
+            circle.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
+            label.classList.add('text-juo-orange');
+        } else if (step === currentContractStep) {
+            // Current
+            item.classList.add('active');
+            circle.classList.remove('bg-slate-100', 'text-slate-400', 'border-slate-300', 'bg-juo-orange', 'text-white', 'border-juo-orange');
+            circle.classList.add('bg-white', 'text-juo-orange', 'border-juo-orange', 'ring-4', 'ring-orange-100');
+            circle.textContent = step;
+            label.classList.add('text-juo-orange');
+        } else {
+            // Future
+            item.classList.remove('active');
+            circle.className = 'w-8 h-8 rounded-full bg-slate-100 border-2 border-slate-300 text-slate-400 flex items-center justify-center text-xs font-bold transition-all duration-300 step-circle';
+            circle.textContent = step;
+            label.className = 'text-[10px] font-bold text-slate-400 uppercase step-label';
+        }
+    });
+
+    // 3. Form Content Visibility
+    document.querySelectorAll('.form-step').forEach(stepDiv => {
+        if (parseInt(stepDiv.dataset.step) === currentContractStep) {
+            stepDiv.classList.remove('hidden');
+        } else {
+            stepDiv.classList.add('hidden');
+        }
+    });
+
+    // 4. Buttons
+    const btnNext = document.getElementById('btn-next-step');
+    const btnPrev = document.getElementById('btn-prev-step');
+    const btnSave = document.getElementById('btn-save-contract');
+
+    if (currentContractStep === 1) {
+        btnPrev.classList.add('hidden');
+        btnNext.classList.remove('hidden');
+        btnSave.classList.add('hidden');
+    } else if (currentContractStep === 3) {
+        btnPrev.classList.remove('hidden');
+        btnNext.classList.remove('hidden');
+        btnSave.classList.add('hidden');
+    } else if (currentContractStep === 4) {
+        btnPrev.classList.remove('hidden');
+        btnNext.classList.add('hidden');
+        btnSave.classList.remove('hidden');
+
+        // Initialize Signature Canvas if needed
+        initSignatureCanvas();
+    }
+
+    lucide.createIcons();
+}
+
+function initSignatureCanvas() {
+    const canvas = document.getElementById('signature-canvas');
+    if (canvas && !contractSignatureManager) {
+        // Delay slightly to ensure layout is visible directly
+        setTimeout(() => {
+            contractSignatureManager = new DrawingManager(canvas);
+            contractSignatureManager.color = '#000000'; // Black pen for signature
+            contractSignatureManager.lineWidth = 3;
+        }, 100);
+    } else if (contractSignatureManager) {
+        contractSignatureManager.resize();
+    }
 }
 
 export async function renderMaterials(category = 'all') {
@@ -495,7 +930,7 @@ export async function renderContracts(user) {
         const item = document.createElement('div');
         item.className = 'p-4 flex items-center justify-between group cursor-pointer hover:bg-slate-50/50 transition';
 
-        const isCompleted = contract.status === 'COMPLETED';
+        const isCompleted = contract.status === 'COMPLETED' || contract.status === 'completed';
         const statusLabel = isCompleted ? '계약 완료' : '서명 대기';
         const statusClass = isCompleted ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600';
 
@@ -505,12 +940,14 @@ export async function renderContracts(user) {
                     <i data-lucide="${isCompleted ? 'file-check' : 'file-signature'}" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <div class="font-bold text-slate-700">${contract.id}</div>
-                    <div class="text-xs text-slate-400">고객: ${contract.customer} • ${contract.pet} • <span class="text-juo-orange">${contract.branch}</span></div>
+                    <div class="font-bold text-slate-700">${contract.contract_number || contract.id}</div>
+                    <div class="text-xs text-slate-400">고객: ${contract.adopter_name || contract.customer} • ${contract.pet_name || contract.pet} • <span class="text-juo-orange">${contract.branch_name || contract.branch}</span></div>
                 </div>
             </div>
             <span class="px-2 py-1 rounded-lg ${statusClass} text-[10px] font-black uppercase tracking-tight">${statusLabel}</span>
         `;
+
+        item.addEventListener('click', () => openContractForm('edit', contract));
         listContainer.appendChild(item);
     });
 

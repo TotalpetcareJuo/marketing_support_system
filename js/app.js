@@ -47,6 +47,7 @@ async function handleAuth() {
 
             if (profile) {
                 applyPermissions({
+                    id: user.id,
                     role: profile.role || 'store',
                     branch_name: profile.branch_name || 'Unknown Branch',
                     name: profile.user_name || user.email.split('@')[0]
@@ -55,6 +56,7 @@ async function handleAuth() {
                 // Profile missing fallback
                 console.warn('Profile not found for user:', user.id);
                 applyPermissions({
+                    id: user.id,
                     role: 'store',
                     branch_name: 'Unknown Branch',
                     name: user.email ? user.email.split('@')[0] : 'User'
@@ -128,7 +130,7 @@ async function fetchProfile(userId) {
         if (!supabase) return null;
         const { data, error } = await supabase
             .from('profiles')
-            .select('role, branch_name, user_name')
+            .select('*')
             .eq('id', userId)
             .single();
 

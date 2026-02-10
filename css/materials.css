@@ -189,3 +189,57 @@ input[type="range"]::-webkit-slider-thumb {
         gap: 12px;
     }
 }
+
+/* ===== Print Styles ===== */
+@media print {
+
+    /* Hide everything by default */
+    body.printing>* {
+        display: none !important;
+    }
+
+    /* Show main so the nested overlay can render */
+    body.printing>main {
+        display: block !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        height: auto !important;
+    }
+
+    /* Hide all main children except the preview */
+    body.printing>main>*:not(#contract-preview-overlay) {
+        display: none !important;
+    }
+
+    /* Show the preview overlay properly */
+    body.printing #contract-preview-overlay {
+        display: block !important;
+        position: static !important;
+        background: none !important;
+        overflow: visible !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    body.printing #contract-preview-overlay>div {
+        padding: 0 !important;
+        min-height: auto !important;
+    }
+
+    body.printing #contract-preview-paper {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        min-height: auto !important;
+    }
+
+    .print\:hidden {
+        display: none !important;
+    }
+
+    @page {
+        size: A4;
+        margin: 10mm;
+    }
+}
