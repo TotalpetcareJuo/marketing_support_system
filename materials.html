@@ -286,6 +286,133 @@
                 </div>
             </div>
 
+            <!-- Detail View (Read-only for completed contracts) -->
+            <div id="contract-detail-view" class="hidden flex-col h-full">
+                <div class="flex items-center justify-between mb-6 shrink-0">
+                    <div class="flex items-center gap-3">
+                        <button id="btn-back-to-list"
+                            class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-200 text-slate-400 transition">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-xl font-black text-slate-800">계약 상세</h2>
+                            <p class="text-xs text-slate-400" id="detail-contract-number"></p>
+                        </div>
+                    </div>
+                    <button id="btn-view-contract-preview"
+                        class="bg-juo-orange text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-orange-100 flex items-center gap-2 active:scale-95 transition">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> 계약서 보기 / 출력
+                    </button>
+                </div>
+                <div
+                    class="bg-white rounded-3xl border border-slate-200 shadow-sm flex-1 overflow-y-auto custom-scroll p-6 md:p-8 space-y-6">
+                    <!-- 입양 담당 -->
+                    <div>
+                        <h3 class="text-sm font-black text-slate-700 mb-3 flex items-center gap-2">
+                            <span class="w-1.5 h-5 bg-juo-orange rounded-full"></span> 입양 담당
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">입양처</p>
+                                <p class="text-sm font-bold text-slate-700" id="detail-manager-branch"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">담당자</p>
+                                <p class="text-sm font-bold text-slate-700" id="detail-manager-name"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">주 소</p>
+                                <p class="text-sm text-slate-600" id="detail-manager-address"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">연락처</p>
+                                <p class="text-sm text-slate-600" id="detail-manager-phone"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 반려동물 정보 -->
+                    <div>
+                        <h3 class="text-sm font-black text-slate-700 mb-3 flex items-center gap-2">
+                            <span class="w-1.5 h-5 bg-blue-500 rounded-full"></span> 반려동물 정보
+                        </h3>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">이름</p>
+                                <p class="text-sm font-bold text-slate-700" id="detail-pet-name"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">축종</p>
+                                <p class="text-sm text-slate-600" id="detail-pet-species"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">품종</p>
+                                <p class="text-sm text-slate-600" id="detail-pet-breed"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">모색</p>
+                                <p class="text-sm text-slate-600" id="detail-pet-color"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">성별</p>
+                                <p class="text-sm text-slate-600" id="detail-pet-gender"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">생년월일</p>
+                                <p class="text-sm text-slate-600" id="detail-pet-birthdate"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 입양자 정보 -->
+                    <div>
+                        <h3 class="text-sm font-black text-slate-700 mb-3 flex items-center gap-2">
+                            <span class="w-1.5 h-5 bg-green-500 rounded-full"></span> 입양자 정보
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">성명</p>
+                                <p class="text-sm font-bold text-slate-700" id="detail-adopter-name"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">연락처</p>
+                                <p class="text-sm text-slate-600" id="detail-adopter-phone"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">주민번호</p>
+                                <p class="text-sm text-slate-600" id="detail-adopter-id"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">입양비</p>
+                                <p class="text-sm font-bold text-juo-orange" id="detail-adoption-fee"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3 col-span-2">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">주소</p>
+                                <p class="text-sm text-slate-600" id="detail-adopter-address"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 계약 정보 -->
+                    <div>
+                        <h3 class="text-sm font-black text-slate-700 mb-3 flex items-center gap-2">
+                            <span class="w-1.5 h-5 bg-amber-500 rounded-full"></span> 계약 정보
+                        </h3>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">계약일</p>
+                                <p class="text-sm text-slate-600" id="detail-adoption-date"></p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">상태</p>
+                                <p class="text-sm font-bold text-green-600">계약 완료</p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3">
+                                <p class="text-[10px] text-slate-400 font-bold mb-0.5">지점</p>
+                                <p class="text-sm text-slate-600" id="detail-branch-name"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Form View (Wizard) -->
             <div id="contract-form-view"
                 class="hidden h-full flex-col bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
@@ -330,13 +457,7 @@
                                 3</div>
                             <span class="text-[10px] font-bold text-slate-400 uppercase step-label">입양자</span>
                         </div>
-                        <!-- Step 4 -->
-                        <div class="step-item relative z-10 flex flex-col items-center gap-2" data-step="4">
-                            <div
-                                class="w-8 h-8 rounded-full bg-slate-100 border-2 border-slate-300 text-slate-400 flex items-center justify-center text-xs font-bold transition-all duration-300 step-circle">
-                                4</div>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase step-label">서명</span>
-                        </div>
+
                     </div>
                 </div>
 
@@ -461,58 +582,16 @@
                                         class="w-full h-14 px-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-juo-orange focus:ring-2 focus:ring-orange-100 outline-none transition font-bold text-lg mb-2"
                                         placeholder="주소를 입력하세요">
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Step 4: Terms & Signature -->
-                        <div class="form-step hidden animate-fade-in" data-step="4">
-                            <h4 class="text-xl font-black text-slate-800 mb-4">약관 동의 및 서명</h4>
-
-                            <div
-                                class="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6 h-48 overflow-y-auto custom-scroll text-sm text-slate-600 leading-relaxed">
-                                <h5 class="font-bold text-slate-800 mb-2">입양 계약서 주요 약관 (13개항 요약)</h5>
-                                <ol class="list-decimal pl-4 space-y-1 marker:font-bold marker:text-slate-400">
-                                    <li>입양자는 입양 동물을 평생 책임지며 유기하거나 학대하지 않습니다.</li>
-                                    <li>입양 동물의 건강 상태를 확인하였으며, 이에 대해 이의를 제기하지 않습니다.</li>
-                                    <li>동물등록법에 따라 관할 구청에 동물등록을 완료해야 합니다.</li>
-                                    <li>예방접종 및 정기적인 검진을 통해 동물의 건강을 관리합니다.</li>
-                                    <li>파양 시 보호소와 사전에 반드시 협의해야 하며, 임의 양도는 금지됩니다.</li>
-                                    <li>주거 환경 및 가족 구성원의 동의를 모두 확인하였습니다.</li>
-                                    <li>입양 후 6개월간 보호소의 모니터링에 협조합니다.</li>
-                                    <li>중성화 수술 필요 시 적절한 시기에 진행할 것을 권장합니다.</li>
-                                    <li>입양비(책임비)는 반환되지 않습니다.</li>
-                                    <li>입양 동물의 질병 발생 시, 보호소의 연계 병원을 이용할 수 있습니다.</li>
-                                    <li>기타 명시되지 않은 사항은 동물보호법에 따릅니다.</li>
-                                    <li>본 계약의 내용을 충분히 숙지하고 동의합니다.</li>
-                                    <li>본 계약서는 법적 효력을 가집니다.</li>
-                                </ol>
-                            </div>
-
-                            <div class="mb-4">
-                                <label
-                                    class="flex items-center gap-3 p-4 rounded-2xl border border-slate-200 bg-white cursor-pointer hover:border-juo-orange transition">
-                                    <input type="checkbox" id="contract-agree" required
-                                        class="w-6 h-6 rounded border-slate-300 text-juo-orange focus:ring-juo-orange">
-                                    <span class="font-bold text-slate-700">위 약관 내용을 모두 확인하였으며 이에 동의합니다.</span>
-                                </label>
-                            </div>
-
-
-                            <label class="block text-xs font-bold text-slate-500 mb-2 ml-1">입양자 서명</label>
-                            <div class="relative w-full h-48 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-300 overflow-hidden touch-none"
-                                id="signature-pad-container">
-                                <canvas id="signature-canvas"
-                                    class="absolute inset-0 w-full h-full cursor-crosshair"></canvas>
-                                <div
-                                    class="absolute inset-0 flex items-center justify-center pointer-events-none text-slate-300 font-bold uppercase tracking-widest opacity-50">
-                                    서명해 주세요
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 mb-2 ml-1">입양비</label>
+                                    <input type="number" name="adoption_fee"
+                                        class="w-full h-14 px-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-juo-orange focus:ring-2 focus:ring-orange-100 outline-none transition font-bold text-lg"
+                                        placeholder="0">
                                 </div>
-                                <button type="button" id="btn-clear-signature"
-                                    class="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-slate-400 hover:text-red-500 hover:bg-red-50 transition z-10">
-                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                </button>
                             </div>
                         </div>
+
+
                     </form>
                 </div>
 
@@ -523,13 +602,17 @@
                         이전
                     </button>
                     <div class="ml-auto flex gap-3">
+                        <button type="button" id="btn-draft-save"
+                            class="px-6 py-3 rounded-xl bg-slate-200 text-slate-600 font-bold hover:bg-slate-300 transition flex items-center gap-1.5">
+                            <i data-lucide="save" class="w-4 h-4"></i> 임시저장
+                        </button>
                         <button type="button" id="btn-next-step"
                             class="px-8 py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition shadow-lg shadow-slate-200">
                             다음 단계 <i data-lucide="arrow-right" class="w-4 h-4 inline ml-1"></i>
                         </button>
                         <button type="button" id="btn-save-contract"
                             class="hidden px-8 py-3 rounded-xl bg-juo-orange text-white font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-200">
-                            <i data-lucide="check" class="w-4 h-4 inline mr-1"></i> 서명 및 계약 완료
+                            <i data-lucide="check" class="w-4 h-4 inline mr-1"></i> 계약서 저장 및 출력
                         </button>
                     </div>
                 </div>
@@ -559,92 +642,94 @@
                 <div id="contract-preview-paper"
                     class="w-full max-w-[210mm] bg-white shadow-2xl rounded-lg print:shadow-none print:rounded-none"
                     style="min-height: 297mm;">
-                    <div class="p-[15mm] print:p-[15mm]" style="font-family: 'Pretendard', 'Noto Sans KR', sans-serif;">
+                    <div class="p-[10mm] print:p-[10mm]" style="font-family: 'Pretendard', 'Noto Sans KR', sans-serif;">
 
                         <!-- Header -->
-                        <div class="text-center mb-8">
-                            <h1 class="text-2xl font-black tracking-tight mb-1">입양 계약서</h1>
-                            <p class="text-sm text-slate-400">사랑해주오 입양센터</p>
-                            <div class="mt-2 text-xs text-slate-400" id="preview-contract-number"></div>
+                        <div class="text-center mb-3">
+                            <h1 class="text-xl font-black tracking-tight mb-0.5">입양 계약서</h1>
+                            <p class="text-xs text-slate-400">사랑해주오 입양센터</p>
+                            <div class="mt-0.5 text-[11px] text-slate-400" id="preview-contract-number"></div>
                         </div>
 
-                        <hr class="border-slate-300 mb-6">
+                        <hr class="border-slate-300 mb-3">
 
                         <!-- Section 1: 입양 담당자 정보 -->
-                        <div class="mb-6">
-                            <h2 class="text-sm font-black text-slate-700 mb-3 border-l-4 border-juo-orange pl-3">입양 담당
+                        <div class="mb-2">
+                            <h2 class="text-sm font-black text-slate-700 mb-2 border-l-4 border-juo-orange pl-3">입양 담당
                             </h2>
-                            <table class="w-full text-sm border-collapse border border-slate-300">
+                            <table class="w-full text-[13px] border-collapse border border-slate-300">
                                 <tbody>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 w-24 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 w-24 text-center">
                                             입양처</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-manager-branch"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-manager-branch">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             주 소</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-manager-address"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-manager-address">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             담당자</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-manager-name"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-manager-name"></td>
                                     </tr>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             연락처</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-manager-phone"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-manager-phone"></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Section 2: 반려동물 정보 -->
-                        <div class="mb-6">
-                            <h2 class="text-sm font-black text-slate-700 mb-3 border-l-4 border-blue-500 pl-3">반려동물 정보
+                        <div class="mb-2">
+                            <h2 class="text-sm font-black text-slate-700 mb-2 border-l-4 border-blue-500 pl-3">반려동물 정보
                             </h2>
-                            <table class="w-full text-sm border-collapse border border-slate-300">
+                            <table class="w-full text-[13px] border-collapse border border-slate-300">
                                 <tbody>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 w-24 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 w-24 text-center">
                                             이름</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-pet-name"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-pet-name"></td>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 w-24 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 w-24 text-center">
                                             축종</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-pet-species"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-pet-species"></td>
                                     </tr>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             품종</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-pet-breed"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-pet-breed"></td>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             모색</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-pet-color"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-pet-color"></td>
                                     </tr>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             성별</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-pet-gender"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-pet-gender"></td>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             생년월일</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-pet-birthdate"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-pet-birthdate"></td>
                                     </tr>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             입수일</td>
-                                        <td class="border border-slate-300 px-3 py-2" colspan="3"
+                                        <td class="border border-slate-300 px-2 py-1.5" colspan="3"
                                             id="preview-pet-intake"></td>
                                     </tr>
                                 </tbody>
@@ -652,36 +737,36 @@
                         </div>
 
                         <!-- Section 3: 입양자 정보 -->
-                        <div class="mb-6">
-                            <h2 class="text-sm font-black text-slate-700 mb-3 border-l-4 border-green-500 pl-3">입양자 정보
+                        <div class="mb-2">
+                            <h2 class="text-sm font-black text-slate-700 mb-2 border-l-4 border-green-500 pl-3">입양자 정보
                             </h2>
-                            <table class="w-full text-sm border-collapse border border-slate-300">
+                            <table class="w-full text-[13px] border-collapse border border-slate-300">
                                 <tbody>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 w-24 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 w-24 text-center">
                                             성명</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-adopter-name"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-adopter-name"></td>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 w-24 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 w-24 text-center">
                                             연락처</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-adopter-phone"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-adopter-phone"></td>
                                     </tr>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             주민번호</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-adopter-id"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-adopter-id"></td>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             입양비</td>
-                                        <td class="border border-slate-300 px-3 py-2" id="preview-adoption-fee"></td>
+                                        <td class="border border-slate-300 px-2 py-1.5" id="preview-adoption-fee"></td>
                                     </tr>
                                     <tr>
                                         <td
-                                            class="border border-slate-300 bg-slate-50 px-3 py-2 font-bold text-slate-600 text-center">
+                                            class="border border-slate-300 bg-slate-50 px-2 py-1.5 font-bold text-slate-600 text-center">
                                             주소</td>
-                                        <td class="border border-slate-300 px-3 py-2" colspan="3"
+                                        <td class="border border-slate-300 px-2 py-1.5" colspan="3"
                                             id="preview-adopter-address"></td>
                                     </tr>
                                 </tbody>
@@ -689,12 +774,12 @@
                         </div>
 
                         <!-- Section 4: 약관 요약 -->
-                        <div class="mb-6">
-                            <h2 class="text-sm font-black text-slate-700 mb-3 border-l-4 border-amber-500 pl-3">입양 계약서
+                        <div class="mb-2">
+                            <h2 class="text-sm font-black text-slate-700 mb-2 border-l-4 border-amber-500 pl-3">입양 계약서
                                 주요 약관 (13개항 요약)</h2>
                             <div
-                                class="text-xs text-slate-600 leading-relaxed border border-slate-300 rounded p-4 bg-slate-50">
-                                <ol class="list-decimal pl-4 space-y-0.5">
+                                class="text-[11px] text-slate-600 leading-snug border border-slate-300 rounded p-3 bg-slate-50">
+                                <ol class="list-decimal pl-4 space-y-0">
                                     <li>입양자는 입양 동물을 평생 책임지며 유기하거나 학대하지 않습니다.</li>
                                     <li>입양 동물의 건강 상태를 확인하였으며, 이에 대해 이의를 제기하지 않습니다.</li>
                                     <li>동물등록법에 따라 관할 구청에 동물등록을 완료해야 합니다.</li>
@@ -712,30 +797,41 @@
                             </div>
                         </div>
 
-                        <!-- Section 5: 서명 -->
-                        <div class="mb-6">
-                            <h2 class="text-sm font-black text-slate-700 mb-3 border-l-4 border-red-500 pl-3">서명</h2>
-                            <div class="flex items-end justify-between gap-8">
+                        <!-- Section 5: 서명란 -->
+                        <div class="mt-5">
+                            <p class="text-[11px] text-slate-600 mb-4">위 약관 내용을 모두 확인하였으며 이에 동의하고, 계약의 성립을 증명하기 위해
+                                서명합니다.
+                            </p>
+                            <div class="flex justify-between gap-12">
+                                <!-- 입양자 -->
                                 <div class="flex-1">
-                                    <p class="text-xs text-slate-500 mb-2">위 약관 내용을 모두 확인하였으며 이에 동의합니다.</p>
-                                    <div class="flex items-center gap-4">
-                                        <span class="text-sm font-bold text-slate-700">입양자:</span>
-                                        <span class="text-sm font-bold" id="preview-signer-name"></span>
-                                        <span class="text-sm text-slate-400">(서명)</span>
+                                    <div class="flex items-baseline gap-3 mb-2">
+                                        <span class="text-sm font-bold text-slate-700 whitespace-nowrap">입양자</span>
+                                        <span class="text-sm text-slate-700" id="preview-signer-name"></span>
+                                    </div>
+                                    <div class="border-b-2 border-slate-800 pb-4 relative">
+                                        <span class="absolute right-0 bottom-1 text-[10px] text-slate-400">(서명 /
+                                            인)</span>
                                     </div>
                                 </div>
-                                <div
-                                    class="w-48 h-24 border border-slate-300 rounded bg-white flex items-center justify-center overflow-hidden">
-                                    <img id="preview-signature-img" class="max-w-full max-h-full object-contain"
-                                        alt="서명">
+                                <!-- 입양 담당자 -->
+                                <div class="flex-1">
+                                    <div class="flex items-baseline gap-3 mb-2">
+                                        <span class="text-sm font-bold text-slate-700 whitespace-nowrap">담당자</span>
+                                        <span class="text-sm text-slate-700" id="preview-manager-signer-name"></span>
+                                    </div>
+                                    <div class="border-b-2 border-slate-800 pb-4 relative">
+                                        <span class="absolute right-0 bottom-1 text-[10px] text-slate-400">(서명 /
+                                            인)</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Footer -->
-                        <div class="text-center mt-10 pt-6 border-t border-slate-200">
-                            <p class="text-sm font-bold text-slate-600" id="preview-date"></p>
-                            <p class="text-xs text-slate-400 mt-1">사랑해주오 입양센터</p>
+                        <div class="text-center mt-4 pt-3 border-t border-slate-200">
+                            <p class="text-xs font-bold text-slate-500" id="preview-date"></p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">사랑해주오 입양센터</p>
                         </div>
 
                     </div>

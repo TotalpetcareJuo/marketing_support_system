@@ -11,9 +11,9 @@ let currentScenarioPage = 0;
 
 // Contract Form State
 let currentContractStep = 1;
-let contractSignatureManager = null;
 let currentContractId = null;
 let currentContractNumber = null;
+let currentDetailData = null;
 
 export const AppState = {
     user: {
@@ -59,7 +59,6 @@ export function initContractForm() {
     const btnNext = document.getElementById('btn-next-step');
     const btnPrev = document.getElementById('btn-prev-step');
     const btnSave = document.getElementById('btn-save-contract');
-    const btnClearSig = document.getElementById('btn-clear-signature');
 
     if (btnNew) btnNew.addEventListener('click', () => openContractForm('create'));
     if (btnClose) btnClose.addEventListener('click', closeContractForm);
@@ -67,11 +66,8 @@ export function initContractForm() {
     if (btnPrev) btnPrev.addEventListener('click', handlePrevStep);
     if (btnSave) btnSave.addEventListener('click', saveContractForm);
 
-    if (btnClearSig) {
-        btnClearSig.addEventListener('click', () => {
-            if (contractSignatureManager) contractSignatureManager.clear();
-        });
-    }
+    const btnDraft = document.getElementById('btn-draft-save');
+    if (btnDraft) btnDraft.addEventListener('click', draftSaveContract);
 
     // Preview buttons
     const btnPrint = document.getElementById('btn-print-contract');
@@ -84,6 +80,15 @@ export function initContractForm() {
         }, 100);
     });
     if (btnClosePreview) btnClosePreview.addEventListener('click', closeContractPreview);
+
+    // Detail view buttons
+    const btnBackToList = document.getElementById('btn-back-to-list');
+    if (btnBackToList) btnBackToList.addEventListener('click', closeContractDetail);
+
+    const btnViewPreview = document.getElementById('btn-view-contract-preview');
+    if (btnViewPreview) btnViewPreview.addEventListener('click', () => {
+        if (currentDetailData) showContractPreview(currentDetailData);
+    });
 }
 
 function showContractPreview(contractData) {
@@ -114,31 +119,23 @@ function showContractPreview(contractData) {
     setText('preview-pet-breed', contractData.pet_breed || '');
     setText('preview-pet-color', contractData.pet_color || '');
 
-    const genderMap = { 'male': '수컷', 'female': '암컷', 'unknown': '미상' };
+    const genderMap = { 'Male': '남아', 'Female': '여아', 'male': '남아', 'female': '여아' };
     setText('preview-pet-gender', genderMap[contractData.pet_gender] || contractData.pet_gender || '');
     setText('preview-pet-birthdate', contractData.pet_birthdate || '');
-    setText('preview-pet-intake', contractData.pet_acquisition_date || '');
+    setText('preview-pet-intake', contractData.pet_acquisition_date || contractData.pet_intake_date || '');
 
     // Adopter Info
     setText('preview-adopter-name', contractData.adopter_name || '');
     setText('preview-adopter-phone', contractData.adopter_phone || '');
-    setText('preview-adopter-id', contractData.adopter_id_num || '');
+    setText('preview-adopter-id', contractData.adopter_id_num || contractData.adopter_resident_no || '');
     setText('preview-adopter-address', contractData.adopter_address || '');
 
     const fee = contractData.adoption_fee;
     setText('preview-adoption-fee', fee ? `${Number(fee).toLocaleString()}원` : '-');
 
-    // Signer name
+    // Signer names (for blank signature boxes)
     setText('preview-signer-name', contractData.adopter_name || '');
-
-    // Signature image
-    const sigImg = document.getElementById('preview-signature-img');
-    if (sigImg && contractData.signature_url) {
-        sigImg.src = contractData.signature_url;
-        sigImg.style.display = 'block';
-    } else if (sigImg) {
-        sigImg.style.display = 'none';
-    }
+    setText('preview-manager-signer-name', contractData.manager_name || '');
 
     // Show overlay
     overlay.classList.remove('hidden');
@@ -148,7 +145,64 @@ function showContractPreview(contractData) {
 function closeContractPreview() {
     const overlay = document.getElementById('contract-preview-overlay');
     if (overlay) overlay.classList.add('hidden');
-    closeContractForm();
+    // If opened from detail view, stay on detail view; otherwise close form
+    if (!currentDetailData) {
+        closeContractForm();
+    }
+}
+
+function showContractDetail(contract) {
+    currentDetailData = contract;
+
+    const listView = elements.contractListView();
+    const detailView = document.getElementById('contract-detail-view');
+    if (listView) listView.classList.add('hidden');
+    if (detailView) {
+        detailView.classList.remove('hidden');
+        detailView.classList.add('flex');
+    }
+
+    // Populate fields
+    const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val || '-';
+    };
+
+    set('detail-contract-number', contract.contract_number || contract.id);
+    set('detail-manager-branch', contract.manager_branch_name);
+    set('detail-manager-name', contract.manager_name);
+    set('detail-manager-address', contract.manager_branch_address);
+    set('detail-manager-phone', contract.manager_phone);
+
+    set('detail-pet-name', contract.pet_name);
+    set('detail-pet-species', contract.pet_species);
+    set('detail-pet-breed', contract.pet_breed);
+    set('detail-pet-color', contract.pet_color);
+    const genderMap = { 'Male': '남아', 'Female': '여아', 'male': '남아', 'female': '여아' };
+    set('detail-pet-gender', genderMap[contract.pet_gender] || contract.pet_gender);
+    set('detail-pet-birthdate', contract.pet_birthdate);
+
+    set('detail-adopter-name', contract.adopter_name);
+    set('detail-adopter-phone', contract.adopter_phone);
+    set('detail-adopter-id', contract.adopter_resident_no);
+    set('detail-adoption-fee', contract.adoption_fee ? `${Number(contract.adoption_fee).toLocaleString()}원` : '-');
+    set('detail-adopter-address', contract.adopter_address);
+
+    set('detail-adoption-date', contract.adoption_date);
+    set('detail-branch-name', contract.branch_name);
+
+    lucide.createIcons();
+}
+
+function closeContractDetail() {
+    currentDetailData = null;
+    const listView = elements.contractListView();
+    const detailView = document.getElementById('contract-detail-view');
+    if (detailView) {
+        detailView.classList.add('hidden');
+        detailView.classList.remove('flex');
+    }
+    if (listView) listView.classList.remove('hidden');
 }
 
 export async function openContractForm(mode = 'create', data = null) {
@@ -177,17 +231,25 @@ export async function openContractForm(mode = 'create', data = null) {
     });
 
     if (mode === 'create') {
-        currentContractId = null;
-        formTitle.textContent = '새 계약서 작성';
-        saveBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4 inline mr-1"></i> 서명 및 계약 완료';
+        // If data is provided (e.g. re-opening a draft), keep the existing id for update
+        if (data && data.id) {
+            currentContractId = data.id;
+            currentContractNumber = data.contract_number;
+            formTitle.textContent = '계약서 이어서 작성';
+        } else {
+            currentContractId = null;
+            currentContractNumber = null;
+            formTitle.textContent = '새 계약서 작성';
+        }
+        saveBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4 inline mr-1"></i> 계약서 저장 및 출력';
 
         // Auto-fill Adoption Date with today
         const today = new Date().toISOString().split('T')[0];
         const dateInput = form.querySelector('[name="pet_acquisition_date"]');
         if (dateInput) dateInput.value = today;
 
-        // Auto-fill Manager Profile if available
-        if (AppState.user && AppState.user.id) {
+        // Auto-fill Manager Profile if available (only for brand new contracts)
+        if (!data && AppState.user && AppState.user.id) {
             getUserProfile(AppState.user.id).then(profile => {
                 if (profile) {
                     const managerFields = {
@@ -200,6 +262,34 @@ export async function openContractForm(mode = 'create', data = null) {
                         const input = form.querySelector(`[name="${name}"]`);
                         if (input && !input.value) input.value = value;
                     });
+                }
+            });
+        }
+
+        // Populate form with draft data if re-opening
+        if (data) {
+            const mapping = {
+                'adopter_resident_no': 'adopter_id_num',
+                'pet_intake_date': 'pet_acquisition_date',
+                'pet_reg_number': 'pet_microchip_no',
+                'manager_name': 'manager_name',
+                'manager_phone': 'manager_phone',
+                'manager_branch_name': 'manager_branch_name',
+                'manager_branch_address': 'manager_branch_address'
+            };
+            const formData = { ...data };
+            Object.entries(mapping).forEach(([dbKey, formKey]) => {
+                if (data[dbKey] !== undefined) formData[formKey] = data[dbKey];
+            });
+            Object.keys(formData).forEach(key => {
+                const input = form.querySelector(`[name="${key}"]`);
+                if (input) {
+                    if (input.type === 'radio') {
+                        const radio = form.querySelector(`[name="${key}"][value="${formData[key]}"]`);
+                        if (radio) radio.checked = true;
+                    } else {
+                        input.value = formData[key] || '';
+                    }
                 }
             });
         }
@@ -254,14 +344,6 @@ export async function openContractForm(mode = 'create', data = null) {
             }
         });
 
-        // Check "Agree" checkbox automatically for view mode
-        const agree = document.getElementById('contract-agree');
-        if (agree) agree.checked = true;
-
-        // TODO: Load Signature Image if exists
-        // Since we only have a canvas, we can't easily "edit" the signature image on canvas without complex logic.
-        // For now, we might just show it or leave it empty if they want to re-sign.
-        // Or we block Step 3 signature if already signed.
     }
 
     updateContractStepUI();
@@ -276,9 +358,6 @@ export function closeContractForm() {
         formView.classList.remove('flex');
     }
     if (listView) listView.classList.remove('hidden');
-
-    // Reset Signature Manager
-    contractSignatureManager = null;
     currentContractId = null;
 }
 
@@ -300,7 +379,7 @@ async function handleNextStep() {
 
     if (!isValid) return;
 
-    if (currentContractStep < 4) {
+    if (currentContractStep < 3) {
         currentContractStep++;
         updateContractStepUI();
     }
@@ -322,32 +401,8 @@ async function saveContractForm() {
     // If creation, validate everything.
     // If edit, validated inputs are disabled, so they are fine.
 
-    /*
-    const agree = document.getElementById('contract-agree');
-    if (!agree.checked) {
-        alert('약관에 동의해야 합니다.');
-        return;
-    }
-    */
-    // In edit mode, agreement is already checked/disabled.
-
-    // Capture Signature
-    const canvas = document.getElementById('signature-canvas');
-    let signatureUrl = null;
-
-    if (contractSignatureManager) {
-        signatureUrl = canvas.toDataURL();
-    }
-
-    console.log('Captured Signature URL Length:', signatureUrl ? signatureUrl.length : 'null');
-
     const formData = new FormData(form);
     const contractData = Object.fromEntries(formData.entries());
-
-    // Merge manual fields
-    if (signatureUrl) {
-        contractData.signature_url = signatureUrl;
-    }
 
     contractData.branch_name = AppState.user.branch_name; // Ensure branch is set
 
@@ -389,11 +444,49 @@ async function saveContractForm() {
     lucide.createIcons();
 }
 
+async function draftSaveContract() {
+    const form = elements.contractForm();
+    const formData = new FormData(form);
+    const contractData = Object.fromEntries(formData.entries());
+
+    contractData.branch_name = AppState.user.branch_name;
+    contractData.status = 'draft';
+
+    if (currentContractId) {
+        contractData.id = currentContractId;
+        if (currentContractNumber) {
+            contractData.contract_number = currentContractNumber;
+        }
+    } else {
+        contractData.contract_number = await generateContractId();
+    }
+
+    const btnDraft = document.getElementById('btn-draft-save');
+    const originalText = btnDraft.innerHTML;
+    btnDraft.disabled = true;
+    btnDraft.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin inline mr-1"></i> 저장 중...`;
+    lucide.createIcons();
+
+    const result = await saveContract(contractData);
+
+    if (result.success) {
+        alert('임시저장 되었습니다.');
+        closeContractForm();
+        renderContracts(AppState.user);
+    } else {
+        alert(`임시저장 실패: ${result.message || '알 수 없는 오류'}`);
+    }
+
+    btnDraft.disabled = false;
+    btnDraft.innerHTML = originalText;
+    lucide.createIcons();
+}
+
 function updateContractStepUI() {
     // 1. Progress Bar
     const progressBar = elements.stepProgressBar();
     if (progressBar) {
-        const percentage = ((currentContractStep - 1) / 3) * 100;
+        const percentage = ((currentContractStep - 1) / 2) * 100;
         progressBar.style.width = `${percentage}%`;
     }
 
@@ -444,34 +537,17 @@ function updateContractStepUI() {
         btnPrev.classList.add('hidden');
         btnNext.classList.remove('hidden');
         btnSave.classList.add('hidden');
-    } else if (currentContractStep === 3) {
+    } else if (currentContractStep === 2) {
         btnPrev.classList.remove('hidden');
         btnNext.classList.remove('hidden');
         btnSave.classList.add('hidden');
-    } else if (currentContractStep === 4) {
+    } else if (currentContractStep === 3) {
         btnPrev.classList.remove('hidden');
         btnNext.classList.add('hidden');
         btnSave.classList.remove('hidden');
-
-        // Initialize Signature Canvas if needed
-        initSignatureCanvas();
     }
 
     lucide.createIcons();
-}
-
-function initSignatureCanvas() {
-    const canvas = document.getElementById('signature-canvas');
-    if (canvas && !contractSignatureManager) {
-        // Delay slightly to ensure layout is visible directly
-        setTimeout(() => {
-            contractSignatureManager = new DrawingManager(canvas);
-            contractSignatureManager.color = '#000000'; // Black pen for signature
-            contractSignatureManager.lineWidth = 3;
-        }, 100);
-    } else if (contractSignatureManager) {
-        contractSignatureManager.resize();
-    }
 }
 
 export async function renderMaterials(category = 'all') {
@@ -930,14 +1006,16 @@ export async function renderContracts(user) {
         const item = document.createElement('div');
         item.className = 'p-4 flex items-center justify-between group cursor-pointer hover:bg-slate-50/50 transition';
 
+        const isDraft = contract.status === 'draft';
         const isCompleted = contract.status === 'COMPLETED' || contract.status === 'completed';
-        const statusLabel = isCompleted ? '계약 완료' : '서명 대기';
-        const statusClass = isCompleted ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600';
+        const statusLabel = isDraft ? '임시저장' : isCompleted ? '계약 완료' : '서명 대기';
+        const statusClass = isDraft ? 'bg-amber-50 text-amber-600' : isCompleted ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600';
+        const statusIcon = isDraft ? 'file-edit' : isCompleted ? 'file-check' : 'file-signature';
 
         item.innerHTML = `
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
-                    <i data-lucide="${isCompleted ? 'file-check' : 'file-signature'}" class="w-5 h-5"></i>
+                    <i data-lucide="${statusIcon}" class="w-5 h-5"></i>
                 </div>
                 <div>
                     <div class="font-bold text-slate-700">${contract.contract_number || contract.id}</div>
@@ -947,7 +1025,14 @@ export async function renderContracts(user) {
             <span class="px-2 py-1 rounded-lg ${statusClass} text-[10px] font-black uppercase tracking-tight">${statusLabel}</span>
         `;
 
-        item.addEventListener('click', () => openContractForm('edit', contract));
+        const openMode = isDraft ? 'create' : 'edit';
+        item.addEventListener('click', () => {
+            if (!isDraft && isCompleted) {
+                showContractDetail(contract);
+            } else {
+                openContractForm(openMode, contract);
+            }
+        });
         listContainer.appendChild(item);
     });
 

@@ -254,7 +254,6 @@ export async function saveContract(contractData) {
             // Terms & Other
             adoption_fee: parseInt(contractData.adoption_fee || '0'),
             adoption_date: new Date().toISOString().split('T')[0], // Default to today
-            signature_url: contractData.signature_url,
 
             // Adoption Manager snapshot
             manager_name: contractData.manager_name,
