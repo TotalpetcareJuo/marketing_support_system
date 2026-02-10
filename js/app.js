@@ -125,6 +125,35 @@ async function handleLogout() {
     }
 }
 
+function handleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.error(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+function updateFullscreenIcon() {
+    const btn = document.getElementById('btn-fullscreen');
+    if (!btn) return;
+
+    const icon = btn.querySelector('i');
+    if (!icon) return;
+
+    if (document.fullscreenElement) {
+        icon.setAttribute('data-lucide', 'minimize-2');
+        btn.title = '전체화면 종료';
+    } else {
+        icon.setAttribute('data-lucide', 'maximize-2');
+        btn.title = '전체화면';
+    }
+    lucide.createIcons();
+}
+
 async function fetchProfile(userId) {
     try {
         if (!supabase) return null;
@@ -156,6 +185,15 @@ function setupEventListeners() {
     });
 
     document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+
+    // Fullscreen toggle
+    const btnFullscreen = document.getElementById('btn-fullscreen');
+    if (btnFullscreen) {
+        btnFullscreen.addEventListener('click', handleFullscreen);
+    }
+
+    // Listen for fullscreen change to update icon
+    document.addEventListener('fullscreenchange', updateFullscreenIcon);
 
     document.getElementById('viewer-close').addEventListener('click', closeViewer);
 
