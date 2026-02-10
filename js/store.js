@@ -172,6 +172,93 @@ export function invalidateMaterialsCache() {
     materialsCache = null;
 }
 
+/**
+ * 전체 매장(지점) 통계를 가져옵니다.
+ */
+export async function getBranchStats() {
+    if (!USE_MOCK_DATA && supabase) {
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('branch_name');
+            if (error) throw error;
+
+            // Count unique branches
+            const branchCounts = {};
+            (data || []).forEach(p => {
+                const name = p.branch_name || '미지정';
+                branchCounts[name] = (branchCounts[name] || 0) + 1;
+            });
+            return {
+                total: Object.keys(branchCounts).length,
+                branches: branchCounts
+            };
+        } catch (err) {
+            console.warn('getBranchStats failed:', err);
+        }
+    }
+    return { total: 0, branches: {} };
+}
+
+/**
+ * 계약 통계를 가져옵니다.
+ */
+export async function getContractStats() {
+    if (!USE_MOCK_DATA && supabase) {
+        try {
+            const { data, error } = await supabase
+                .from('contracts')
+                .select('status, branch_name');
+            if (error) throw error;
+
+            const contracts = data || [];
+            const completed = contracts.filter(c => c.status === 'completed').length;
+            const draft = contracts.filter(c => c.status === 'draft').length;
+            const other = contracts.length - completed - draft;
+
+            // Per-branch breakdown
+            const perBranch = {};
+            contracts.forEach(c => {
+                const b = c.branch_name || '미지정';
+                perBranch[b] = (perBranch[b] || 0) + 1;
+            });
+
+            return {
+                total: contracts.length,
+                completed,
+                draft,
+                other,
+                perBranch
+            };
+        } catch (err) {
+            console.warn('getContractStats failed:', err);
+        }
+    }
+    return { total: 0, completed: 0, draft: 0, other: 0, perBranch: {} };
+}
+
+/**
+ * 계약을 삭제합니다 (임시저장 건만 허용).
+ */
+export async function deleteContract(contractId) {
+    if (USE_MOCK_DATA) {
+        console.log('Mock Delete Contract:', contractId);
+        return { success: true };
+    }
+    if (!supabase) return { success: false, message: 'Supabase not initialized' };
+    try {
+        const { error } = await supabase
+            .from('contracts')
+            .delete()
+            .eq('id', contractId);
+        if (error) throw error;
+        return { success: true };
+    } catch (err) {
+        console.error('Delete Contract Failed:', err);
+        return { success: false, message: err.message };
+    }
+}
+
 function simulateNetworkDelay(ms = 100) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

@@ -1,4 +1,4 @@
-import { getMaterials, getColorMap, getMaterialsByCategory, getScenarioById, getContracts, getNotices, saveContract, generateContractId, getUserProfile } from './store.js';
+import { getMaterials, getColorMap, getMaterialsByCategory, getScenarioById, getContracts, getNotices, saveContract, generateContractId, getUserProfile, getBranchStats, getContractStats, deleteContract } from './store.js';
 import { DrawingManager } from './drawing.js';
 
 let currentMaterialIndex = 0;
@@ -1022,17 +1022,40 @@ export async function renderContracts(user) {
                     <div class="text-xs text-slate-400">고객: ${contract.adopter_name || contract.customer} • ${contract.pet_name || contract.pet} • <span class="text-juo-orange">${contract.branch_name || contract.branch}</span></div>
                 </div>
             </div>
-            <span class="px-2 py-1 rounded-lg ${statusClass} text-[10px] font-black uppercase tracking-tight">${statusLabel}</span>
+            <div class="flex items-center gap-2">
+                <span class="px-2 py-1 rounded-lg ${statusClass} text-[10px] font-black uppercase tracking-tight">${statusLabel}</span>
+                ${isDraft ? '<button class="btn-delete-draft w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-300 hover:text-red-500 transition" title="삭제"><i data-lucide="trash-2" class="w-4 h-4"></i></button>' : ''}
+            </div>
         `;
 
         const openMode = isDraft ? 'create' : 'edit';
-        item.addEventListener('click', () => {
+        item.addEventListener('click', (e) => {
+            // Don't open if clicking delete button
+            if (e.target.closest('.btn-delete-draft')) return;
             if (!isDraft && isCompleted) {
                 showContractDetail(contract);
             } else {
                 openContractForm(openMode, contract);
             }
         });
+
+        // Delete button for drafts
+        if (isDraft) {
+            const deleteBtn = item.querySelector('.btn-delete-draft');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    if (!confirm('임시저장된 계약을 삭제하시겠습니까?')) return;
+                    const result = await deleteContract(contract.id);
+                    if (result.success) {
+                        renderContracts(AppState.user);
+                    } else {
+                        alert(`삭제 실패: ${result.message || '알 수 없는 오류'}`);
+                    }
+                });
+            }
+        }
+
         listContainer.appendChild(item);
     });
 
@@ -1080,6 +1103,74 @@ export function applyPermissions(user) {
     }
 
     console.log(`Permissions applied for ${user.role} (${user.branch_name})`);
+
+    // Load admin stats if admin
+    if (isAdmin) {
+        renderAdminStats();
+    }
+}
+
+export async function renderAdminStats() {
+    const [branchStats, contractStats] = await Promise.all([
+        getBranchStats(),
+        getContractStats()
+    ]);
+
+    // Branch count
+    const branchCountEl = document.getElementById('admin-branch-count');
+    if (branchCountEl) {
+        branchCountEl.textContent = `${branchStats.total}개`;
+    }
+
+    // Branch list
+    const branchListEl = document.getElementById('admin-branch-list');
+    if (branchListEl) {
+        const entries = Object.entries(branchStats.branches).sort((a, b) => b[1] - a[1]);
+        branchListEl.innerHTML = entries.map(([name, count]) => `
+            <div class="flex items-center justify-between py-1.5 px-3 bg-slate-50 rounded-lg text-xs">
+                <span class="text-slate-600 font-medium">${name}</span>
+                <span class="text-slate-400 font-bold">${count}명</span>
+            </div>
+        `).join('');
+    }
+
+    // Contract total
+    const contractTotalEl = document.getElementById('admin-contract-total');
+    if (contractTotalEl) {
+        contractTotalEl.textContent = `${contractStats.total}건`;
+    }
+
+    // Contract stats breakdown
+    const contractStatsEl = document.getElementById('admin-contract-stats');
+    if (contractStatsEl) {
+        contractStatsEl.innerHTML = `
+            <div class="bg-green-50 rounded-lg p-2.5 text-center">
+                <div class="text-[10px] text-green-600 font-bold mb-0.5">완료</div>
+                <div class="text-lg font-black text-green-700">${contractStats.completed}</div>
+            </div>
+            <div class="bg-amber-50 rounded-lg p-2.5 text-center">
+                <div class="text-[10px] text-amber-600 font-bold mb-0.5">임시저장</div>
+                <div class="text-lg font-black text-amber-700">${contractStats.draft}</div>
+            </div>
+        `;
+
+        // Per-branch breakdown
+        const perBranchEntries = Object.entries(contractStats.perBranch).sort((a, b) => b[1] - a[1]);
+        if (perBranchEntries.length > 0) {
+            const branchHtml = perBranchEntries.map(([name, count]) => `
+                <div class="flex items-center justify-between py-1.5 px-3 bg-slate-50 rounded-lg text-xs">
+                    <span class="text-slate-600 font-medium">${name}</span>
+                    <span class="text-slate-400 font-bold">${count}건</span>
+                </div>
+            `).join('');
+            contractStatsEl.insertAdjacentHTML('afterend', `
+                <div class="mt-3 space-y-1">
+                    <p class="text-[10px] text-slate-400 font-bold mb-1">지점별</p>
+                    ${branchHtml}
+                </div>
+            `);
+        }
+    }
 }
 
 export async function renderNotices() {
