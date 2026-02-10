@@ -723,6 +723,10 @@ export async function initStoryboard() {
                 // UI Update
                 document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
                 swatch.classList.add('active');
+
+                // Update Button Indicator
+                const indicator = document.getElementById('sb-pen-color-indicator');
+                if (indicator) indicator.style.backgroundColor = color;
             });
         });
 

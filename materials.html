@@ -35,6 +35,11 @@
                     title="전체화면">
                     <i data-lucide="maximize-2" class="w-4 h-4"></i>
                 </button>
+                <button onclick="location.href='index.html'"
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold transition text-sm">
+                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">메인 화면</span>
+                </button>
                 <button id="logout-btn"
                     class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold transition text-sm">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -63,7 +68,7 @@
                         <i data-lucide="shield-check" class="w-10 h-10"></i>
                     </div>
                     <div class="text-center">
-                        <span class="block font-black text-slate-800 text-lg">멤버십 상담</span>
+                        <span class="block font-black text-slate-800 text-lg">입양 상담</span>
                         <span class="text-xs text-slate-400 font-bold uppercase tracking-tighter">Membership
                             counseling</span>
                     </div>
@@ -108,7 +113,7 @@
             <div class="flex items-center justify-between mb-4 h-14 shrink-0 px-2">
                 <div class="flex items-center gap-3">
                     <h2 class="text-xl md:text-2xl font-black text-slate-800 flex items-center gap-2">
-                        멤버십 상담
+                        입양 상담
                         <span
                             class="hidden sm:inline text-xs font-medium text-juo-orange bg-orange-50 px-2 py-1 rounded-lg">Storyboard
                             Mode</span>
@@ -117,12 +122,19 @@
                     <!-- Integrated Drawing Toolbar -->
                     <div class="relative flex items-center gap-1 bg-slate-100 p-1 rounded-2xl">
                         <button id="sb-tool-pen"
-                            class="tool-btn active w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center bg-white text-slate-900 shadow-sm active:scale-95 transition">
+                            class="tool-btn active w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center bg-white text-slate-900 shadow-sm active:scale-95 transition relative group">
                             <i data-lucide="pen-tool" class="w-4 h-4 md:w-5 md:h-5"></i>
+                            <div id="sb-pen-color-indicator"
+                                class="absolute bottom-1 right-1 w-2 h-2 rounded-full border border-slate-200"
+                                style="background-color: #FF7A00;"></div>
+                            <i data-lucide="chevron-down"
+                                class="absolute -bottom-2 opacity-0 group-hover:opacity-100 transition-opacity w-3 h-3 text-slate-400"></i>
                         </button>
                         <button id="sb-tool-eraser"
-                            class="tool-btn w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center text-slate-400 hover:bg-white/50 active:scale-95 transition">
+                            class="tool-btn w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center text-slate-400 hover:bg-white/50 active:scale-95 transition relative group">
                             <i data-lucide="eraser" class="w-4 h-4 md:w-5 md:h-5"></i>
+                            <i data-lucide="chevron-down"
+                                class="absolute -bottom-2 opacity-0 group-hover:opacity-100 transition-opacity w-3 h-3 text-slate-400"></i>
                         </button>
                         <div class="w-px h-6 bg-slate-200 mx-1"></div>
                         <button id="sb-tool-clear"
@@ -175,17 +187,19 @@
                 </div>
 
                 <!-- In-Tab Navigation -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-3">
                     <button id="sb-prev-btn"
-                        class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition">
-                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                        class="h-10 px-4 rounded-xl bg-slate-100 flex items-center justify-center gap-2 text-slate-500 hover:bg-slate-200 active:scale-95 transition font-bold disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                        <span class="hidden sm:inline">이전</span>
                     </button>
                     <div id="sb-page-indicators" class="flex gap-1 px-2">
                         <!-- Dots injected by JS -->
                     </div>
                     <button id="sb-next-btn"
-                        class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 active:scale-95 transition">
-                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                        class="h-10 px-4 rounded-xl bg-juo-orange flex items-center justify-center gap-2 text-white hover:bg-orange-600 active:scale-95 transition font-bold shadow-lg shadow-orange-100">
+                        <span class="hidden sm:inline">다음</span>
+                        <i data-lucide="chevron-right" class="w-5 h-5"></i>
                     </button>
                 </div>
             </div>
@@ -911,7 +925,7 @@
                 <div class="nav-icon w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center transition">
                     <i data-lucide="users" class="w-5 h-5 md:w-6 md:h-6"></i>
                 </div>
-                <span class="text-[10px] md:text-xs font-medium">멤버십 상담</span>
+                <span class="text-[10px] md:text-xs font-medium">입양 상담</span>
             </button>
 
             <button class="nav-tab flex-1 flex flex-col items-center justify-center gap-1 h-full touch-btn"
