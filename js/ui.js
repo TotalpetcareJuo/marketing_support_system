@@ -763,11 +763,19 @@ export async function initStoryboard() {
         const htmlContainer = document.getElementById('sb-html-content');
         const img = document.getElementById('sb-image');
 
+        console.log('initStoryboard HTML scenario:', { page, content, htmlContainer });
+
         if (htmlContainer && content) {
             htmlContainer.innerHTML = content.html;
             htmlContainer.classList.remove('hidden');
+            console.log('HTML content injected, container size:', htmlContainer.clientWidth, 'x', htmlContainer.clientHeight);
             // Scale content to fit container
-            requestAnimationFrame(() => scaleHtmlContent(htmlContainer));
+            requestAnimationFrame(() => {
+                scaleHtmlContent(htmlContainer);
+                console.log('Scaling applied');
+            });
+        } else {
+            console.error('Missing htmlContainer or content:', { htmlContainer, content });
         }
         if (img) img.classList.add('hidden');
     } else {
@@ -951,21 +959,29 @@ function updateStoryboardPage() {
 
 function scaleHtmlContent(container) {
     const page = container.querySelector('.page');
-    if (!page) return;
+    if (!page) {
+        console.warn('scaleHtmlContent: .page element not found');
+        return;
+    }
 
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
     const pageWidth = page.scrollWidth || containerWidth;
     const pageHeight = page.scrollHeight || containerHeight;
 
+    console.log('scaleHtmlContent:', { containerWidth, containerHeight, pageWidth, pageHeight });
+
     const scaleX = containerWidth / pageWidth;
     const scaleY = containerHeight / pageHeight;
     // Allow scaling up to 1.3x to make content larger, minimum 0.7x
     const scale = Math.max(Math.min(scaleX, scaleY, 1.3), 0.7);
 
+    console.log('Applying scale:', scale);
+
     page.style.transform = `scale(${scale})`;
     page.style.width = `${100 / scale}%`;
     page.style.height = `${100 / scale}%`;
+    page.style.transformOrigin = 'center center';
 }
 
 function updateStoryboardPageIndicators() {

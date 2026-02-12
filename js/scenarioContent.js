@@ -107,15 +107,10 @@ export const scenarioContent = {
                 <div class="others-detail">사료/간식, 중성화, 용품, 기타 의료비 등</div>
             </div>
         </div>
-
-        <div class="solution-box">
-            <div class="solution-text">나머지 80%의 비용까지 완벽하게 케어하는</div>
-            <div class="solution-highlight"><span class="brand">주오 안심 보장 솔루션</span>이 여기 있습니다.</div>
-        </div>
     </div>
         `
     },
-    
+
     // Page 3: Basic Medical
     'membership-03': {
         title: '기초 의료',
