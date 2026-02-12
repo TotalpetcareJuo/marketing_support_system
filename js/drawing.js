@@ -19,16 +19,15 @@ export class DrawingManager {
 
     // Set up event listeners
     bindEvents() {
-        // Mouse Events
-        this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
-        this.canvas.addEventListener('mousemove', this.draw.bind(this));
-        this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
-        this.canvas.addEventListener('mouseout', this.stopDrawing.bind(this));
+        // Use Pointer Events for unified Mouse/Touch/Pen handling
+        this.canvas.addEventListener('pointerdown', this.handlePointerDown.bind(this));
+        this.canvas.addEventListener('pointermove', this.handlePointerMove.bind(this));
+        this.canvas.addEventListener('pointerup', this.handlePointerUp.bind(this));
+        this.canvas.addEventListener('pointercancel', this.handlePointerUp.bind(this));
+        this.canvas.addEventListener('pointerout', this.handlePointerUp.bind(this));
 
-        // Touch Events
-        this.canvas.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
-        this.canvas.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-        this.canvas.addEventListener('touchend', this.stopDrawing.bind(this));
+        // Disable context menu to allow pen button (Right Click) usage
+        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     }
 
     // Resize canvas to match display size
@@ -91,41 +90,42 @@ export class DrawingManager {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    // Coordinate Helper
-    getCoordinates(e) {
-        // Check if it's a touch event
-        if (e.touches && e.touches.length > 0) {
-            const rect = this.canvas.getBoundingClientRect();
-            return {
-                x: e.touches[0].clientX - rect.left,
-                y: e.touches[0].clientY - rect.top
-            };
-        }
-        // Mouse event
-        return {
-            x: e.offsetX,
-            y: e.offsetY
-        };
-    }
-
     // Event Handlers
-    startDrawing(e) {
+    handlePointerDown(e) {
+        // Detect Pen Button (Button 3 is the barrel button on many pens, often maps to right click)
+        // Or buttons field bitmask: 2 = Right button (Barrel), 32 = Eraser button
+        const isQuickEraser = e.pointerType === 'pen' && (e.buttons & 2 || e.buttons & 32);
+
+        if (isQuickEraser) {
+            this.tempTool = this.currentTool;
+            this.setTool('eraser');
+        }
+
         this.isDrawing = true;
+        this.canvas.setPointerCapture(e.pointerId);
+
         const coords = this.getCoordinates(e);
         this.lastX = coords.x;
         this.lastY = coords.y;
     }
 
-    draw(e) {
+    handlePointerMove(e) {
         if (!this.isDrawing) return;
 
-        // Prevent scrolling on touch devices
-        // This is critical for the "canvas on top of scrollable page" issue
-        if (e.type === 'touchmove') {
-            e.preventDefault();
-        }
+        // Prevent scrolling
+        e.preventDefault();
 
         const coords = this.getCoordinates(e);
+
+        // Update context based on pressure if available
+        if (e.pointerType === 'pen' && e.pressure > 0) {
+            const baseWidth = this.currentTool === 'eraser' ? this.eraserSize : this.lineWidth;
+            // Linear scale pressure to width (pressure is 0.0 to 1.0)
+            // We'll make it vary between 50% and 150% of base width
+            this.ctx.lineWidth = baseWidth * (0.5 + e.pressure);
+        } else {
+            this.ctx.lineWidth = this.currentTool === 'eraser' ? this.eraserSize : this.lineWidth;
+        }
 
         this.ctx.beginPath();
         this.ctx.moveTo(this.lastX, this.lastY);
@@ -136,21 +136,25 @@ export class DrawingManager {
         this.lastY = coords.y;
     }
 
-    stopDrawing() {
+    handlePointerUp(e) {
+        if (!this.isDrawing) return;
+
         this.isDrawing = false;
-    }
+        this.canvas.releasePointerCapture(e.pointerId);
 
-    // Touch Event Wrappers
-    handleTouchStart(e) {
-        e.preventDefault(); // Prevent default touch actions like simulating mouse
-        if (e.touches.length === 1) { // Single touch only
-            this.startDrawing(e);
+        // Restore tool if it was a quick eraser
+        if (this.tempTool) {
+            this.setTool(this.tempTool);
+            this.tempTool = null;
         }
     }
 
-    handleTouchMove(e) {
-        if (e.touches.length === 1) {
-            this.draw(e);
-        }
+    // Coordinate Helper (Updated for PointerEvents)
+    getCoordinates(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
     }
 }

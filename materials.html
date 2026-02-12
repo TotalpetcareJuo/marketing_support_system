@@ -8,6 +8,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="css/materials.css">
+    <!-- Scenario Pages Styles (for HTML-based counseling) -->
+    <link rel="stylesheet" href="css/scenario-pages.css">
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -208,13 +215,18 @@
             <div id="storyboard-container"
                 class="relative w-full flex-1 bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden shadow-inner flex items-center justify-center">
 
-                <!-- Layer 1: Scenario Image -->
+                <!-- Layer 1: Scenario Image (for image-based scenarios) -->
                 <img id="sb-image"
-                    class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none p-4" src=""
+                    class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none p-4 hidden" src=""
                     alt="Counseling Scenario">
 
+                <!-- Layer 1b: HTML Content (for HTML-based scenarios) -->
+                <div id="sb-html-content"
+                    class="scenario-html-content absolute inset-0 w-full h-full overflow-hidden hidden">
+                </div>
+
                 <!-- Layer 2: Drawing Canvas -->
-                <canvas id="sb-canvas" class="absolute inset-0 w-full h-full touch-none cursor-crosshair"></canvas>
+                <canvas id="sb-canvas" class="absolute inset-0 w-full h-full touch-none cursor-crosshair z-10"></canvas>
             </div>
         </section>
 

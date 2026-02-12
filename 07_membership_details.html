@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>주오 멤버십 상세 비교 — Detail</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="membership_common.css">
+
+
+</head>
+
+<body>
+    <div class="page">
+
+
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Comparison Table -->
+            <div class="table-section">
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th>혜택 항목</th>
+                            <th class="th-market-price">책정 시중가</th>
+                            <th class="th-white">화이트</th>
+                            <th class="th-silver">실버</th>
+                            <th class="th-vip">VIP</th>
+                            <th class="th-gold">골드</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Basic Medical -->
+                        <tr class="cat-row">
+                            <td colspan="6"><i class="fa-solid fa-stethoscope cat-row__icon"></i> 기초 의료</td>
+                        </tr>
+                        <tr>
+                            <td>필수 예방접종 (6회)</td>
+                            <td>300,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                        </tr>
+                        <tr>
+                            <td>항체가 검사</td>
+                            <td>55,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>중성화 수술 (5kg 미만)</td>
+                            <td>550,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                        </tr>
+                        <tr>
+                            <td>동물등록 내장형칩</td>
+                            <td>100,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                        </tr>
+
+                        <!-- Ongoing Care -->
+                        <tr class="cat-row">
+                            <td colspan="6"><i class="fa-solid fa-heart-pulse cat-row__icon"></i> 지속 건강 관리</td>
+                        </tr>
+                        <tr>
+                            <td>심장사상충 (12회)</td>
+                            <td>300,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>종합백신 + 광견병<br><span class="table-cell--small">(기초 의료 종료 후)</span></td>
+                            <td>100,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><span class="table-cell--phase">2년차부터</span></td>
+                            <td><span class="table-cell--phase">2년차부터</span></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>기초 건강 검진</td>
+                            <td>250,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                        </tr>
+                        <tr>
+                            <td>종합 건강검진 (초음파/X-ray)</td>
+                            <td>700,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><span class="table-cell--phase table-cell--vip">2년차부터</span></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>질병/상해 의료비 지원</td>
+                            <td>500,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><span class="highlight-value">연 50만원</span></td>
+                        </tr>
+
+                        <!-- Subscription -->
+                        <tr class="cat-row">
+                            <td colspan="6"><i class="fa-solid fa-box cat-row__icon"></i> 사료, 용품 지원
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>유기농 사료 + 패드 + 수제 간식 배송</td>
+                            <td>720,000원</td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                        </tr>
+                        <tr>
+                            <td>주오몰 추가 할인</td>
+                            <td>-</td>
+                            <td><span class="value">20%</span></td>
+                            <td><span class="value">20%</span></td>
+                            <td><span class="value value--compact table-cell--vip">30% +
+                                    무료배송</span></td>
+                            <td><span class="value value--compact table-cell--gold">30% +
+                                    무료배송</span></td>
+                        </tr>
+
+
+                        <!-- Additional -->
+                        <tr class="cat-row">
+                            <td colspan="6"><i class="fa-solid fa-star cat-row__icon"></i> 추가 혜택
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>방문 훈련 교육</td>
+                            <td>350,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><i class="fa-solid fa-check check"></i></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                        </tr>
+                        <tr>
+                            <td>위생+목욕 6회 / 호텔링 3회
+                            </td>
+                            <td>450,000원</td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                            <td><span class="table-cell--phase">2년차부터</span></td>
+                            <td><span class="table-cell--phase table-cell--vip">2년차부터</span></td>
+                            <td><i class="fa-solid fa-minus cross"></i></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Cost Summary -->
+            <div class="cost-section">
+                <!-- White -->
+                <div class="cost-card cost-card--white">
+                    <div class="cost-card__name"><i class="fa-solid fa-circle cost-card__icon"></i>
+                        화이트</div>
+                    <div class="cost-row"><span>혜택 가치</span><span class="strikethrough">720,000원</span></div>
+                    <!-- Monthly Emphasized -->
+                    <div class="cost-monthly">50,000<span>원/월</span></div>
+                    <div class="cost-annual">(1년 납입금 600,000원)</div>
+                    <div class="cost-row cost-row--save"><span>⚡ 평균 양육비</span><span>12만원 SAVE</span>
+                    </div>
+                </div>
+                <div class="cost-card cost-card--silver">
+                    <div class="cost-card__name"><i class="fa-solid fa-circle cost-card__icon"></i>
+                        실버</div>
+                    <div class="cost-row"><span>혜택 가치</span><span class="strikethrough">1,670,000원</span></div>
+                    <div class="cost-monthly">100,000<span>원/월</span></div>
+                    <div class="cost-annual">(1년 납입금 1,200,000원)</div>
+                    <div class="cost-row cost-row--save"><span>⚡ 평균 양육비</span><span>47만원 SAVE</span>
+                    </div>
+                </div>
+                <!-- VIP -->
+                <div class="cost-card cost-card--vip">
+                    <div class="cost-card__name"><i class="fa-solid fa-crown cost-card__icon--crown"></i> VIP</div>
+                    <div class="cost-row"><span>혜택 가치</span><span class="strikethrough">2,570,000원</span></div>
+                    <div class="cost-monthly">160,000<span>원/월</span></div>
+                    <div class="cost-annual">(1년 납입금 1,920,000원)</div>
+                    <div class="cost-row cost-row--save"><span>⚡ 평균 양육비</span><span>65만원 SAVE</span>
+                    </div>
+                </div>
+                <!-- Gold -->
+                <div class="cost-card cost-card--gold">
+                    <div class="cost-card__name"><i class="fa-solid fa-fire cost-card__icon--fire"></i>
+                        골드</div>
+                    <div class="cost-row"><span>혜택 가치</span><span class="strikethrough">2,375,000원</span></div>
+                    <div class="cost-monthly">120,000<span>원/월</span></div>
+                    <div class="cost-annual">(1년 납입금 1,440,000원)</div>
+                    <div class="cost-row cost-row--save"><span>⚡ 평균 양육비</span><span>93.5만원 SAVE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,5 +1,6 @@
 import { getMaterials, getColorMap, getMaterialsByCategory, getScenarioById, getContracts, getNotices, saveContract, generateContractId, getUserProfile, getBranchStats, getContractStats, deleteContract } from './store.js';
 import { DrawingManager } from './drawing.js';
+import { getScenarioContent } from './scenarioContent.js';
 
 let currentMaterialIndex = 0;
 let filteredMaterials = [];
@@ -625,12 +626,38 @@ async function openScenarioViewer(material) {
 
     currentScenarioPage = 0;
 
-    // Render Scenario Layout
+    const isHtmlScenario = currentScenario.type === 'HTML_SCENARIO';
+
+    if (isHtmlScenario) {
+        renderHtmlScenarioViewer();
+    } else {
+        renderImageScenarioViewer();
+    }
+}
+
+function renderHtmlScenarioViewer() {
+    const page = currentScenario.pages[currentScenarioPage];
+    const content = getScenarioContent(page.contentId);
+
+    if (!content) {
+        console.error('Scenario content not found:', page.contentId);
+        return;
+    }
+
     elements.viewerContent().innerHTML = `
-        <div class="relative w-full h-full max-w-4xl max-h-[80vh] bg-white rounded-2xl flex items-center justify-center animate-fade-in overflow-hidden shadow-2xl">
-            <img id="scenario-image" class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none" src="${currentScenario.pages[0]}" alt="Page 1">
-            <canvas id="consult-canvas" class="absolute inset-0 w-full h-full touch-none cursor-crosshair"></canvas>
-            
+        <div class="relative w-full h-full max-w-5xl max-h-[85vh] bg-white rounded-2xl animate-fade-in overflow-hidden shadow-2xl flex flex-col">
+            <!-- HTML Content Container -->
+            <div id="scenario-html-container"
+                 class="scenario-html-content flex-1 overflow-auto relative"
+                 data-body-class="${content.bodyClass || ''}">
+                ${content.html}
+            </div>
+
+            <!-- Drawing Canvas Overlay -->
+            <canvas id="consult-canvas"
+                    class="absolute inset-0 w-full h-full touch-none cursor-crosshair z-10"></canvas>
+
+            <!-- Toolbar -->
             <div data-toolbar="true" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md px-6 py-3 rounded-full flex items-center gap-4 shadow-xl z-20 border border-white/10">
                 <button id="tool-pen" class="tool-btn active w-10 h-10 rounded-full flex items-center justify-center bg-white text-slate-900 shadow-lg active:scale-95 transition">
                     <i data-lucide="pen-tool" class="w-5 h-5"></i>
@@ -648,7 +675,55 @@ async function openScenarioViewer(material) {
 
     lucide.createIcons();
 
-    // Initialize Drawing Manager
+    const canvas = document.getElementById('consult-canvas');
+    const container = document.getElementById('scenario-html-container');
+    if (canvas && container) {
+        const rect = container.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+
+        scaleHtmlContent(container);
+
+        drawingManager = new DrawingManager(canvas);
+
+        // Toolbar Events
+        document.getElementById('tool-pen').addEventListener('click', (e) => {
+            drawingManager.setTool('pen');
+            updateToolUI('pen');
+        });
+        document.getElementById('tool-eraser').addEventListener('click', (e) => {
+            drawingManager.setTool('eraser');
+            updateToolUI('eraser');
+        });
+        document.getElementById('tool-clear').addEventListener('click', () => {
+            drawingManager.clear();
+        });
+    }
+}
+
+function renderImageScenarioViewer() {
+    elements.viewerContent().innerHTML = `
+        <div class="relative w-full h-full max-w-4xl max-h-[80vh] bg-white rounded-2xl flex items-center justify-center animate-fade-in overflow-hidden shadow-2xl">
+            <img id="scenario-image" class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none" src="${currentScenario.pages[0]}" alt="Page 1">
+            <canvas id="consult-canvas" class="absolute inset-0 w-full h-full touch-none cursor-crosshair"></canvas>
+
+            <div data-toolbar="true" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md px-6 py-3 rounded-full flex items-center gap-4 shadow-xl z-20 border border-white/10">
+                <button id="tool-pen" class="tool-btn active w-10 h-10 rounded-full flex items-center justify-center bg-white text-slate-900 shadow-lg active:scale-95 transition">
+                    <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                </button>
+                <button id="tool-eraser" class="tool-btn w-10 h-10 rounded-full flex items-center justify-center bg-white/10 text-white hover:bg-white/20 active:scale-95 transition">
+                    <i data-lucide="eraser" class="w-5 h-5"></i>
+                </button>
+                <div class="w-px h-6 bg-white/20"></div>
+                <button id="tool-clear" class="tool-btn w-10 h-10 rounded-full flex items-center justify-center bg-red-500/20 text-red-400 hover:bg-red-500/30 active:scale-95 transition">
+                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    `;
+
+    lucide.createIcons();
+
     const canvas = document.getElementById('consult-canvas');
     if (canvas) {
         drawingManager = new DrawingManager(canvas);
@@ -671,19 +746,39 @@ async function openScenarioViewer(material) {
 // Storyboard Mode Initialization
 export async function initStoryboard() {
     if (drawingManager) {
-        // Already initialized, just resize for safety
         drawingManager.resize();
         return;
     }
 
-    currentScenario = await getScenarioById('scenario-1');
+    currentScenario = await getScenarioById('scenario-membership');
     if (!currentScenario) return;
 
     currentScenarioPage = 0;
 
-    // Set initial image
-    const img = document.getElementById('sb-image');
-    if (img) img.src = currentScenario.pages[0];
+    const isHtmlScenario = currentScenario.type === 'HTML_SCENARIO';
+
+    if (isHtmlScenario) {
+        const page = currentScenario.pages[currentScenarioPage];
+        const content = getScenarioContent(page.contentId);
+        const htmlContainer = document.getElementById('sb-html-content');
+        const img = document.getElementById('sb-image');
+
+        if (htmlContainer && content) {
+            htmlContainer.innerHTML = content.html;
+            htmlContainer.classList.remove('hidden');
+            // Scale content to fit container
+            requestAnimationFrame(() => scaleHtmlContent(htmlContainer));
+        }
+        if (img) img.classList.add('hidden');
+    } else {
+        const img = document.getElementById('sb-image');
+        const htmlContainer = document.getElementById('sb-html-content');
+        if (img) {
+            img.src = currentScenario.pages[0];
+            img.classList.remove('hidden');
+        }
+        if (htmlContainer) htmlContainer.classList.add('hidden');
+    }
 
     // Initialize Drawing Manager
     const canvas = document.getElementById('sb-canvas');
@@ -833,13 +928,44 @@ function sbShowNext() {
 }
 
 function updateStoryboardPage() {
-    const img = document.getElementById('sb-image');
-    if (img) img.src = currentScenario.pages[currentScenarioPage];
+    const isHtmlScenario = currentScenario.type === 'HTML_SCENARIO';
 
-    // Clear canvas on page change (but NOT on tab switch)
+    if (isHtmlScenario) {
+        const page = currentScenario.pages[currentScenarioPage];
+        const content = getScenarioContent(page.contentId);
+        const htmlContainer = document.getElementById('sb-html-content');
+
+        if (htmlContainer && content) {
+            htmlContainer.innerHTML = content.html;
+            requestAnimationFrame(() => scaleHtmlContent(htmlContainer));
+        }
+    } else {
+        const img = document.getElementById('sb-image');
+        if (img) img.src = currentScenario.pages[currentScenarioPage];
+    }
+
     if (drawingManager) drawingManager.clear();
 
     updateStoryboardPageIndicators();
+}
+
+function scaleHtmlContent(container) {
+    const page = container.querySelector('.page');
+    if (!page) return;
+
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    const pageWidth = page.scrollWidth || containerWidth;
+    const pageHeight = page.scrollHeight || containerHeight;
+
+    const scaleX = containerWidth / pageWidth;
+    const scaleY = containerHeight / pageHeight;
+    // Allow scaling up to 1.3x to make content larger, minimum 0.7x
+    const scale = Math.max(Math.min(scaleX, scaleY, 1.3), 0.7);
+
+    page.style.transform = `scale(${scale})`;
+    page.style.width = `${100 / scale}%`;
+    page.style.height = `${100 / scale}%`;
 }
 
 function updateStoryboardPageIndicators() {
@@ -953,15 +1079,23 @@ export function showNext() {
 }
 
 function updateScenarioPage() {
-    const img = document.getElementById('scenario-image');
-    if (img) {
-        img.src = currentScenario.pages[currentScenarioPage];
+    const isHtmlScenario = currentScenario.type === 'HTML_SCENARIO';
+
+    if (isHtmlScenario) {
+        const page = currentScenario.pages[currentScenarioPage];
+        const content = getScenarioContent(page.contentId);
+        const htmlContainer = document.getElementById('sb-html-content') || document.getElementById('scenario-html-container');
+
+        if (htmlContainer && content) {
+            htmlContainer.innerHTML = content.html;
+            requestAnimationFrame(() => scaleHtmlContent(htmlContainer));
+        }
+    } else {
+        const img = document.getElementById('scenario-image');
+        if (img) img.src = currentScenario.pages[currentScenarioPage];
     }
 
-    // Clear canvas on page change
-    if (drawingManager) {
-        drawingManager.clear();
-    }
+    if (drawingManager) drawingManager.clear();
 
     updatePageIndicators();
 }

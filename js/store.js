@@ -2,7 +2,7 @@ import { supabase } from './supabase.js';
 import { materials as mockMaterials, colorMap as mockColorMap, scenarios as mockScenarios } from './data.js';
 
 // 기본적으로 Supabase를 시도하되, 실패 시 Mock 데이터를 사용합니다.
-const USE_MOCK_DATA = false;
+const USE_MOCK_DATA = true;
 
 let materialsCache = null;
 let colorMapCache = null;

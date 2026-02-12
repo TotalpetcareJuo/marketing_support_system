@@ -1,14 +1,15 @@
 # AGENTS.md - Coding Guidelines for JUO Marketing Support System
 
 ## Project Overview
-Frontend-only marketing support system for JUO COMPANY (pet adoption business). Built with vanilla HTML/CSS/JavaScript using Tailwind CSS via CDN. Modular JavaScript architecture with global state management.
+Frontend marketing support system for JUO COMPANY (pet adoption business). Hybrid architecture with vanilla HTML/CSS/JavaScript - uses both ES modules and global script patterns. Tailwind CSS via CDN, modular JavaScript with localStorage state management.
 
 ## Tech Stack
 - **Languages**: HTML5, CSS3, Vanilla JavaScript (ES6+)
-- **Styling**: Tailwind CSS (CDN), Custom CSS
+- **Styling**: Tailwind CSS (CDN v3.4+), Custom CSS
 - **Icons**: Lucide Icons (CDN)
 - **Storage**: localStorage (client-side only)
 - **Testing**: Playwright (configured)
+- **Backend**: Supabase (for materials/auth)
 - **Language**: Korean (ko) primary interface
 
 ## Build/Test Commands
@@ -18,14 +19,16 @@ npm install  # or bun install
 
 # Serve locally
 python3 -m http.server 8000
-npx serve
+npx serve                    # npm run dev
 
-# Run tests
+# Run Playwright tests
 npx playwright test                    # Run all tests
 npx playwright test <file>.spec.js     # Run single test file
 npx playwright test --ui               # Run with UI mode
 npx playwright test --headed           # Run in headed mode
-npx node test-localstorage-compat.js   # Run localStorage migration test
+
+# Run custom tests
+node test-localstorage-compat.js       # localStorage migration test
 ```
 
 ## File Structure
@@ -33,19 +36,24 @@ npx node test-localstorage-compat.js   # Run localStorage migration test
 /
 ├── index.html                       # Landing page (hub)
 ├── display_system.html              # Store display manager UI
-├── display_system.js                # Main entry, bridge to modules
-├── display_system.css               # Custom styles
-├── materials.html                   # Sales library/catalog
-├── pet_insurance_slide.html         # Insurance-specific slide
-├── test-localstorage-compat.js      # LocalStorage compatibility test
-├── display_system/                  # Modular JS components
+├── display_system.js                # Main entry for display system
+├── display_system.css               # Display system styles
+├── materials.html                   # Sales library/catalog (ES modules)
+├── test-localstorage-compat.js      # Playwright migration test
+├── display_system/                  # Global script modules
 │   ├── state.js                     # State mgmt, defaults, migrations
 │   ├── admin.js                     # Admin UI rendering functions
 │   ├── editor.js                    # Rich text editor logic
 │   ├── slideshow.js                 # Slideshow/presentation logic
 │   └── slideshow_templates.js       # HTML templates for slides
-├── package.json                     # Dev dependencies (Playwright)
-└── .gitignore                       # Git ignore rules
+├── js/                              # ES modules (materials.html)
+│   ├── app.js                       # App entry with Supabase auth
+│   ├── ui.js                        # UI rendering (exported functions)
+│   ├── store.js                     # Data layer
+│   ├── supabase.js                  # Supabase client
+│   └── drawing.js                   # Drawing/canvas utilities
+├── css/                             # Additional styles
+└── package.json                     # Dev dependencies (Playwright)
 ```
 
 ## Code Style Guidelines
@@ -58,7 +66,7 @@ npx node test-localstorage-compat.js   # Run localStorage migration test
 - Initialize icons: `lucide.createIcons()` after DOM updates
 
 ### CSS
-- Brand color: `#FF7A00` (JUO Orange)
+- **Brand color**: `#FF7A00` (JUO Orange)
 - Tailwind utilities primary; custom CSS for:
   - Scrollbars (`.custom-scroll`)
   - Brand utilities (`.text-juo-orange`, `.bg-juo-orange`)
@@ -66,38 +74,49 @@ npx node test-localstorage-compat.js   # Run localStorage migration test
 - Font: Noto Sans KR (Google Fonts)
 - Background: `#f8fafc` (slate-50)
 
-### JavaScript
-- Use `const`/`let` (no `var`)
-- camelCase for variables/functions; PascalCase for constructors
-- Constants: UPPER_SNAKE_CASE (`STORAGE_KEY`)
-- Event listeners: `DOMContentLoaded` for init
-- localStorage key: `juoStoreDisplayConfig_v3`
-- Prefer early returns over nested if-statements
+### JavaScript - Two Module Systems
+
+#### System A: ES Modules (js/ folder, materials.html)
+```javascript
+// Use import/export
+import { supabase } from './supabase.js';
+import { AppState } from './ui.js';
+
+export async function initData() { }
+export const AppState = { };
+```
+
+#### System B: Global Scripts (display_system/ folder, display_system.html)
+```javascript
+// NO ES modules - vanilla script tags
+// Script loading order matters:
+// 1. state.js (creates global config)
+// 2. admin.js, editor.js, slideshow_templates.js, slideshow.js
+// 3. display_system.js (main entry)
+
+// Expose to window for inline handlers:
+window.functionName = functionName;
+window.ObjectName = ObjectName;
+
+// Use cache-busting: ?v=2 suffix on script src
+```
 
 ### Naming Conventions
-- **Root files**: lowercase with underscores (`display_system.js`)
-- **Module files**: lowercase (`state.js`, `admin.js`)
+- Use `const`/`let` (no `var`)
+- **camelCase**: variables, functions
+- **PascalCase**: constructors, exported modules
+- **UPPER_SNAKE_CASE**: constants (`STORAGE_KEY`)
+- **File names**: lowercase with underscores (`display_system.js`)
 - **CSS classes**: kebab-case (`.slide-card`)
 - **Data keys**: snake_case within objects (`pet1`, `checklist`)
-
-### Module System
-- **No ES Modules**: vanilla script tags, NOT `import`/`export`
-- Script loading order matters (in `display_system.html`):
-  1. `state.js` (creates global `config`)
-  2. `admin.js`, `editor.js`, `slideshow_templates.js`, `slideshow.js`
-  3. `display_system.js` (main entry)
-- Use cache-busting: `?v=2` suffix on script src
-- Expose to `window` for inline handlers:
-  ```javascript
-  window.functionName = functionName;
-  window.ObjectName = ObjectName;
-  ```
+- **localStorage key**: `juoStoreDisplayConfig_v3`
 
 ### Error Handling
-- Use `try/catch` for DOM operations
+- Use `try/catch` for DOM operations and async calls
 - Check element existence before manipulation
 - Graceful fallbacks to default data
 - Log errors with descriptive messages
+- Prefer early returns over nested if-statements
 
 ### Comments
 - Section headers: `// ---- Section Name ----`
@@ -113,9 +132,9 @@ npx node test-localstorage-compat.js   # Run localStorage migration test
 
 ## Data Patterns
 - Default data structure with fallbacks
-- Version migration logic for localStorage
+- Version migration logic for localStorage (see state.js)
 - State management via global `config` object
-- Images: Base64/DataURL in localStorage
+- Images: Base64/DataURL in localStorage (monitor size!)
 - Pet status values with emoji prefixes:
   - `🏠 가족 찾는 중` (Available)
   - `🌷 가족 맞이 준비중` (Reserved)
@@ -123,13 +142,13 @@ npx node test-localstorage-compat.js   # Run localStorage migration test
 
 ## State Module Pattern
 ```javascript
-// Standard pattern
+// For global script modules (display_system/)
 const State = {
     getConfig() { return config; },
     saveConfig() { localStorage.setItem(STORAGE_KEY, JSON.stringify(config)); },
     updateTimestamp() { config.lastSaved = new Date().toISOString(); }
 };
-window.State = State;
+window.State = State;  // Always expose to window
 ```
 
 ## Git
@@ -137,7 +156,8 @@ window.State = State;
 - No special commit message conventions
 
 ## Performance Notes
-- Images stored as Base64 in localStorage (monitor size)
+- Images stored as Base64 in localStorage (monitor size, limit to <5MB total)
 - No bundling/minification
-- Tailwind CDN includes all utilities
+- Tailwind CDN includes all utilities (larger download)
 - Use `lucide.createIcons()` after any DOM update with new icons
+- Playwright tests run headless by default

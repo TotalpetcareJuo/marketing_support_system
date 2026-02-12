@@ -1,6 +1,7 @@
 // 자료 데이터
 export const materials = [
     { id: 1, title: '신규 입양 고객 상담', category: 'adoption', categoryLabel: '입양 상담', type: 'SCENARIO', scenarioId: 'scenario-1', size: 'Unknown', date: '2024.02.10', color: 'orange', icon: 'message-circle' },
+    { id: 2, title: 'JUO 멤버십 안내', category: 'adoption', categoryLabel: '입양 상담', type: 'SCENARIO', scenarioId: 'scenario-membership', size: '7 Pages', date: '2024.02.12', color: 'blue', icon: 'shield-check' },
     { id: 3, title: '초보 견주를 위한 첫 2주 케어', category: 'adoption', categoryLabel: '입양 상담', type: 'SCENARIO', scenarioId: 'scenario-3', size: '5.8 MB', date: '2023.12.10', color: 'green', icon: 'book-open' },
     { id: 4, title: '매장 홍보용 이미지 소스', category: 'etc', categoryLabel: '기타', type: 'ZIP', size: '24.5 MB', date: '2023.11.05', color: 'slate', icon: 'image' },
     { id: 5, title: '배변 훈련 교육 영상', category: 'etc', categoryLabel: '교육 영상', type: 'MP4', size: '120 MB', date: '2024.01.02', color: 'purple', icon: 'play-circle' },
@@ -34,6 +35,20 @@ export const scenarios = [
             '/assets/placeholder-2.webp',
             '/assets/placeholder-3.webp',
             '/assets/placeholder-4.webp'
+        ]
+    },
+    {
+        id: 'scenario-membership',
+        title: '멤버십 안내',
+        type: 'HTML_SCENARIO',
+        pages: [
+            { type: 'html', contentId: 'membership-01', title: '펫 보험 안내' },
+            { type: 'html', contentId: 'membership-02', title: '비용 브릿지' },
+            { type: 'html', contentId: 'membership-03', title: '기초 의료' },
+            { type: 'html', contentId: 'membership-04', title: '지속 건강 관리' },
+            { type: 'html', contentId: 'membership-05', title: '사료 용품 지원' },
+            { type: 'html', contentId: 'membership-06', title: '추가 혜택' },
+            { type: 'html', contentId: 'membership-07', title: '멤버십 상세' }
         ]
     }
 ];

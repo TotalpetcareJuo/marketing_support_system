@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>기초 의료 — Basic Medical</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="membership_common.css">
+</head>
+
+<body class="body--care body--care-basic">
+    <div class="care-page">
+        <div class="care-header">
+            <h1 class="care-title">기초 의료 비교</h1>
+            <p class="care-subtitle">입양 초기 필수적인 예방접종과 수술 지원 혜택</p>
+        </div>
+
+        <table class="care-table">
+            <thead>
+                <tr>
+                    <th class="col-benefit care-table__th-benefit">혜택 상세 (Benefits)</th>
+                    <th class="col-white white-col">화이트</th>
+                    <th class="col-silver silver-col">실버</th>
+                    <th class="col-vip vip-col">VIP</th>
+                    <th class="col-gold gold-col">골드</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Vaccination -->
+                <tr>
+                    <td>
+                        <div class="benefit-info">
+                            <div class="benefit-icon">
+                                <i class="fa-solid fa-syringe"></i>
+                            </div>
+                            <div class="benefit-text">
+                                <span class="benefit-name">필수 예방접종</span>
+                                <span class="benefit-price">시중가 약 300,000원</span>
+                            </div>
+                        </div>
+                        <div class="care-note care-note--loose">
+                            <div class="care-note__row"><span
+                                    class="care-note__label">강아지:</span><span>종합백신
+                                    1~6차</span></div>
+                            <div class="care-note__row care-note__row--spaced"><span
+                                    class="care-note__label">고양이:</span><span>종합백신
+                                    1~3차</span></div>
+                        </div>
+                    </td>
+                    <td class="border-right"><i class="fa-solid fa-minus cross-icon"></i></td>
+                    <td class="border-right"><i class="fa-solid fa-check check-icon"></i></td>
+                    <td class="border-right"><i class="fa-solid fa-check check-icon"></i></td>
+                    <td><i class="fa-solid fa-minus cross-icon"></i></td>
+                </tr>
+
+                <!-- Antibody -->
+                <tr>
+                    <td>
+                        <div class="benefit-info">
+                            <div class="benefit-icon">
+                                <i class="fa-solid fa-vial"></i>
+                            </div>
+                            <div class="benefit-text">
+                                <span class="benefit-name">항체가 검사</span>
+                                <span class="benefit-price">시중가 약 55,000원</span>
+                            </div>
+                        </div>
+                        <div class="care-note">
+                            접종 완료 후 항체 생성 여부 확인
+                        </div>
+                    </td>
+                    <td class="border-right"><i class="fa-solid fa-minus cross-icon"></i></td>
+                    <td class="border-right"><i class="fa-solid fa-minus cross-icon"></i></td>
+                    <td class="border-right"><i class="fa-solid fa-minus cross-icon"></i></td>
+                    <td><i class="fa-solid fa-check check-icon"></i></td>
+                </tr>
+
+                <!-- Neutering -->
+                <tr>
+                    <td>
+                        <div class="benefit-info">
+                            <div class="benefit-icon">
+                                <i class="fa-solid fa-notes-medical"></i>
+                            </div>
+                            <div class="benefit-text">
+                                <span class="benefit-name">중성화 수술</span>
+                                <span class="benefit-price">시중가 약 550,000원</span>
+                            </div>
+                        </div>
+                        <div class="care-note">
+                            수술비 전액 지원 (5kg 미만 기준)
+                        </div>
+                    </td>
+                    <td class="border-right"><i class="fa-solid fa-minus cross-icon"></i></td>
+                    <td class="border-right"><i class="fa-solid fa-check check-icon"></i></td>
+                    <td class="border-right"><i class="fa-solid fa-check check-icon"></i></td>
+                    <td><i class="fa-solid fa-minus cross-icon"></i></td>
+                </tr>
+
+                <!-- Registration -->
+                <tr>
+                    <td>
+                        <div class="benefit-info">
+                            <div class="benefit-icon">
+                                <i class="fa-solid fa-id-card"></i>
+                            </div>
+                            <div class="benefit-text">
+                                <span class="benefit-name">동물등록 내장형칩</span>
+                                <span class="benefit-price">시중가 약 100,000원</span>
+                            </div>
+                        </div>
+                        <div class="care-note">
+                            마이크로칩 시술 및 구청 등록 대행
+                        </div>
+                    </td>
+                    <td class="border-right"><i class="fa-solid fa-minus cross-icon"></i></td>
+                    <td class="border-right"><i class="fa-solid fa-check check-icon"></i></td>
+                    <td class="border-right"><i class="fa-solid fa-check check-icon"></i></td>
+                    <td><i class="fa-solid fa-minus cross-icon"></i></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
