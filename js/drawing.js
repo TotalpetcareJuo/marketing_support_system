@@ -15,9 +15,6 @@ export class DrawingManager {
         this.palmRejectionEnabled = true;
         this.minTouchWidth = 15;
         this.maxTouchWidth = 100;
-        this.doubleTapThreshold = 300;
-        this.lastTapTime = 0;
-        this.quickToggleCallback = null;
 
         // Initialize
         this.resize();
@@ -97,53 +94,23 @@ export class DrawingManager {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    toggleTool() {
-        this.currentTool = this.currentTool === 'pen' ? 'eraser' : 'pen';
-        this.updateContext();
-    }
-
-    setQuickToggleCallback(callback) {
-        this.quickToggleCallback = callback;
-    }
-
     setPalmRejection(enabled) {
         this.palmRejectionEnabled = enabled;
     }
 
-    isStylusActive() {
-        return this.canvas.matches(':hover') && this.isDrawing;
-    }
-
-    // Event Handlers
     handlePointerDown(e) {
-        const currentTime = Date.now();
-        const timeSinceLastTap = currentTime - this.lastTapTime;
-
-        // Double tap detection for quick tool toggle
-        if (timeSinceLastTap < this.doubleTapThreshold && !this.isDrawing) {
-            this.toggleTool();
-            if (this.quickToggleCallback) {
-                this.quickToggleCallback(this.currentTool);
-            }
-            this.lastTapTime = 0;
-            return;
-        }
-        this.lastTapTime = currentTime;
-
-        // Palm Rejection: Check touch width/area
+        // Palm Rejection
         if (this.palmRejectionEnabled && e.pointerType === 'touch') {
             const touchWidth = e.width || 20;
             const touchHeight = e.height || 20;
             const touchArea = touchWidth * touchHeight;
 
-            // Reject if too large (palm) or too small (accidental)
             if (touchArea > this.maxTouchWidth * 10 || touchArea < this.minTouchWidth * 5) {
-                console.log('Palm rejection: ignored touch with area', touchArea);
                 return;
             }
         }
 
-        // Detect Pen Button (Button 2 is the barrel button, 32 is Eraser button)
+        // Pen barrel button for quick eraser
         const isQuickEraser = e.pointerType === 'pen' && (e.buttons & 2 || e.buttons & 32);
 
         if (isQuickEraser) {
@@ -158,7 +125,6 @@ export class DrawingManager {
         this.lastX = coords.x;
         this.lastY = coords.y;
 
-        // Prevent default to avoid scrolling
         e.preventDefault();
     }
 

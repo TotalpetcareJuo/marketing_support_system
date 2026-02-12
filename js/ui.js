@@ -793,13 +793,6 @@ export async function initStoryboard() {
     if (canvas) {
         drawingManager = new DrawingManager(canvas);
 
-        // Quick toggle callback for double-tap
-        drawingManager.setQuickToggleCallback((tool) => {
-            updateStoryboardToolUI(tool);
-            updateFloatingToolUI(tool);
-            console.log('Quick toggle to:', tool);
-        });
-
         // Toolbar Events
         const setupTool = (id, tool) => {
             const el = document.getElementById(id);
