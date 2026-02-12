@@ -793,6 +793,13 @@ export async function initStoryboard() {
     if (canvas) {
         drawingManager = new DrawingManager(canvas);
 
+        // Quick toggle callback for double-tap
+        drawingManager.setQuickToggleCallback((tool) => {
+            updateStoryboardToolUI(tool);
+            updateFloatingToolUI(tool);
+            console.log('Quick toggle to:', tool);
+        });
+
         // Toolbar Events
         const setupTool = (id, tool) => {
             const el = document.getElementById(id);
@@ -870,9 +877,116 @@ export async function initStoryboard() {
         const nextBtn = document.getElementById('sb-next-btn');
         if (nextBtn) nextBtn.addEventListener('click', sbShowNext);
 
+        // Fullscreen Button
+        const fullscreenBtn = document.getElementById('sb-fullscreen-btn');
+        if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        // Floating Toolbar Events
+        const floatPen = document.getElementById('sb-float-pen');
+        if (floatPen) floatPen.addEventListener('click', () => {
+            drawingManager.setTool('pen');
+            updateFloatingToolUI('pen');
+        });
+
+        const floatEraser = document.getElementById('sb-float-eraser');
+        if (floatEraser) floatEraser.addEventListener('click', () => {
+            drawingManager.setTool('eraser');
+            updateFloatingToolUI('eraser');
+        });
+
+        const floatClear = document.getElementById('sb-float-clear');
+        if (floatClear) floatClear.addEventListener('click', () => {
+            drawingManager.clear();
+        });
+
+        const floatExit = document.getElementById('sb-float-exit');
+        if (floatExit) floatExit.addEventListener('click', exitFullscreen);
+
+        // Floating Color Picker
+        const floatColorBtn = document.getElementById('sb-float-color');
+        const floatColorPicker = document.getElementById('sb-float-color-picker');
+        if (floatColorBtn && floatColorPicker) {
+            floatColorBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                floatColorPicker.classList.toggle('hidden');
+                hideAllFloatingPopovers('color');
+            });
+
+            document.querySelectorAll('.sb-float-color-swatch').forEach(swatch => {
+                swatch.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const color = swatch.dataset.color;
+                    drawingManager.setColor(color);
+                    floatColorBtn.style.backgroundColor = color;
+                    floatColorPicker.classList.add('hidden');
+                });
+            });
+        }
+
+        // Floating Pen Size
+        const floatPenSizeBtn = document.getElementById('sb-float-pen-size-btn');
+        const floatPenSizePopover = document.getElementById('sb-float-pen-size');
+        const floatPenSlider = document.getElementById('sb-float-pen-slider');
+        const floatPenSizeValue = document.getElementById('sb-float-pen-size-value');
+
+        if (floatPenSizeBtn && floatPenSizePopover) {
+            floatPenSizeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                floatPenSizePopover.classList.toggle('hidden');
+                hideAllFloatingPopovers('pen-size');
+            });
+        }
+
+        if (floatPenSlider) {
+            floatPenSlider.addEventListener('input', (e) => {
+                const width = e.target.value;
+                drawingManager.setLineWidth(width);
+                if (floatPenSizeValue) floatPenSizeValue.textContent = `${width}px`;
+            });
+        }
+
+        // Floating Eraser Size
+        const floatEraserSizeBtn = document.getElementById('sb-float-eraser-size-btn');
+        const floatEraserSizePopover = document.getElementById('sb-float-eraser-size');
+        const floatEraserSlider = document.getElementById('sb-float-eraser-slider');
+        const floatEraserSizeValue = document.getElementById('sb-float-eraser-size-value');
+
+        if (floatEraserSizeBtn && floatEraserSizePopover) {
+            floatEraserSizeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                floatEraserSizePopover.classList.toggle('hidden');
+                hideAllFloatingPopovers('eraser-size');
+            });
+        }
+
+        if (floatEraserSlider) {
+            floatEraserSlider.addEventListener('input', (e) => {
+                const size = e.target.value;
+                drawingManager.setEraserSize(size);
+                if (floatEraserSizeValue) floatEraserSizeValue.textContent = `${size}px`;
+            });
+        }
+
+        // Close popovers when clicking outside
+        document.addEventListener('click', () => {
+            hideAllFloatingPopovers();
+        });
+
+        // Floating Navigation
+        const floatPrev = document.getElementById('sb-float-prev');
+        if (floatPrev) floatPrev.addEventListener('click', sbShowPrev);
+
+        const floatNext = document.getElementById('sb-float-next');
+        if (floatNext) floatNext.addEventListener('click', sbShowNext);
+
         // Window Resize Handler
         window.addEventListener('resize', () => {
             if (drawingManager) drawingManager.resize();
+        });
+
+        // ESC key to exit fullscreen
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') exitFullscreen();
         });
 
         updateStoryboardToolUI('pen');
@@ -995,6 +1109,11 @@ function updateStoryboardPageIndicators() {
         dot.className = `h-2 rounded-full transition-all ${isActive ? 'w-6 bg-juo-orange' : 'w-2 bg-slate-300'}`;
         container.appendChild(dot);
     });
+
+    const floatIndicator = document.getElementById('sb-float-page-indicator');
+    if (floatIndicator && currentScenario) {
+        floatIndicator.textContent = `${currentScenarioPage + 1} / ${currentScenario.pages.length}`;
+    }
 }
 
 function updateToolUI(activeTool) {
@@ -1047,6 +1166,117 @@ export function closeViewer() {
     }
     currentScenario = null;
     currentScenarioPage = 0;
+}
+
+// Fullscreen Mode Functions
+let isFullscreen = false;
+
+function toggleFullscreen() {
+    const counselingTab = document.getElementById('tab-counseling');
+    const floatingToolbar = document.getElementById('sb-floating-toolbar');
+    const floatingNav = document.getElementById('sb-floating-nav');
+    const fullscreenBtn = document.getElementById('sb-fullscreen-btn');
+    const container = document.getElementById('storyboard-container');
+
+    if (!isFullscreen) {
+        // Enter fullscreen
+        counselingTab.classList.add('fullscreen-mode');
+        if (floatingToolbar) floatingToolbar.classList.remove('hidden');
+        if (floatingNav) floatingNav.classList.remove('hidden');
+        if (fullscreenBtn) {
+            fullscreenBtn.innerHTML = '<i data-lucide="minimize" class="w-5 h-5"></i><span class="hidden sm:inline">나가기</span>';
+            lucide.createIcons();
+        }
+
+        // Resize canvas to fit fullscreen
+        setTimeout(() => {
+            if (drawingManager && container) {
+                const canvas = document.getElementById('sb-canvas');
+                if (canvas) {
+                    canvas.width = container.clientWidth;
+                    canvas.height = container.clientHeight;
+                    drawingManager.resize();
+                }
+            }
+            // Rescale HTML content if present
+            const htmlContainer = document.getElementById('sb-html-content');
+            if (htmlContainer && !htmlContainer.classList.contains('hidden')) {
+                scaleHtmlContent(htmlContainer);
+            }
+        }, 100);
+
+        isFullscreen = true;
+    } else {
+        exitFullscreen();
+    }
+}
+
+function exitFullscreen() {
+    const counselingTab = document.getElementById('tab-counseling');
+    const floatingToolbar = document.getElementById('sb-floating-toolbar');
+    const floatingNav = document.getElementById('sb-floating-nav');
+    const fullscreenBtn = document.getElementById('sb-fullscreen-btn');
+    const container = document.getElementById('storyboard-container');
+
+    counselingTab.classList.remove('fullscreen-mode');
+    if (floatingToolbar) floatingToolbar.classList.add('hidden');
+    if (floatingNav) floatingNav.classList.add('hidden');
+    if (fullscreenBtn) {
+        fullscreenBtn.innerHTML = '<i data-lucide="maximize" class="w-5 h-5"></i><span class="hidden sm:inline">풀스크린</span>';
+        lucide.createIcons();
+    }
+
+    // Resize canvas back to normal
+    setTimeout(() => {
+        if (drawingManager && container) {
+            const canvas = document.getElementById('sb-canvas');
+            if (canvas) {
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+                drawingManager.resize();
+            }
+        }
+        // Rescale HTML content if present
+        const htmlContainer = document.getElementById('sb-html-content');
+        if (htmlContainer && !htmlContainer.classList.contains('hidden')) {
+            scaleHtmlContent(htmlContainer);
+        }
+    }, 100);
+
+    isFullscreen = false;
+}
+
+function updateFloatingToolUI(activeTool) {
+    const penBtn = document.getElementById('sb-float-pen');
+    const eraserBtn = document.getElementById('sb-float-eraser');
+
+    if (!penBtn || !eraserBtn) return;
+
+    if (activeTool === 'pen') {
+        penBtn.classList.add('bg-white', 'text-slate-900', 'shadow-lg');
+        penBtn.classList.remove('bg-white/10', 'text-white');
+        eraserBtn.classList.remove('bg-white', 'text-slate-900', 'shadow-lg');
+        eraserBtn.classList.add('bg-white/10', 'text-white');
+    } else {
+        eraserBtn.classList.add('bg-white', 'text-slate-900', 'shadow-lg');
+        eraserBtn.classList.remove('bg-white/10', 'text-white');
+        penBtn.classList.remove('bg-white', 'text-slate-900', 'shadow-lg');
+        penBtn.classList.add('bg-white/10', 'text-white');
+    }
+}
+
+function hideAllFloatingPopovers(except = null) {
+    const popovers = {
+        'color': document.getElementById('sb-float-color-picker'),
+        'pen-size': document.getElementById('sb-float-pen-size'),
+        'eraser-size': document.getElementById('sb-float-eraser-size')
+    };
+
+    Object.keys(popovers).forEach(key => {
+        if (key !== except && popovers[key]) {
+            popovers[key].classList.add('hidden');
+        }
+    });
 }
 
 function updatePageIndicators() {
