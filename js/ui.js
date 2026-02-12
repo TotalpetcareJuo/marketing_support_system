@@ -883,16 +883,42 @@ export async function initStoryboard() {
 
         // Floating Toolbar Events
         const floatPen = document.getElementById('sb-float-pen');
-        if (floatPen) floatPen.addEventListener('click', () => {
-            drawingManager.setTool('pen');
-            updateFloatingToolUI('pen');
-        });
+        const floatPenSizePopover = document.getElementById('sb-float-pen-size');
+
+        if (floatPen) {
+            floatPen.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isPenActive = floatPen.classList.contains('bg-white');
+
+                if (!isPenActive) {
+                    drawingManager.setTool('pen');
+                    updateFloatingToolUI('pen');
+                    hideAllFloatingPopovers();
+                } else {
+                    floatPenSizePopover.classList.toggle('hidden');
+                    hideAllFloatingPopovers('pen-size');
+                }
+            });
+        }
 
         const floatEraser = document.getElementById('sb-float-eraser');
-        if (floatEraser) floatEraser.addEventListener('click', () => {
-            drawingManager.setTool('eraser');
-            updateFloatingToolUI('eraser');
-        });
+        const floatEraserSizePopover = document.getElementById('sb-float-eraser-size');
+
+        if (floatEraser) {
+            floatEraser.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isEraserActive = floatEraser.classList.contains('bg-white');
+
+                if (!isEraserActive) {
+                    drawingManager.setTool('eraser');
+                    updateFloatingToolUI('eraser');
+                    hideAllFloatingPopovers();
+                } else {
+                    floatEraserSizePopover.classList.toggle('hidden');
+                    hideAllFloatingPopovers('eraser-size');
+                }
+            });
+        }
 
         const floatClear = document.getElementById('sb-float-clear');
         if (floatClear) floatClear.addEventListener('click', () => {
@@ -923,19 +949,9 @@ export async function initStoryboard() {
             });
         }
 
-        // Floating Pen Size
-        const floatPenSizeBtn = document.getElementById('sb-float-pen-size-btn');
-        const floatPenSizePopover = document.getElementById('sb-float-pen-size');
+        // Floating Pen Size Slider
         const floatPenSlider = document.getElementById('sb-float-pen-slider');
         const floatPenSizeValue = document.getElementById('sb-float-pen-size-value');
-
-        if (floatPenSizeBtn && floatPenSizePopover) {
-            floatPenSizeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                floatPenSizePopover.classList.toggle('hidden');
-                hideAllFloatingPopovers('pen-size');
-            });
-        }
 
         if (floatPenSlider) {
             floatPenSlider.addEventListener('input', (e) => {
@@ -945,19 +961,9 @@ export async function initStoryboard() {
             });
         }
 
-        // Floating Eraser Size
-        const floatEraserSizeBtn = document.getElementById('sb-float-eraser-size-btn');
-        const floatEraserSizePopover = document.getElementById('sb-float-eraser-size');
+        // Floating Eraser Size Slider
         const floatEraserSlider = document.getElementById('sb-float-eraser-slider');
         const floatEraserSizeValue = document.getElementById('sb-float-eraser-size-value');
-
-        if (floatEraserSizeBtn && floatEraserSizePopover) {
-            floatEraserSizeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                floatEraserSizePopover.classList.toggle('hidden');
-                hideAllFloatingPopovers('eraser-size');
-            });
-        }
 
         if (floatEraserSlider) {
             floatEraserSlider.addEventListener('input', (e) => {

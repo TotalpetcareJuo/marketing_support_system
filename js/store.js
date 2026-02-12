@@ -2,7 +2,7 @@ import { supabase } from './supabase.js';
 import { materials as mockMaterials, colorMap as mockColorMap, scenarios as mockScenarios } from './data.js';
 
 // 기본적으로 Supabase를 시도하되, 실패 시 Mock 데이터를 사용합니다.
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 let materialsCache = null;
 let colorMapCache = null;
@@ -13,7 +13,8 @@ export async function getMaterials() {
         return materialsCache;
     }
 
-    if (!USE_MOCK_DATA && supabase) {
+    // Materials는 항상 Supabase에서 가져옵니다
+    if (supabase) {
         try {
             const { data, error } = await supabase.from('materials').select('*').order('id', { ascending: true });
             if (error) throw error;
@@ -22,14 +23,11 @@ export async function getMaterials() {
                 return materialsCache;
             }
         } catch (err) {
-            console.warn('Supabase fetch failed, falling back to mock data:', err);
+            console.error('Supabase materials fetch failed:', err);
         }
     }
 
-    // Fallback to Mock Data
-    await simulateNetworkDelay();
-    materialsCache = [...mockMaterials];
-    return materialsCache;
+    return [];
 }
 
 export async function getColorMap() {
@@ -48,20 +46,7 @@ export async function getScenarios() {
         return scenariosCache;
     }
 
-    if (!USE_MOCK_DATA && supabase) {
-        try {
-            const { data, error } = await supabase.from('scenarios').select('*');
-            if (error) throw error;
-            if (data && data.length > 0) {
-                scenariosCache = data;
-                return scenariosCache;
-            }
-        } catch (err) {
-            console.warn('Supabase fetch failed (scenarios), falling back to mock data:', err);
-        }
-    }
-
-    // Fallback to Mock Data
+    // Scenarios는 항상 Mock 데이터를 사용합니다 (로컬 HTML 콘텐츠 포함)
     await simulateNetworkDelay();
     scenariosCache = [...mockScenarios];
     return scenariosCache;
