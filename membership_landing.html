@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>토탈펫케어 멤버십</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="membership_landing.css">
+</head>
+
+<body>
+    <div class="landing">
+        <!-- Floating particles -->
+        <div class="particles" id="particles"></div>
+
+        <!-- Soft gradient orbs -->
+        <div class="orb orb--1"></div>
+        <div class="orb orb--2"></div>
+        <div class="orb orb--3"></div>
+
+        <!-- Main Content -->
+        <div class="landing__content">
+            <!-- Logo Image -->
+            <img src="LOGO.png" alt="JUO Total Pet Care" class="landing__logo-img">
+
+            <!-- Headline -->
+            <div class="landing__headline">
+                <h1 class="landing__title">
+                    우리 아이를 위한<br>
+                    <span class="title-accent">완벽한 시작</span>
+                </h1>
+                <p class="landing__description">
+                    토탈펫케어 멤버십
+                </p>
+            </div>
+
+            <!-- Feature Highlights (Simpler & Larger) -->
+            <div class="landing__features">
+                <div class="feature">
+                    <div class="feature__icon">
+                        <i class="fa-solid fa-notes-medical"></i>
+                    </div>
+                    <span class="feature__label">의료비 지원</span>
+                </div>
+                <div class="feature">
+                    <div class="feature__icon">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <span class="feature__label">매월 용품</span>
+                </div>
+                <div class="feature">
+                    <div class="feature__icon">
+                        <i class="fa-solid fa-school"></i>
+                    </div>
+                    <span class="feature__label">교육 훈련</span>
+                </div>
+            </div>
+
+            <!-- CTA Button -->
+            <a href="membership_interactive.html" class="landing__cta">
+                <span class="cta__text">멤버십 혜택 보기</span>
+            </a>
+
+            <!-- Trust (Minimal) -->
+            <div class="landing__trust">
+                White · Silver · Gold · VIP Plan
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Floating particles
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 25; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            const size = Math.random() * 8 + 4; // Larger particles
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.setProperty('--float-duration', (Math.random() * 10 + 5) + 's');
+            particle.style.setProperty('--float-delay', (Math.random() * 5) + 's');
+            particle.style.setProperty('--float-distance', (Math.random() * 50 + 20) + 'px');
+            container.appendChild(particle);
+        }
+
+        // Entrance animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.landing__logo-img, .landing__title, .landing__description, .feature, .landing__cta, .landing__trust');
+            elements.forEach((el, i) => {
+                el.style.animationDelay = (i * 0.15) + 's';
+                el.classList.add('fade-in-up');
+            });
+        });
+    </script>
+</body>
+
+</html>
