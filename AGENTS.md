@@ -1,121 +1,85 @@
 # AGENTS.md - Coding Guidelines for JUO Marketing Support System
 
 ## Project Overview
-Frontend marketing support system for JUO COMPANY (pet adoption business). Hybrid architecture with vanilla HTML/CSS/JavaScript - uses both ES modules and global script patterns. Tailwind CSS via CDN, modular JavaScript with localStorage state management.
+Frontend marketing support system for JUO COMPANY (pet adoption business). Hybrid architecture with vanilla HTML/CSS/JavaScript - uses both ES modules and global script patterns. Tailwind CSS via CDN, localStorage state management.
 
 ## Tech Stack
 - **Languages**: HTML5, CSS3, Vanilla JavaScript (ES6+)
-- **Styling**: Tailwind CSS (CDN v3.4+), Custom CSS
-- **Icons**: Lucide Icons (CDN)
-- **Storage**: localStorage (client-side only)
-- **Testing**: Playwright (configured)
-- **Backend**: Supabase (for materials/auth)
+- **Styling**: Tailwind CSS (CDN), Custom CSS
+- **Icons**: Lucide Icons (CDN), Font Awesome (materials.html)
+- **Storage**: localStorage | **Testing**: Playwright | **Backend**: Supabase
 - **Language**: Korean (ko) primary interface
 
 ## Build/Test Commands
 ```bash
-# Install dependencies
-npm install  # or bun install
+npm install                              # Install dependencies
+python3 -m http.server 8000              # Serve locally
+npx serve                                # Alternative: npm run dev
 
-# Serve locally
-python3 -m http.server 8000
-npx serve                    # npm run dev
-
-# Run Playwright tests
-npx playwright test                    # Run all tests
-npx playwright test <file>.spec.js     # Run single test file
-npx playwright test --ui               # Run with UI mode
-npx playwright test --headed           # Run in headed mode
-
-# Run custom tests
-node test-localstorage-compat.js       # localStorage migration test
+npx playwright test                      # Run all tests
+npx playwright test <file>.spec.js       # Run single test file
+npx playwright test --headed             # Run with browser visible
+node test-localstorage-compat.js         # Custom migration test
 ```
 
 ## File Structure
 ```
-/
-├── index.html                       # Landing page (hub)
-├── display_system.html              # Store display manager UI
-├── display_system.js                # Main entry for display system
-├── display_system.css               # Display system styles
-├── materials.html                   # Sales library/catalog (ES modules)
-├── test-localstorage-compat.js      # Playwright migration test
-├── display_system/                  # Global script modules
-│   ├── state.js                     # State mgmt, defaults, migrations
-│   ├── admin.js                     # Admin UI rendering functions
-│   ├── editor.js                    # Rich text editor logic
-│   ├── slideshow.js                 # Slideshow/presentation logic
-│   └── slideshow_templates.js       # HTML templates for slides
-├── js/                              # ES modules (materials.html)
-│   ├── app.js                       # App entry with Supabase auth
-│   ├── ui.js                        # UI rendering (exported functions)
-│   ├── store.js                     # Data layer
-│   ├── supabase.js                  # Supabase client
-│   └── drawing.js                   # Drawing/canvas utilities
-├── css/                             # Additional styles
-└── package.json                     # Dev dependencies (Playwright)
+├── index.html                 # Landing page (hub)
+├── display_system.html        # Store display manager (global scripts)
+├── display_system.js          # Main entry for display system
+├── materials.html             # Sales library (ES modules)
+├── display_system/            # Global script modules (NO ES modules)
+│   ├── state.js               # State mgmt, defaults, migrations
+│   ├── admin.js, editor.js, slideshow.js, slideshow_templates.js
+├── js/                        # ES modules (materials.html)
+│   ├── app.js, ui.js, store.js, supabase.js, data.js, drawing.js
+└── css/                       # materials.css, scenario-pages.css
 ```
 
 ## Code Style Guidelines
 
-### HTML
-- Use semantic HTML5 elements
-- Language: `lang="ko"`, charset: `UTF-8`
-- Tailwind CDN: `https://cdn.tailwindcss.com?plugins=typography`
-- Lucide CDN: `https://unpkg.com/lucide@latest`
-- Initialize icons: `lucide.createIcons()` after DOM updates
-
-### CSS
-- **Brand color**: `#FF7A00` (JUO Orange)
-- Tailwind utilities primary; custom CSS for:
-  - Scrollbars (`.custom-scroll`)
-  - Brand utilities (`.text-juo-orange`, `.bg-juo-orange`)
-  - Animations (`.hover-card`, `.slide-card`)
-- Font: Noto Sans KR (Google Fonts)
-- Background: `#f8fafc` (slate-50)
+### HTML/CSS
+- `lang="ko"`, charset: `UTF-8`
+- Brand color: `#FF7A00` (JUO Orange)
+- Font: Noto Sans KR or Pretendard, Background: `#f8fafc` (slate-50)
+- Tailwind utilities primary; custom CSS uses standard syntax (no `@apply`)
 
 ### JavaScript - Two Module Systems
 
-#### System A: ES Modules (js/ folder, materials.html)
+**System A: ES Modules (js/, materials.html)**
 ```javascript
-// Use import/export
 import { supabase } from './supabase.js';
-import { AppState } from './ui.js';
-
 export async function initData() { }
-export const AppState = { };
 ```
 
-#### System B: Global Scripts (display_system/ folder, display_system.html)
+**System B: Global Scripts (display_system/, display_system.html)**
 ```javascript
-// NO ES modules - vanilla script tags
-// Script loading order matters:
-// 1. state.js (creates global config)
-// 2. admin.js, editor.js, slideshow_templates.js, slideshow.js
-// 3. display_system.js (main entry)
-
-// Expose to window for inline handlers:
-window.functionName = functionName;
-window.ObjectName = ObjectName;
-
-// Use cache-busting: ?v=2 suffix on script src
+// NO ES modules - vanilla script tags with load order:
+// 1. state.js → 2. admin/editor/slideshow → 3. display_system.js
+window.functionName = functionName;  // Expose for inline handlers
 ```
 
 ### Naming Conventions
-- Use `const`/`let` (no `var`)
-- **camelCase**: variables, functions
-- **PascalCase**: constructors, exported modules
-- **UPPER_SNAKE_CASE**: constants (`STORAGE_KEY`)
-- **File names**: lowercase with underscores (`display_system.js`)
-- **CSS classes**: kebab-case (`.slide-card`)
-- **Data keys**: snake_case within objects (`pet1`, `checklist`)
-- **localStorage key**: `juoStoreDisplayConfig_v3`
+- `camelCase`: variables, functions
+- `PascalCase`: constructors, exported classes
+- `UPPER_SNAKE_CASE`: constants (`STORAGE_KEY`)
+- `kebab-case`: CSS classes, filenames (`display_system.js`)
+- localStorage key: `juoStoreDisplayConfig_v3`
+
+### Element Getter Pattern
+```javascript
+const elements = {
+    grid: () => document.getElementById('materials-grid'),
+    viewer: () => document.getElementById('viewer-overlay')
+};
+const grid = elements.grid();
+if (!grid) return;
+```
 
 ### Error Handling
-- Use `try/catch` for DOM operations and async calls
-- Check element existence before manipulation
-- Graceful fallbacks to default data
-- Log errors with descriptive messages
+- Use `try/catch` for async/DOM operations
+- Check element existence: `if (!el) return;`
+- Log with context: `console.error('Context:', err);`
 - Prefer early returns over nested if-statements
 
 ### Comments
@@ -125,39 +89,55 @@ window.ObjectName = ObjectName;
 
 ### UI Patterns
 - Hover lift: `transform: translateY(-2px)`
-- Active states: brand orange background
-- Disabled: `opacity-40 pointer-events-none`
+- Active: brand orange bg | Disabled: `opacity-40 pointer-events-none`
 - Border radius: `rounded-3xl` (cards), `rounded-xl` (buttons)
-- Shadow on hover: `shadow-lg` or `hover:shadow-lg`
+- **Always call `lucide.createIcons()` after DOM updates**
 
 ## Data Patterns
-- Default data structure with fallbacks
-- Version migration logic for localStorage (see state.js)
-- State management via global `config` object
-- Images: Base64/DataURL in localStorage (monitor size!)
-- Pet status values with emoji prefixes:
-  - `🏠 가족 찾는 중` (Available)
-  - `🌷 가족 맞이 준비중` (Reserved)
-  - `🌻 행복한 집으로` (Adopted)
+- State via global `config` object with localStorage persistence
+- Version migration logic in state.js
+- Images: Base64 in localStorage (limit <5MB total)
+- Pet status values: `🏠 가족 찾는 중` | `🌷 가족 맞이 준비중` | `🌻 행복한 집으로`
 
-## State Module Pattern
+## State Module Pattern (display_system/)
 ```javascript
-// For global script modules (display_system/)
 const State = {
-    getConfig() { return config; },
-    saveConfig() { localStorage.setItem(STORAGE_KEY, JSON.stringify(config)); },
-    updateTimestamp() { config.lastSaved = new Date().toISOString(); }
+    getConfig: () => config,
+    saveConfig: (updatedConfig = config) => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+    }
 };
-window.State = State;  // Always expose to window
+window.State = State;
 ```
 
-## Git
-- Line ending normalization enabled (`.gitattributes`)
-- No special commit message conventions
+## Async/Event Patterns
+```javascript
+// Async with error handling
+export async function fetchData() {
+    if (cache) return cache;
+    try {
+        const { data, error } = await supabase.from('table').select('*');
+        if (error) throw error;
+        return data;
+    } catch (err) {
+        console.error('Supabase fetch failed:', err);
+        return fallbackData;
+    }
+}
 
-## Performance Notes
-- Images stored as Base64 in localStorage (monitor size, limit to <5MB total)
-- No bundling/minification
-- Tailwind CDN includes all utilities (larger download)
-- Use `lucide.createIcons()` after any DOM update with new icons
-- Playwright tests run headless by default
+// Parallel fetching
+const [materials, colorMap] = await Promise.all([getMaterials(), getColorMap()]);
+
+// Event listeners - check existence first
+document.getElementById('btn')?.addEventListener('click', handler);
+```
+
+## Testing Notes
+- Playwright runs headless by default; use `--headed` for debugging
+- No standard .spec.js files yet - custom tests use Playwright directly
+- Test migrations by injecting legacy localStorage data and reloading
+
+## Git & Performance
+- Line ending normalization via `.gitattributes`
+- Cache data in memory to avoid repeated Supabase calls
+- Tailwind CDN includes all utilities (larger download, no bundling)

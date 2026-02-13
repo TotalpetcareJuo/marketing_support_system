@@ -1,19 +1,12 @@
-import { getMaterials, getColorMap, getMaterialsByCategory, getScenarioById, getContracts, getNotices, saveContract, generateContractId, getUserProfile, getBranchStats, getContractStats, deleteContract } from './store.js';
-import { DrawingManager } from './drawing.js';
+import { getMaterials, getColorMap, getMaterialsByCategory, getScenarioById, getContracts, getNotices, getBranchStats, getContractStats, deleteContract } from './store.js';
 import { getScenarioContent } from './scenarioContent.js';
 
 let currentMaterialIndex = 0;
 let filteredMaterials = [];
 let materials = [];
 let colorMap = {};
-let drawingManager = null;
 let currentScenario = null;
 let currentScenarioPage = 0;
-
-// Contract Form State
-let currentContractStep = 1;
-let currentContractId = null;
-let currentContractNumber = null;
 let currentDetailData = null;
 
 export const AppState = {
@@ -31,11 +24,7 @@ const elements = {
     viewerTitle: () => document.getElementById('viewer-title'),
     viewerContent: () => document.getElementById('viewer-content'),
     pageIndicators: () => document.getElementById('page-indicators'),
-    // Contract Elements
-    contractListView: () => document.getElementById('contracts-list-view'),
-    contractFormView: () => document.getElementById('contract-form-view'),
-    contractForm: () => document.getElementById('contract-form'),
-    stepProgressBar: () => document.getElementById('step-progress-bar')
+    contractListView: () => document.getElementById('contracts-list-view')
 };
 
 export async function initData() {
@@ -44,112 +33,10 @@ export async function initData() {
         getColorMap()
     ]);
 
-    // Render Notices
     await Promise.all([
         renderNotices(),
         renderHomeNotices()
     ]);
-
-    // Initialize Contract Form UI
-    initContractForm();
-}
-
-export function initContractForm() {
-    const btnNew = document.getElementById('btn-new-contract');
-    const btnClose = document.getElementById('btn-close-contract');
-    const btnNext = document.getElementById('btn-next-step');
-    const btnPrev = document.getElementById('btn-prev-step');
-    const btnSave = document.getElementById('btn-save-contract');
-
-    if (btnNew) btnNew.addEventListener('click', () => openContractForm('create'));
-    if (btnClose) btnClose.addEventListener('click', closeContractForm);
-    if (btnNext) btnNext.addEventListener('click', handleNextStep);
-    if (btnPrev) btnPrev.addEventListener('click', handlePrevStep);
-    if (btnSave) btnSave.addEventListener('click', saveContractForm);
-
-    const btnDraft = document.getElementById('btn-draft-save');
-    if (btnDraft) btnDraft.addEventListener('click', draftSaveContract);
-
-    // Preview buttons
-    const btnPrint = document.getElementById('btn-print-contract');
-    const btnClosePreview = document.getElementById('btn-close-preview');
-    if (btnPrint) btnPrint.addEventListener('click', () => {
-        document.body.classList.add('printing');
-        setTimeout(() => {
-            window.print();
-            document.body.classList.remove('printing');
-        }, 100);
-    });
-    if (btnClosePreview) btnClosePreview.addEventListener('click', closeContractPreview);
-
-    // Detail view buttons
-    const btnBackToList = document.getElementById('btn-back-to-list');
-    if (btnBackToList) btnBackToList.addEventListener('click', closeContractDetail);
-
-    const btnViewPreview = document.getElementById('btn-view-contract-preview');
-    if (btnViewPreview) btnViewPreview.addEventListener('click', () => {
-        if (currentDetailData) showContractPreview(currentDetailData);
-    });
-}
-
-function showContractPreview(contractData) {
-    const overlay = document.getElementById('contract-preview-overlay');
-    if (!overlay) return;
-
-    // Populate preview fields
-    const setText = (id, value) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value || '-';
-    };
-
-    // Contract number & date
-    setText('preview-contract-number', `계약번호: ${contractData.contract_number || ''}`);
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-    setText('preview-date', dateStr);
-
-    // Manager Info
-    setText('preview-manager-branch', contractData.manager_branch_name || '');
-    setText('preview-manager-address', contractData.manager_branch_address || '');
-    setText('preview-manager-name', contractData.manager_name || '');
-    setText('preview-manager-phone', contractData.manager_phone || '');
-
-    // Pet Info
-    setText('preview-pet-name', contractData.pet_name || '');
-    setText('preview-pet-species', contractData.pet_species || '');
-    setText('preview-pet-breed', contractData.pet_breed || '');
-    setText('preview-pet-color', contractData.pet_color || '');
-
-    const genderMap = { 'Male': '남아', 'Female': '여아', 'male': '남아', 'female': '여아' };
-    setText('preview-pet-gender', genderMap[contractData.pet_gender] || contractData.pet_gender || '');
-    setText('preview-pet-birthdate', contractData.pet_birthdate || '');
-    setText('preview-pet-intake', contractData.pet_acquisition_date || contractData.pet_intake_date || '');
-
-    // Adopter Info
-    setText('preview-adopter-name', contractData.adopter_name || '');
-    setText('preview-adopter-phone', contractData.adopter_phone || '');
-    setText('preview-adopter-id', contractData.adopter_id_num || contractData.adopter_resident_no || '');
-    setText('preview-adopter-address', contractData.adopter_address || '');
-
-    const fee = contractData.adoption_fee;
-    setText('preview-adoption-fee', fee ? `${Number(fee).toLocaleString()}원` : '-');
-
-    // Signer names (for blank signature boxes)
-    setText('preview-signer-name', contractData.adopter_name || '');
-    setText('preview-manager-signer-name', contractData.manager_name || '');
-
-    // Show overlay
-    overlay.classList.remove('hidden');
-    lucide.createIcons();
-}
-
-function closeContractPreview() {
-    const overlay = document.getElementById('contract-preview-overlay');
-    if (overlay) overlay.classList.add('hidden');
-    // If opened from detail view, stay on detail view; otherwise close form
-    if (!currentDetailData) {
-        closeContractForm();
-    }
 }
 
 function showContractDetail(contract) {
@@ -193,6 +80,8 @@ function showContractDetail(contract) {
     set('detail-branch-name', contract.branch_name);
 
     lucide.createIcons();
+    
+    history.pushState({ tabId: 'contracts', showDetail: true }, '', '#contracts');
 }
 
 function closeContractDetail() {
@@ -204,351 +93,6 @@ function closeContractDetail() {
         detailView.classList.remove('flex');
     }
     if (listView) listView.classList.remove('hidden');
-}
-
-export async function openContractForm(mode = 'create', data = null) {
-    const listView = elements.contractListView();
-    const formView = elements.contractFormView();
-    const formTitle = document.getElementById('contract-form-title');
-    const form = elements.contractForm();
-    const saveBtn = document.getElementById('btn-save-contract');
-
-    if (listView) listView.classList.add('hidden');
-    if (formView) {
-        formView.classList.remove('hidden');
-        formView.classList.add('flex');
-    }
-
-    // Reset State
-    currentContractStep = 1;
-    if (form) form.reset();
-
-    // Reset Readonly/Disabled
-    Array.from(form.elements).forEach(el => {
-        if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
-            el.disabled = false;
-            el.readOnly = false;
-        }
-    });
-
-    if (mode === 'create') {
-        // If data is provided (e.g. re-opening a draft), keep the existing id for update
-        if (data && data.id) {
-            currentContractId = data.id;
-            currentContractNumber = data.contract_number;
-            formTitle.textContent = '계약서 이어서 작성';
-        } else {
-            currentContractId = null;
-            currentContractNumber = null;
-            formTitle.textContent = '새 계약서 작성';
-        }
-        saveBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4 inline mr-1"></i> 계약서 저장 및 출력';
-
-        // Auto-fill Adoption Date with today
-        const today = new Date().toISOString().split('T')[0];
-        const dateInput = form.querySelector('[name="pet_acquisition_date"]');
-        if (dateInput) dateInput.value = today;
-
-        // Auto-fill Manager Profile if available (only for brand new contracts)
-        if (!data && AppState.user && AppState.user.id) {
-            getUserProfile(AppState.user.id).then(profile => {
-                if (profile) {
-                    const managerFields = {
-                        'manager_name': profile.user_name || AppState.user.name,
-                        'manager_branch_name': profile.branch_name || AppState.user.branch_name,
-                        'manager_branch_address': profile.branch_address || '',
-                        'manager_phone': profile.phone_number || ''
-                    };
-                    Object.entries(managerFields).forEach(([name, value]) => {
-                        const input = form.querySelector(`[name="${name}"]`);
-                        if (input && !input.value) input.value = value;
-                    });
-                }
-            });
-        }
-
-        // Populate form with draft data if re-opening
-        if (data) {
-            const mapping = {
-                'adopter_resident_no': 'adopter_id_num',
-                'pet_intake_date': 'pet_acquisition_date',
-                'pet_reg_number': 'pet_microchip_no',
-                'manager_name': 'manager_name',
-                'manager_phone': 'manager_phone',
-                'manager_branch_name': 'manager_branch_name',
-                'manager_branch_address': 'manager_branch_address'
-            };
-            const formData = { ...data };
-            Object.entries(mapping).forEach(([dbKey, formKey]) => {
-                if (data[dbKey] !== undefined) formData[formKey] = data[dbKey];
-            });
-            Object.keys(formData).forEach(key => {
-                const input = form.querySelector(`[name="${key}"]`);
-                if (input) {
-                    if (input.type === 'radio') {
-                        const radio = form.querySelector(`[name="${key}"][value="${formData[key]}"]`);
-                        if (radio) radio.checked = true;
-                    } else {
-                        input.value = formData[key] || '';
-                    }
-                }
-            });
-        }
-
-    } else {
-        currentContractId = data.id;
-        currentContractNumber = data.contract_number;
-        formTitle.textContent = '계약서 상세 (수정)';
-        saveBtn.innerHTML = '<i data-lucide="save" class="w-4 h-4 inline mr-1"></i> 수정 저장';
-
-        // Populate Form
-        // Map DB columns to Form fields
-        const mapping = {
-            // DB Column : Form Field Name
-            'adopter_resident_no': 'adopter_id_num',
-            'pet_intake_date': 'pet_acquisition_date',
-            'pet_reg_number': 'pet_microchip_no',
-            'manager_name': 'manager_name',
-            'manager_phone': 'manager_phone',
-            'manager_branch_name': 'manager_branch_name',
-            'manager_branch_address': 'manager_branch_address'
-            // Others match directly (pet_name, pet_species, etc.)
-        };
-
-        const formData = { ...data };
-        // Apply mapping for mismatched keys
-        Object.entries(mapping).forEach(([dbKey, formKey]) => {
-            if (data[dbKey] !== undefined) {
-                formData[formKey] = data[dbKey];
-            }
-        });
-
-        Object.keys(formData).forEach(key => {
-            const input = form.querySelector(`[name="${key}"]`);
-            if (input) {
-                if (input.type === 'radio') {
-                    const radio = form.querySelector(`[name="${key}"][value="${formData[key]}"]`);
-                    if (radio) radio.checked = true;
-                } else if (input.type === 'checkbox') {
-                    // Checkbox handling if needed
-                } else {
-                    input.value = formData[key] || '';
-                }
-            }
-        });
-
-        // Set Readonly for non-staff fields
-        Array.from(form.elements).forEach(el => {
-            if (el.name !== 'staff_memo' && el.name !== 'status' && !el.classList.contains('admin-editable')) {
-                el.disabled = true;
-                // For better UI, we might want to make them look readonly but readable
-            }
-        });
-
-    }
-
-    updateContractStepUI();
-}
-
-export function closeContractForm() {
-    const listView = elements.contractListView();
-    const formView = elements.contractFormView();
-
-    if (formView) {
-        formView.classList.add('hidden');
-        formView.classList.remove('flex');
-    }
-    if (listView) listView.classList.remove('hidden');
-    currentContractId = null;
-}
-
-async function handleNextStep() {
-    const currentStepDiv = document.querySelector(`.form-step[data-step="${currentContractStep}"]`);
-    if (!currentStepDiv) return;
-
-    // Validate only fields in the current step
-    const inputs = currentStepDiv.querySelectorAll('input, select, textarea');
-    let isValid = true;
-
-    for (const input of inputs) {
-        if (!input.checkValidity()) {
-            input.reportValidity();
-            isValid = false;
-            break; // Stop at first invalid field to show popup
-        }
-    }
-
-    if (!isValid) return;
-
-    if (currentContractStep < 3) {
-        currentContractStep++;
-        updateContractStepUI();
-    }
-}
-
-function handlePrevStep() {
-    if (currentContractStep > 1) {
-        currentContractStep--;
-        updateContractStepUI();
-    }
-}
-
-async function saveContractForm() {
-    const form = elements.contractForm();
-    // If disabled (edit mode), checkValidity might skip them or fail?
-    // Disabled fields are not validated.
-    // We only need to validate staff_memo if it's the only thing editable.
-
-    // If creation, validate everything.
-    // If edit, validated inputs are disabled, so they are fine.
-
-    const formData = new FormData(form);
-    const contractData = Object.fromEntries(formData.entries());
-
-    contractData.branch_name = AppState.user.branch_name; // Ensure branch is set
-
-    if (currentContractId) {
-        contractData.id = currentContractId;
-        if (currentContractNumber) {
-            contractData.contract_number = currentContractNumber;
-        }
-        contractData.updated_at = new Date();
-    } else {
-        // New Contract
-        contractData.contract_number = await generateContractId();
-        contractData.status = 'completed';
-        contractData.created_at = new Date();
-    }
-
-    // Determine message
-    const modeText = currentContractId ? '수정' : '저장';
-
-    // Show Loading
-    const btnSave = document.getElementById('btn-save-contract');
-    const originalText = btnSave.innerHTML;
-    btnSave.disabled = true;
-    btnSave.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin inline mr-1"></i> ${modeText} 중...`;
-
-    const result = await saveContract(contractData);
-
-    if (result.success) {
-        // Show contract preview instead of closing
-        showContractPreview(contractData);
-        renderContracts(AppState.user); // Refresh list in background
-    } else {
-        console.error('Save failed:', result.message);
-        alert(`${modeText}에 실패했습니다: ${result.message || '알 수 없는 오류'}`);
-    }
-
-    btnSave.disabled = false;
-    btnSave.innerHTML = originalText;
-    lucide.createIcons();
-}
-
-async function draftSaveContract() {
-    const form = elements.contractForm();
-    const formData = new FormData(form);
-    const contractData = Object.fromEntries(formData.entries());
-
-    contractData.branch_name = AppState.user.branch_name;
-    contractData.status = 'draft';
-
-    if (currentContractId) {
-        contractData.id = currentContractId;
-        if (currentContractNumber) {
-            contractData.contract_number = currentContractNumber;
-        }
-    } else {
-        contractData.contract_number = await generateContractId();
-    }
-
-    const btnDraft = document.getElementById('btn-draft-save');
-    const originalText = btnDraft.innerHTML;
-    btnDraft.disabled = true;
-    btnDraft.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin inline mr-1"></i> 저장 중...`;
-    lucide.createIcons();
-
-    const result = await saveContract(contractData);
-
-    if (result.success) {
-        alert('임시저장 되었습니다.');
-        closeContractForm();
-        renderContracts(AppState.user);
-    } else {
-        alert(`임시저장 실패: ${result.message || '알 수 없는 오류'}`);
-    }
-
-    btnDraft.disabled = false;
-    btnDraft.innerHTML = originalText;
-    lucide.createIcons();
-}
-
-function updateContractStepUI() {
-    // 1. Progress Bar
-    const progressBar = elements.stepProgressBar();
-    if (progressBar) {
-        const percentage = ((currentContractStep - 1) / 2) * 100;
-        progressBar.style.width = `${percentage}%`;
-    }
-
-    // 2. Step Circles
-    document.querySelectorAll('.step-item').forEach(item => {
-        const step = parseInt(item.dataset.step);
-        const circle = item.querySelector('.step-circle');
-        const label = item.querySelector('.step-label');
-
-        if (step < currentContractStep) {
-            // Completed
-            item.classList.add('active');
-            circle.classList.remove('bg-slate-100', 'text-slate-400', 'border-slate-300');
-            circle.classList.add('bg-juo-orange', 'text-white', 'border-juo-orange');
-            circle.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
-            label.classList.add('text-juo-orange');
-        } else if (step === currentContractStep) {
-            // Current
-            item.classList.add('active');
-            circle.classList.remove('bg-slate-100', 'text-slate-400', 'border-slate-300', 'bg-juo-orange', 'text-white', 'border-juo-orange');
-            circle.classList.add('bg-white', 'text-juo-orange', 'border-juo-orange', 'ring-4', 'ring-orange-100');
-            circle.textContent = step;
-            label.classList.add('text-juo-orange');
-        } else {
-            // Future
-            item.classList.remove('active');
-            circle.className = 'w-8 h-8 rounded-full bg-slate-100 border-2 border-slate-300 text-slate-400 flex items-center justify-center text-xs font-bold transition-all duration-300 step-circle';
-            circle.textContent = step;
-            label.className = 'text-[10px] font-bold text-slate-400 uppercase step-label';
-        }
-    });
-
-    // 3. Form Content Visibility
-    document.querySelectorAll('.form-step').forEach(stepDiv => {
-        if (parseInt(stepDiv.dataset.step) === currentContractStep) {
-            stepDiv.classList.remove('hidden');
-        } else {
-            stepDiv.classList.add('hidden');
-        }
-    });
-
-    // 4. Buttons
-    const btnNext = document.getElementById('btn-next-step');
-    const btnPrev = document.getElementById('btn-prev-step');
-    const btnSave = document.getElementById('btn-save-contract');
-
-    if (currentContractStep === 1) {
-        btnPrev.classList.add('hidden');
-        btnNext.classList.remove('hidden');
-        btnSave.classList.add('hidden');
-    } else if (currentContractStep === 2) {
-        btnPrev.classList.remove('hidden');
-        btnNext.classList.remove('hidden');
-        btnSave.classList.add('hidden');
-    } else if (currentContractStep === 3) {
-        btnPrev.classList.remove('hidden');
-        btnNext.classList.add('hidden');
-        btnSave.classList.remove('hidden');
-    }
-
-    lucide.createIcons();
 }
 
 export async function renderMaterials(category = 'all') {
@@ -744,394 +288,113 @@ function renderImageScenarioViewer() {
 }
 
 // Storyboard Mode Initialization
-export async function initStoryboard() {
-    if (drawingManager) {
-        drawingManager.resize();
-        return;
-    }
-
+export async function initCounseling() {
     currentScenario = await getScenarioById('scenario-membership');
     if (!currentScenario) return;
-
+    
     currentScenarioPage = 0;
-
+    
+    const overlay = document.getElementById('counseling-overlay');
+    const htmlContainer = document.getElementById('counseling-html');
+    const img = document.getElementById('counseling-image');
+    
+    if (!overlay) return;
+    
+    overlay.classList.remove('hidden');
+    
     const isHtmlScenario = currentScenario.type === 'HTML_SCENARIO';
-
+    
     if (isHtmlScenario) {
         const page = currentScenario.pages[currentScenarioPage];
         const content = getScenarioContent(page.contentId);
-        const htmlContainer = document.getElementById('sb-html-content');
-        const img = document.getElementById('sb-image');
-
-        console.log('initStoryboard HTML scenario:', { page, content, htmlContainer });
-
+        
         if (htmlContainer && content) {
             htmlContainer.innerHTML = content.html;
             htmlContainer.classList.remove('hidden');
-            console.log('HTML content injected, container size:', htmlContainer.clientWidth, 'x', htmlContainer.clientHeight);
-            // Scale content to fit container
-            requestAnimationFrame(() => {
-                scaleHtmlContent(htmlContainer);
-                console.log('Scaling applied');
-            });
-        } else {
-            console.error('Missing htmlContainer or content:', { htmlContainer, content });
+            if (img) img.classList.add('hidden');
         }
-        if (img) img.classList.add('hidden');
     } else {
-        const img = document.getElementById('sb-image');
-        const htmlContainer = document.getElementById('sb-html-content');
         if (img) {
             img.src = currentScenario.pages[0];
             img.classList.remove('hidden');
         }
         if (htmlContainer) htmlContainer.classList.add('hidden');
     }
-
-    // Initialize Drawing Manager
-    const canvas = document.getElementById('sb-canvas');
-    if (canvas) {
-        drawingManager = new DrawingManager(canvas);
-
-        // Toolbar Events
-        const setupTool = (id, tool) => {
-            const el = document.getElementById(id);
-            if (el) el.addEventListener('click', () => {
-                const isAlreadyActive = el.classList.contains('active');
-                if (isAlreadyActive) {
-                    toggleToolSettings(tool);
-                } else {
-                    drawingManager.setTool(tool);
-                    updateStoryboardToolUI(tool);
-                    hideAllToolSettings();
-                }
-            });
-        };
-
-        setupTool('sb-tool-pen', 'pen');
-        setupTool('sb-tool-eraser', 'eraser');
-
-        const clearBtn = document.getElementById('sb-tool-clear');
-        if (clearBtn) clearBtn.addEventListener('click', () => {
-            drawingManager.clear();
-            hideAllToolSettings();
-        });
-
-        // Pen Settings: Color Swatches
-        document.querySelectorAll('.color-swatch').forEach(swatch => {
-            swatch.addEventListener('click', () => {
-                const color = swatch.dataset.color;
-                drawingManager.setColor(color);
-
-                // UI Update
-                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-                swatch.classList.add('active');
-
-                // Update Button Indicator
-                const indicator = document.getElementById('sb-pen-color-indicator');
-                if (indicator) indicator.style.backgroundColor = color;
-            });
-        });
-
-        // Pen Settings: Thickness Slider
-        const penSlider = document.getElementById('pen-width-slider');
-        if (penSlider) {
-            penSlider.addEventListener('input', (e) => {
-                const width = e.target.value;
-                drawingManager.setLineWidth(width);
-                document.getElementById('pen-width-value').textContent = `${width}px`;
-            });
-        }
-
-        // Eraser Settings: Size Slider
-        const eraserSlider = document.getElementById('eraser-size-slider');
-        if (eraserSlider) {
-            eraserSlider.addEventListener('input', (e) => {
-                const size = e.target.value;
-                drawingManager.setEraserSize(size);
-                document.getElementById('eraser-size-value').textContent = `${size}px`;
-            });
-        }
-
-        // Click outside to close settings
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('#sb-tool-pen') &&
-                !e.target.closest('#sb-tool-eraser') &&
-                !e.target.closest('#sb-pen-settings') &&
-                !e.target.closest('#sb-eraser-settings')) {
-                hideAllToolSettings();
-            }
-        });
-
-        // Navigation Events
-        const prevBtn = document.getElementById('sb-prev-btn');
-        if (prevBtn) prevBtn.addEventListener('click', sbShowPrev);
-
-        const nextBtn = document.getElementById('sb-next-btn');
-        if (nextBtn) nextBtn.addEventListener('click', sbShowNext);
-
-        // Fullscreen Button
-        const fullscreenBtn = document.getElementById('sb-fullscreen-btn');
-        if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
-
-        // Floating Toolbar Events
-        const floatPen = document.getElementById('sb-float-pen');
-        const floatPenSizePopover = document.getElementById('sb-float-pen-size');
-
-        if (floatPen) {
-            floatPen.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const isPenActive = floatPen.classList.contains('bg-white');
-
-                if (!isPenActive) {
-                    drawingManager.setTool('pen');
-                    updateFloatingToolUI('pen');
-                    hideAllFloatingPopovers();
-                } else {
-                    floatPenSizePopover.classList.toggle('hidden');
-                    hideAllFloatingPopovers('pen-size');
-                }
-            });
-        }
-
-        const floatEraser = document.getElementById('sb-float-eraser');
-        const floatEraserSizePopover = document.getElementById('sb-float-eraser-size');
-
-        if (floatEraser) {
-            floatEraser.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const isEraserActive = floatEraser.classList.contains('bg-white');
-
-                if (!isEraserActive) {
-                    drawingManager.setTool('eraser');
-                    updateFloatingToolUI('eraser');
-                    hideAllFloatingPopovers();
-                } else {
-                    floatEraserSizePopover.classList.toggle('hidden');
-                    hideAllFloatingPopovers('eraser-size');
-                }
-            });
-        }
-
-        const floatClear = document.getElementById('sb-float-clear');
-        if (floatClear) floatClear.addEventListener('click', () => {
-            drawingManager.clear();
-        });
-
-        const floatExit = document.getElementById('sb-float-exit');
-        if (floatExit) floatExit.addEventListener('click', exitFullscreen);
-
-        // Floating Color Picker
-        const floatColorBtn = document.getElementById('sb-float-color');
-        const floatColorPicker = document.getElementById('sb-float-color-picker');
-        if (floatColorBtn && floatColorPicker) {
-            floatColorBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                floatColorPicker.classList.toggle('hidden');
-                hideAllFloatingPopovers('color');
-            });
-
-            document.querySelectorAll('.sb-float-color-swatch').forEach(swatch => {
-                swatch.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const color = swatch.dataset.color;
-                    drawingManager.setColor(color);
-                    floatColorBtn.style.backgroundColor = color;
-                    floatColorPicker.classList.add('hidden');
-                });
-            });
-        }
-
-        // Floating Pen Size Slider
-        const floatPenSlider = document.getElementById('sb-float-pen-slider');
-        const floatPenSizeValue = document.getElementById('sb-float-pen-size-value');
-
-        if (floatPenSlider) {
-            floatPenSlider.addEventListener('input', (e) => {
-                const width = e.target.value;
-                drawingManager.setLineWidth(width);
-                if (floatPenSizeValue) floatPenSizeValue.textContent = `${width}px`;
-            });
-        }
-
-        // Floating Eraser Size Slider
-        const floatEraserSlider = document.getElementById('sb-float-eraser-slider');
-        const floatEraserSizeValue = document.getElementById('sb-float-eraser-size-value');
-
-        if (floatEraserSlider) {
-            floatEraserSlider.addEventListener('input', (e) => {
-                const size = e.target.value;
-                drawingManager.setEraserSize(size);
-                if (floatEraserSizeValue) floatEraserSizeValue.textContent = `${size}px`;
-            });
-        }
-
-        // Close popovers when clicking outside
-        document.addEventListener('click', () => {
-            hideAllFloatingPopovers();
-        });
-
-        // Floating Navigation
-        const floatPrev = document.getElementById('sb-float-prev');
-        if (floatPrev) floatPrev.addEventListener('click', sbShowPrev);
-
-        const floatNext = document.getElementById('sb-float-next');
-        if (floatNext) floatNext.addEventListener('click', sbShowNext);
-
-        // Window Resize Handler
-        window.addEventListener('resize', () => {
-            if (drawingManager) drawingManager.resize();
-        });
-
-        // ESC key to exit fullscreen
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') exitFullscreen();
-        });
-
-        updateStoryboardToolUI('pen');
-        updateStoryboardPageIndicators();
-    }
+    
+    updateCounselingIndicator();
+    lucide.createIcons();
 }
 
-function toggleToolSettings(tool) {
-    const penSettings = document.getElementById('sb-pen-settings');
-    const eraserSettings = document.getElementById('sb-eraser-settings');
-
-    if (tool === 'pen') {
-        penSettings.classList.toggle('hidden');
-        eraserSettings.classList.add('hidden');
-    } else if (tool === 'eraser') {
-        eraserSettings.classList.toggle('hidden');
-        penSettings.classList.add('hidden');
-    }
+export function closeCounseling() {
+    const overlay = document.getElementById('counseling-overlay');
+    if (overlay) overlay.classList.add('hidden');
+    
+    currentScenario = null;
+    currentScenarioPage = 0;
 }
 
-function hideAllToolSettings() {
-    const penSettings = document.getElementById('sb-pen-settings');
-    const eraserSettings = document.getElementById('sb-eraser-settings');
-    if (penSettings) penSettings.classList.add('hidden');
-    if (eraserSettings) eraserSettings.classList.add('hidden');
-}
-
-function updateStoryboardToolUI(activeTool) {
-    const penBtn = document.getElementById('sb-tool-pen');
-    const eraserBtn = document.getElementById('sb-tool-eraser');
-
-    if (!penBtn || !eraserBtn) return;
-
-    if (activeTool === 'pen') {
-        penBtn.classList.add('active', 'bg-white', 'text-slate-900', 'shadow-sm');
-        penBtn.classList.remove('text-slate-400', 'hover:bg-white/50');
-
-        eraserBtn.classList.remove('active', 'bg-white', 'text-slate-900', 'shadow-sm');
-        eraserBtn.classList.add('text-slate-400', 'hover:bg-white/50');
-    } else {
-        eraserBtn.classList.add('active', 'bg-white', 'text-slate-900', 'shadow-sm');
-        eraserBtn.classList.remove('text-slate-400', 'hover:bg-white/50');
-
-        penBtn.classList.remove('active', 'bg-white', 'text-slate-900', 'shadow-sm');
-        penBtn.classList.add('text-slate-400', 'hover:bg-white/50');
-    }
-}
-
-function sbShowPrev() {
+function counselingPrev() {
     if (currentScenario && currentScenarioPage > 0) {
         currentScenarioPage--;
-        updateStoryboardPage();
+        updateCounselingPage();
     }
 }
 
-function sbShowNext() {
+function counselingNext() {
     if (currentScenario && currentScenarioPage < currentScenario.pages.length - 1) {
         currentScenarioPage++;
-        updateStoryboardPage();
+        updateCounselingPage();
     }
 }
 
-function updateStoryboardPage() {
+function updateCounselingPage() {
+    const htmlContainer = document.getElementById('counseling-html');
+    const img = document.getElementById('counseling-image');
+    
     const isHtmlScenario = currentScenario.type === 'HTML_SCENARIO';
-
+    
     if (isHtmlScenario) {
         const page = currentScenario.pages[currentScenarioPage];
         const content = getScenarioContent(page.contentId);
-        const htmlContainer = document.getElementById('sb-html-content');
-
+        
         if (htmlContainer && content) {
             htmlContainer.innerHTML = content.html;
-            requestAnimationFrame(() => scaleHtmlContent(htmlContainer));
+            htmlContainer.classList.remove('hidden');
+            if (img) img.classList.add('hidden');
         }
     } else {
-        const img = document.getElementById('sb-image');
-        if (img) img.src = currentScenario.pages[currentScenarioPage];
+        if (img) {
+            img.src = currentScenario.pages[currentScenarioPage];
+            img.classList.remove('hidden');
+        }
+        if (htmlContainer) htmlContainer.classList.add('hidden');
     }
-
-    if (drawingManager) drawingManager.clear();
-
-    updateStoryboardPageIndicators();
+    
+    updateCounselingIndicator();
+    lucide.createIcons();
 }
 
-function scaleHtmlContent(container) {
-    const page = container.querySelector('.page');
-    if (!page) {
-        console.warn('scaleHtmlContent: .page element not found');
-        return;
+function updateCounselingIndicator() {
+    const indicator = document.getElementById('counseling-page-indicator');
+    if (indicator && currentScenario) {
+        indicator.textContent = `${currentScenarioPage + 1} / ${currentScenario.pages.length}`;
     }
-
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-    const pageWidth = page.scrollWidth || containerWidth;
-    const pageHeight = page.scrollHeight || containerHeight;
-
-    console.log('scaleHtmlContent:', { containerWidth, containerHeight, pageWidth, pageHeight });
-
-    const scaleX = containerWidth / pageWidth;
-    const scaleY = containerHeight / pageHeight;
-    // Allow scaling up to 1.3x to make content larger, minimum 0.7x
-    const scale = Math.max(Math.min(scaleX, scaleY, 1.3), 0.7);
-
-    console.log('Applying scale:', scale);
-
-    page.style.transform = `scale(${scale})`;
-    page.style.width = `${100 / scale}%`;
-    page.style.height = `${100 / scale}%`;
-    page.style.transformOrigin = 'center center';
 }
 
-function updateStoryboardPageIndicators() {
-    const container = document.getElementById('sb-page-indicators');
-    if (!container || !currentScenario) return;
-
-    container.innerHTML = '';
-    currentScenario.pages.forEach((_, index) => {
-        const dot = document.createElement('div');
-        const isActive = index === currentScenarioPage;
-        dot.className = `h-2 rounded-full transition-all ${isActive ? 'w-6 bg-juo-orange' : 'w-2 bg-slate-300'}`;
-        container.appendChild(dot);
+export function setupCounselingEvents() {
+    const closeBtn = document.getElementById('counseling-close');
+    const prevBtn = document.getElementById('counseling-prev');
+    const nextBtn = document.getElementById('counseling-next');
+    
+    if (closeBtn) closeBtn.addEventListener('click', closeCounseling);
+    if (prevBtn) prevBtn.addEventListener('click', counselingPrev);
+    if (nextBtn) nextBtn.addEventListener('click', counselingNext);
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeCounseling();
+        if (e.key === 'ArrowLeft') counselingPrev();
+        if (e.key === 'ArrowRight') counselingNext();
     });
-
-    const floatIndicator = document.getElementById('sb-float-page-indicator');
-    if (floatIndicator && currentScenario) {
-        floatIndicator.textContent = `${currentScenarioPage + 1} / ${currentScenario.pages.length}`;
-    }
-}
-
-function updateToolUI(activeTool) {
-    const penBtn = document.getElementById('tool-pen');
-    const eraserBtn = document.getElementById('tool-eraser');
-
-    if (activeTool === 'pen') {
-        penBtn.classList.add('active', 'bg-white', 'text-slate-900', 'shadow-lg');
-        penBtn.classList.remove('bg-white/10', 'text-white');
-
-        eraserBtn.classList.remove('active', 'bg-white', 'text-slate-900', 'shadow-lg');
-        eraserBtn.classList.add('bg-white/10', 'text-white');
-    } else {
-        eraserBtn.classList.add('active', 'bg-white', 'text-slate-900', 'shadow-lg');
-        eraserBtn.classList.remove('bg-white/10', 'text-white');
-
-        penBtn.classList.remove('active', 'bg-white', 'text-slate-900', 'shadow-lg');
-        penBtn.classList.add('bg-white/10', 'text-white');
-    }
 }
 
 function createViewerContent(material, colors) {
@@ -1158,209 +421,45 @@ export function closeViewer() {
     const overlay = elements.viewerOverlay();
     overlay.classList.add('hidden');
     overlay.classList.remove('flex');
-
-    // Cleanup Drawing Manager
-    if (drawingManager) {
-        drawingManager = null;
-    }
+    
     currentScenario = null;
     currentScenarioPage = 0;
 }
 
-// Fullscreen Mode Functions
-let isFullscreen = false;
-
-function toggleFullscreen() {
-    const counselingTab = document.getElementById('tab-counseling');
-    const floatingToolbar = document.getElementById('sb-floating-toolbar');
-    const floatingNav = document.getElementById('sb-floating-nav');
-    const fullscreenBtn = document.getElementById('sb-fullscreen-btn');
-    const container = document.getElementById('storyboard-container');
-
-    if (!isFullscreen) {
-        // Enter fullscreen
-        counselingTab.classList.add('fullscreen-mode');
-        if (floatingToolbar) floatingToolbar.classList.remove('hidden');
-        if (floatingNav) floatingNav.classList.remove('hidden');
-        if (fullscreenBtn) {
-            fullscreenBtn.innerHTML = '<i data-lucide="minimize" class="w-5 h-5"></i><span class="hidden sm:inline">나가기</span>';
-            lucide.createIcons();
-        }
-
-        // Resize canvas to fit fullscreen
-        setTimeout(() => {
-            if (drawingManager && container) {
-                const canvas = document.getElementById('sb-canvas');
-                if (canvas) {
-                    canvas.width = container.clientWidth;
-                    canvas.height = container.clientHeight;
-                    drawingManager.resize();
-                }
-            }
-            // Rescale HTML content if present
-            const htmlContainer = document.getElementById('sb-html-content');
-            if (htmlContainer && !htmlContainer.classList.contains('hidden')) {
-                scaleHtmlContent(htmlContainer);
-            }
-        }, 100);
-
-        isFullscreen = true;
-    } else {
-        exitFullscreen();
-    }
-}
-
-function exitFullscreen() {
-    const counselingTab = document.getElementById('tab-counseling');
-    const floatingToolbar = document.getElementById('sb-floating-toolbar');
-    const floatingNav = document.getElementById('sb-floating-nav');
-    const fullscreenBtn = document.getElementById('sb-fullscreen-btn');
-    const container = document.getElementById('storyboard-container');
-
-    counselingTab.classList.remove('fullscreen-mode');
-    if (floatingToolbar) floatingToolbar.classList.add('hidden');
-    if (floatingNav) floatingNav.classList.add('hidden');
-    if (fullscreenBtn) {
-        fullscreenBtn.innerHTML = '<i data-lucide="maximize" class="w-5 h-5"></i><span class="hidden sm:inline">풀스크린</span>';
-        lucide.createIcons();
-    }
-
-    // Resize canvas back to normal
-    setTimeout(() => {
-        if (drawingManager && container) {
-            const canvas = document.getElementById('sb-canvas');
-            if (canvas) {
-                canvas.width = container.clientWidth;
-                canvas.height = container.clientHeight;
-                drawingManager.resize();
-            }
-        }
-        // Rescale HTML content if present
-        const htmlContainer = document.getElementById('sb-html-content');
-        if (htmlContainer && !htmlContainer.classList.contains('hidden')) {
-            scaleHtmlContent(htmlContainer);
-        }
-    }, 100);
-
-    isFullscreen = false;
-}
-
-function updateFloatingToolUI(activeTool) {
-    const penBtn = document.getElementById('sb-float-pen');
-    const eraserBtn = document.getElementById('sb-float-eraser');
-
-    if (!penBtn || !eraserBtn) return;
-
-    if (activeTool === 'pen') {
-        penBtn.classList.add('bg-white', 'text-slate-900', 'shadow-lg');
-        penBtn.classList.remove('bg-white/10', 'text-white');
-        eraserBtn.classList.remove('bg-white', 'text-slate-900', 'shadow-lg');
-        eraserBtn.classList.add('bg-white/10', 'text-white');
-    } else {
-        eraserBtn.classList.add('bg-white', 'text-slate-900', 'shadow-lg');
-        eraserBtn.classList.remove('bg-white/10', 'text-white');
-        penBtn.classList.remove('bg-white', 'text-slate-900', 'shadow-lg');
-        penBtn.classList.add('bg-white/10', 'text-white');
-    }
-}
-
-function hideAllFloatingPopovers(except = null) {
-    const popovers = {
-        'color': document.getElementById('sb-float-color-picker'),
-        'pen-size': document.getElementById('sb-float-pen-size'),
-        'eraser-size': document.getElementById('sb-float-eraser-size')
-    };
-
-    Object.keys(popovers).forEach(key => {
-        if (key !== except && popovers[key]) {
-            popovers[key].classList.add('hidden');
-        }
-    });
-}
-
-function updatePageIndicators() {
-    const container = elements.pageIndicators();
-    container.innerHTML = '';
-
-    if (currentScenario) {
-        // Scenario Page Indicators
-        currentScenario.pages.forEach((_, index) => {
-            const dot = document.createElement('div');
-            const isActive = index === currentScenarioPage;
-            dot.className = `page-dot h-2 rounded-full transition-all ${isActive ? 'active w-6 bg-juo-orange' : 'w-2 bg-white/30'}`;
-            container.appendChild(dot);
-        });
-    } else {
-        // Material List Indicators
-        filteredMaterials.forEach((_, index) => {
-            const dot = document.createElement('div');
-            const isActive = index === currentMaterialIndex;
-            dot.className = `page-dot h-2 rounded-full transition-all ${isActive ? 'active w-6 bg-juo-orange' : 'w-2 bg-white/30'}`;
-            container.appendChild(dot);
-        });
-    }
-}
-
 export function showPrev() {
-    if (currentScenario) {
-        if (currentScenarioPage > 0) {
-            currentScenarioPage--;
-            updateScenarioPage();
-        }
-    } else if (currentMaterialIndex > 0) {
+    if (currentMaterialIndex > 0) {
         openViewer(currentMaterialIndex - 1);
     }
 }
 
 export function showNext() {
-    if (currentScenario) {
-        if (currentScenarioPage < currentScenario.pages.length - 1) {
-            currentScenarioPage++;
-            updateScenarioPage();
-        }
-    } else if (currentMaterialIndex < filteredMaterials.length - 1) {
+    if (currentMaterialIndex < filteredMaterials.length - 1) {
         openViewer(currentMaterialIndex + 1);
     }
-}
-
-function updateScenarioPage() {
-    const isHtmlScenario = currentScenario.type === 'HTML_SCENARIO';
-
-    if (isHtmlScenario) {
-        const page = currentScenario.pages[currentScenarioPage];
-        const content = getScenarioContent(page.contentId);
-        const htmlContainer = document.getElementById('sb-html-content') || document.getElementById('scenario-html-container');
-
-        if (htmlContainer && content) {
-            htmlContainer.innerHTML = content.html;
-            requestAnimationFrame(() => scaleHtmlContent(htmlContainer));
-        }
-    } else {
-        const img = document.getElementById('scenario-image');
-        if (img) img.src = currentScenario.pages[currentScenarioPage];
-    }
-
-    if (drawingManager) drawingManager.clear();
-
-    updatePageIndicators();
 }
 
 export function switchTab(tabId, pushState = true) {
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     document.querySelector(`[data-tab="${tabId}"]`)?.classList.add('active');
-
+    
     document.querySelectorAll('section[id^="tab-"]').forEach(sec => sec.classList.add('hidden'));
     document.getElementById(`tab-${tabId}`)?.classList.remove('hidden');
-
+    
     if (tabId === 'counseling') {
-        // Initialize Storyboard Mode
-        initStoryboard();
+        initCounseling();
     }
-
+    
     if (tabId === 'contracts') {
+        const listView = elements.contractListView();
+        const detailView = document.getElementById('contract-detail-view');
+        if (listView) listView.classList.remove('hidden');
+        if (detailView) {
+            detailView.classList.add('hidden');
+            detailView.classList.remove('flex');
+        }
         renderContracts(AppState.user);
     }
-
+    
     if (pushState) {
         history.pushState({ tabId }, '', `#${tabId}`);
     }
@@ -1413,12 +512,11 @@ export async function renderContracts(user) {
 
         const openMode = isDraft ? 'create' : 'edit';
         item.addEventListener('click', (e) => {
-            // Don't open if clicking delete button
             if (e.target.closest('.btn-delete-draft')) return;
             if (!isDraft && isCompleted) {
                 showContractDetail(contract);
             } else {
-                openContractForm(openMode, contract);
+                window.location.href = `contract-create.html?id=${contract.id}`;
             }
         });
 

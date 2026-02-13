@@ -1,19 +1,18 @@
 import { supabase } from './supabase.js';
-import { renderMaterials, openViewer, closeViewer, showPrev, showNext, switchTab, initData, applyPermissions, AppState } from './ui.js';
+import { renderMaterials, openViewer, closeViewer, showPrev, showNext, switchTab, initData, applyPermissions, AppState, setupCounselingEvents } from './ui.js';
 
 async function init() {
     await initData();
     lucide.createIcons();
 
-    // Check Authentication & Load Profile
     await handleAuth();
 
     await renderMaterials();
     setupEventListeners();
+    setupCounselingEvents();
 
-    // Handle initial tab from hash or default to home
     const hash = window.location.hash.replace('#', '');
-    if (hash && ['home', 'counseling', 'tools', 'contracts', 'admin'].includes(hash)) {
+    if (hash && ['home', 'counseling', 'contracts', 'admin'].includes(hash)) {
         switchTab(hash, false);
         history.replaceState({ tabId: hash }, '', `#${hash}`);
     } else {
@@ -240,9 +239,6 @@ function handleQuickActionClick(e) {
             break;
         case 'go-to-contracts':
             switchTab('contracts');
-            break;
-        case 'go-to-tools':
-            switchTab('tools');
             break;
     }
 }

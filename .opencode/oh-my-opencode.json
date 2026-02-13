@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
   "agents": {
     "sisyphus": {
-      "model": "moonshotai/kimi-k2.5",
+      "model": "zai-coding-plan/glm-5",
       "variant": "max"
     },
     "hephaestus": {
@@ -14,7 +14,7 @@
       "variant": "high"
     },
     "librarian": {
-      "model": "zai-coding-plan/glm-4.7"
+      "model": "zai-coding-plan/glm-5"
     },
     "explore": {
       "model": "openai/gpt-5.1-codex-mini"
@@ -23,11 +23,11 @@
       "model": "google/antigravity-gemini-3-flash"
     },
     "prometheus": {
-      "model": "moonshotai/kimi-k2.5",
+      "model": "zai-coding-plan/glm-5",
       "variant": "max"
     },
     "metis": {
-      "model": "moonshotai/kimi-k2.5",
+      "model": "zai-coding-plan/glm-5",
       "variant": "max"
     },
     "momus": {
@@ -47,7 +47,7 @@
       "variant": "xhigh"
     },
     "deep": {
-      "model": "moonshotai/kimi-k2.5",
+      "model": "zai-coding-plan/glm-5",
       "variant": "high"
     },
     "artistry": {
@@ -55,13 +55,13 @@
       "variant": "high"
     },
     "quick": {
-      "model": "moonshotai/kimi-k2.5"
+      "model": "zai-coding-plan/glm-4.7-flash"
     },
     "unspecified-low": {
       "model": "zai-coding-plan/glm-4.7-flash"
     },
     "unspecified-high": {
-      "model": "zai-coding-plan/glm-4.7"
+      "model": "zai-coding-plan/glm-5"
     },
     "writing": {
       "model": "zai-coding-plan/glm-4.7"

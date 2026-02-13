@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>주오 — 멤버십 선택 (Interactive)</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="membership_common.css">
+    <link rel="stylesheet" href="membership_interactive.css">
+</head>
+
+<body class="body--interactive">
+    <div class="page page--interactive">
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">JUO</div>
+                <div>
+                    <h1 class="header-title">멤버십 선택</h1>
+                    <p class="header-subtitle">반려동물에게 딱 맞는 플랜을 선택해보세요.</p>
+                </div>
+            </div>
+            <div class="page-indicator">Step 1</div>
+        </header>
+
+        <main class="interactive-container">
+            <!-- VIP Tier -->
+            <div class="tier-card tier-card--vip" onclick="location.href='membership_vip_detail.html'">
+                <div class="tier-card__bg"></div>
+                <div class="vip-glow"></div>
+                <!-- Moved BEST badge here -->
+                <div class="tier-best-badge">BEST</div>
+                <div class="tier-card__content">
+                    <div class="tier-header">
+                        <div class="vip-crown-icon"><i class="fa-solid fa-crown"></i></div>
+                        <span class="tier-badge">Exclusive</span>
+                        <h2 class="tier-name">VIP</h2>
+                        <div class="tier-price">
+                            <span class="amount">79,900</span>
+                            <span class="unit">원 / 월</span>
+                        </div>
+                    </div>
+                    <ul class="tier-benefits">
+                        <li><i class="fa-solid fa-syringe"></i> <span><strong>필수 예방접종 (종합/코로나/켄넬) 6회</strong></span>
+                        </li>
+                        <li><i class="fa-solid fa-user-doctor"></i> <span><strong>중성화 수술 (5kg 미만) 무료지원</strong></span>
+                        </li>
+                        <li><i class="fa-solid fa-microscope"></i> <span><strong>동물등록 내장형칩 무상지원</strong></span></li>
+                        <li><i class="fa-solid fa-heart-pulse"></i> <span><strong>심장사상충 예방 (연 12회)</strong></span></li>
+                        <li><i class="fa-solid fa-stethoscope"></i> <span><strong>기초 건강검진 (신체/혈액 등)</strong></span></li>
+                        <li><i class="fa-solid fa-school"></i> <span><strong>방문 행동교정 훈련 교육</strong></span></li>
+                        <li><i class="fa-solid fa-gift"></i> <span>매월 프리미엄 사료/패드/간식 배송</span></li>
+                        <li><i class="fa-solid fa-tags"></i> <span>주오몰 30% 할인 + <strong>무료배송</strong></span></li>
+                    </ul>
+                    <button class="tier-select-btn">혜택 자세히 보기</button>
+                </div>
+            </div>
+
+            <!-- Gold Tier -->
+            <div class="tier-card tier-card--gold" onclick="selectTier('gold')">
+                <div class="tier-card__bg"></div>
+                <!-- Removed BEST badge from here -->
+                <div class="tier-card__content">
+                    <div class="tier-header">
+                        <span class="tier-badge">Premium</span>
+                        <h2 class="tier-name">Gold</h2>
+                        <div class="tier-price">
+                            <span class="amount">39,900</span>
+                            <span class="unit">원 / 월</span>
+                        </div>
+                    </div>
+                    <ul class="tier-benefits">
+                        <li><i class="fa-solid fa-won-sign"></i> <span><strong>질병/상해 의료비 50만원 지원</strong></span></li>
+                        <li><i class="fa-solid fa-stethoscope"></i> <span><strong>종합 건강검진 (초음파/X-ray)</strong></span>
+                        </li>
+                        <li><i class="fa-solid fa-vial"></i> <span>항체가 검사 지원</span></li>
+                        <li><i class="fa-solid fa-syringe"></i> <span>종합백신 + 광견병 (기초 이후)</span></li>
+                        <li><i class="fa-solid fa-heart-pulse"></i> <span>심장사상충 예방 (연 12회)</span></li>
+                        <li><i class="fa-solid fa-gift"></i> <span>매월 프리미엄 사료/패드/간식 배송</span></li>
+                        <li><i class="fa-solid fa-tags"></i> <span>주오몰 30% 할인 + 무료배송</span></li>
+                    </ul>
+                    <button class="tier-select-btn">혜택 자세히 보기</button>
+                </div>
+            </div>
+
+            <!-- Silver Tier -->
+            <div class="tier-card tier-card--silver" onclick="selectTier('silver')">
+                <div class="tier-card__bg"></div>
+                <div class="tier-card__content">
+                    <div class="tier-header">
+                        <span class="tier-badge">Standard</span>
+                        <h2 class="tier-name">Silver</h2>
+                        <div class="tier-price">
+                            <span class="amount">19,900</span>
+                            <span class="unit">원 / 월</span>
+                        </div>
+                    </div>
+                    <ul class="tier-benefits">
+                        <li><i class="fa-solid fa-syringe"></i> <span>필수 예방접종 (6회) 지원</span></li>
+                        <li><i class="fa-solid fa-user-doctor"></i> <span>중성화 수술 (5kg 미만) 지원</span></li>
+                        <li><i class="fa-solid fa-microscope"></i> <span>동물등록 내장형 칩 지원</span></li>
+                        <li><i class="fa-solid fa-gift"></i> <span>매월 프리미엄 사료/패드/간식 배송</span></li>
+                        <li><i class="fa-solid fa-tags"></i> <span>주오몰 20% 할인</span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span><strong>심장사상충 예방 (12회)
+                                    미포함</strong></span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>기초 건강검진 미포함</span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>방문 훈련 교육 미포함</span></li>
+                    </ul>
+                    <button class="tier-select-btn">혜택 자세히 보기</button>
+                </div>
+            </div>
+
+            <!-- White Tier -->
+            <div class="tier-card tier-card--white" onclick="selectTier('white')">
+                <div class="tier-card__bg"></div>
+                <div class="tier-card__content">
+                    <div class="tier-header">
+                        <span class="tier-badge">Basic</span>
+                        <h2 class="tier-name">White</h2>
+                        <div class="tier-price">
+                            <span class="amount">0</span>
+                            <span class="unit">원 / 월</span>
+                        </div>
+                    </div>
+                    <ul class="tier-benefits">
+                        <li><i class="fa-solid fa-gift"></i> <span>매월 프리미엄 사료/패드/간식 배송</span></li>
+                        <li><i class="fa-solid fa-tags"></i> <span>주오몰 20% 할인</span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span><strong>필수 예방접종 / 중성화
+                                    미포함</strong></span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>내장형 칩 / 항체가 검사 미포함</span>
+                        </li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>심장사상충 / 건강검진 미포함</span>
+                        </li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>방문 훈련 교육 미포함</span></li>
+                    </ul>
+                    <button class="tier-select-btn">혜택 자세히 보기</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function selectTier(tier) {
+            // Remove active class from all
+            document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('active'));
+            // Add active class to selected
+            document.querySelector(`.tier-card--${tier}`).classList.add('active');
+
+            // Console log for debugging
+            console.log(`Selected Tier: ${tier}`);
+        }
+    </script>
+</body>
+
+</html>
