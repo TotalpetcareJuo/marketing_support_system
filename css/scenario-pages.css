@@ -20,14 +20,18 @@
     -webkit-font-smoothing: antialiased;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
+    /* Changed from hidden to auto */
     background: #f4f5f7;
     color: #333;
     line-height: 1.5;
     box-sizing: border-box;
     display: flex;
+    flex-direction: column;
+    /* Ensure vertical stacking if needed */
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    /* Changed from center */
 }
 
 .scenario-html-content *,
@@ -65,8 +69,10 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
-    padding: 16px 20px 12px;
+    min-height: 100%;
+    /* Ensure it takes at least full height */
+    padding: 16px 20px 80px;
+    /* Added bottom padding for floating controls */
     transform-origin: center center;
     position: relative;
     flex-shrink: 0;
@@ -1173,7 +1179,8 @@
 .scenario-html-content .page--insurance-premium {
     position: relative;
     padding: 0;
-    height: 100vh;
+    min-height: 100%;
+    /* Changed from height: 100vh */
     display: flex;
     flex-direction: column;
 }
@@ -1207,18 +1214,31 @@
 
 .scenario-html-content .draw-content {
     flex: 1;
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    display: flex;
+    /* Changed from grid to flex for better responsiveness */
+    flex-direction: row;
+    flex-wrap: wrap;
+    /* Allow wrapping */
     gap: 32px;
-    padding: 20px 40px 40px;
-    align-content: center;
+    padding: 20px 40px 100px;
+    /* Increased bottom padding */
+    align-content: flex-start;
+    /* Changed from center */
     z-index: 5;
+    width: 100%;
+    max-width: 1400px;
+    /* Max width to prevent too wide stretching */
+    margin: 0 auto;
 }
 
 .scenario-html-content .disease-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* Responsive columns */
+    gap: 16px;
+    /* Reduced gap */
+    flex: 1.2;
+    min-width: 300px;
 }
 
 .scenario-html-content .disease-card {
@@ -1287,9 +1307,12 @@
 }
 
 .scenario-html-content .reality-panel {
+    flex: 0.8;
+    min-width: 300px;
     background: #2d3748;
     border-radius: 28px;
-    padding: 40px;
+    padding: 30px;
+    /* Reduced padding */
     color: #fff;
     display: flex;
     flex-direction: column;

@@ -1,0 +1,416 @@
+/* ═══════════════════════════════════════════════════════════════
+   JUO Counseling Interactive Styles
+   Scoped for #counseling-overlay
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────────────────────────────
+   BASE STYLES (Scoped)
+   ─────────────────────────────────────────────────────────────── */
+
+#counseling-overlay .page--interactive {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: #f0f2f5;
+    padding: 30px;
+}
+
+#counseling-overlay .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    margin-bottom: 24px;
+}
+
+#counseling-overlay .header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+#counseling-overlay .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #ff7f3f, #ff9f6f);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(255, 127, 63, 0.3);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+}
+
+#counseling-overlay .header-title {
+    color: #1a1a1a;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+#counseling-overlay .header-subtitle {
+    margin-top: 2px;
+    color: #888;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+#counseling-overlay .page-indicator {
+    padding: 6px 14px;
+    border: 1px solid #e8e8e8;
+    background: #fff;
+    border-radius: 20px;
+    color: #aaa;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   INTERACTIVE CONTAINER
+   ─────────────────────────────────────────────────────────────── */
+
+#counseling-overlay .interactive-container {
+    display: flex;
+    /* Flexbox for grid-like row */
+    gap: 20px;
+    flex: 1;
+    align-items: stretch;
+    /* Cards stretch to full height */
+    margin-top: 10px;
+    min-height: 500px;
+}
+
+/* Tier Card Base Styles */
+#counseling-overlay .tier-card {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 24px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
+#counseling-overlay .tier-card__content {
+    position: relative;
+    z-index: 2;
+    padding: 30px 24px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#counseling-overlay .tier-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+#counseling-overlay .tier-card.active {
+    border-color: #ff7f3f;
+    /* Active highlight color */
+    transform: scale(1.02);
+}
+
+/* 
+    TIER SPECIFIC STYLES 
+*/
+
+/* WHITE */
+#counseling-overlay .tier-card--white {
+    background: linear-gradient(145deg, #ffffff 0%, #f7f9fc 100%);
+    border-color: #e2e8f0;
+}
+
+#counseling-overlay .tier-card--white .tier-name {
+    color: #475569;
+}
+
+#counseling-overlay .tier-card--white .tier-price {
+    color: #1e293b;
+}
+
+#counseling-overlay .tier-card--white .tier-badge {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+#counseling-overlay .tier-card--white .tier-select-btn {
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+/* SILVER */
+#counseling-overlay .tier-card--silver {
+    background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+    border-color: #ced4da;
+}
+
+#counseling-overlay .tier-card--silver .tier-name {
+    color: #495057;
+}
+
+#counseling-overlay .tier-card--silver .tier-price {
+    color: #212529;
+}
+
+#counseling-overlay .tier-card--silver .tier-badge {
+    background: #e9ecef;
+    color: #495057;
+}
+
+#counseling-overlay .tier-card--silver .tier-benefits i {
+    color: #adb5bd;
+}
+
+#counseling-overlay .tier-card--silver .tier-select-btn {
+    background: #fff;
+    border: 1px solid #adb5bd;
+    color: #495057;
+}
+
+/* GOLD */
+#counseling-overlay .tier-card--gold {
+    background: linear-gradient(145deg, #fffbeb 0%, #fff3cd 100%);
+    border-color: #ffe69c;
+}
+
+#counseling-overlay .tier-card--gold .tier-name {
+    color: #856404;
+}
+
+#counseling-overlay .tier-card--gold .tier-price {
+    color: #856404;
+}
+
+#counseling-overlay .tier-card--gold .tier-badge {
+    background: #fff3cd;
+    color: #856404;
+}
+
+#counseling-overlay .tier-card--gold .tier-benefits i {
+    color: #ffc107;
+}
+
+#counseling-overlay .tier-card--gold .tier-select-btn {
+    background: #ffc107;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+}
+
+#counseling-overlay .tier-best-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff4757;
+    color: white;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: 0 0 12px 12px;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(255, 71, 87, 0.3);
+}
+
+/* VIP - PREMIUM STYLING */
+#counseling-overlay .tier-card--vip {
+    background: #1a1a1a;
+    /* Dark base */
+    border: 2px solid #c5a059;
+    color: white;
+    transform: scale(1.02);
+    /* Slightly larger by default */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+#counseling-overlay .tier-card--vip .tier-card__bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, #333 0%, #000 100%);
+    opacity: 0.9;
+    z-index: 0;
+}
+
+#counseling-overlay .tier-card--vip .tier-name {
+    background: linear-gradient(45deg, #e6c888, #fff, #e6c888);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 2.8rem;
+    /* Larger */
+}
+
+#counseling-overlay .tier-card--vip .tier-price {
+    color: #e6c888;
+}
+
+#counseling-overlay .tier-card--vip .tier-badge {
+    background: rgba(197, 160, 89, 0.2);
+    color: #e6c888;
+    border: 1px solid rgba(197, 160, 89, 0.5);
+}
+
+#counseling-overlay .tier-card--vip .tier-benefits li {
+    color: #ddd;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#counseling-overlay .tier-card--vip .tier-benefits i {
+    color: #e6c888;
+}
+
+#counseling-overlay .tier-card--vip .tier-select-btn {
+    background: linear-gradient(90deg, #c5a059, #e6c888, #c5a059);
+    background-size: 200% auto;
+    color: #000;
+    border: none;
+    font-weight: 800;
+    animation: shine 3s linear infinite;
+    box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
+}
+
+#counseling-overlay .vip-crown-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: #e6c888;
+    /* Gold */
+    opacity: 0.8;
+}
+
+/* Shimmer/Glow Animation for VIP */
+#counseling-overlay .vip-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(197, 160, 89, 0.15) 0%, transparent 60%);
+    animation: rotateGlow 10s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes rotateGlow {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+
+/* Common Content Layout within Cards */
+#counseling-overlay .tier-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#counseling-overlay .tier-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+#counseling-overlay .tier-name {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 0;
+    line-height: 1.2;
+}
+
+#counseling-overlay .tier-price {
+    display: none;
+}
+
+/* MISSING BENEFIT STYLE */
+#counseling-overlay .tier-benefits li.benefit--missing {
+    opacity: 0.5;
+    text-decoration: line-through;
+    color: #999;
+}
+
+#counseling-overlay .tier-benefits li.benefit--missing i {
+    color: #ccc !important;
+    /* Force grey icon for missing items */
+}
+
+#counseling-overlay .tier-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+    flex: 1;
+    /* Push button down */
+}
+
+#counseling-overlay .tier-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 14px;
+    color: #555;
+    text-align: left;
+}
+
+#counseling-overlay .tier-benefits li:last-child {
+    border-bottom: none;
+}
+
+#counseling-overlay .tier-select-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#counseling-overlay .tier-select-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #counseling-overlay .interactive-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    #counseling-overlay .page--interactive {
+        height: auto;
+        overflow-y: auto;
+    }
+
+    #counseling-overlay .tier-card {
+        min-height: 400px;
+    }
+}

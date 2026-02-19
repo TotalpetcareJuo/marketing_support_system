@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Start - White & Silver</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="membership_white_silver_detail.css">
+</head>
+
+<body>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="line-1">SMALL STEPS,</span>
+                <span class="line-2">BIG FUTURE</span>
+            </h1>
+            <p class="hero-subtitle">
+                가족을 위한 첫 걸음,<br>
+                가장 현명한 시작을 만나보세요.
+            </p>
+            <div class="scroll-indicator">
+                <span>SCROLL TO EXPLORE</span>
+                <div class="line"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- White Story Section -->
+    <section class="story-section white-theme">
+        <div class="story-container">
+            <div class="story-text" data-scroll>
+                <div class="badge badge-white">BASIC CARE</div>
+                <h2>매일의 케어를<br>빈틈없이.</h2>
+                <p>
+                    반려생활의 기본인 사료와 용품.<br>
+                    매월 집으로 찾아가는 <strong>정기 배송 서비스</strong>로<br>
+                    고민할 시간까지 아껴드립니다.
+                </p>
+            </div>
+            <div class="story-visual" data-scroll>
+                <div class="visual-card card-white">
+                    <img src="assets/whitep.webp" alt="Daily Care" class="card-image">
+                    <div class="floating-item item-1"><i class="fa-solid fa-bone"></i></div>
+                    <div class="floating-item item-2"><i class="fa-solid fa-bowl-food"></i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Silver Story Section -->
+    <section class="story-section silver-theme">
+        <div class="story-container reverse">
+            <div class="story-text" data-scroll>
+                <div class="badge badge-silver">STANDARD CARE</div>
+                <h2>건강한 삶의<br>기초를 다지다.</h2>
+                <p>
+                    <strong>필수 예방접종</strong>부터 <strong>중성화 수술</strong>까지.<br>
+                    White 혜택에 의료 지원을 더해<br>
+                    평생 건강의 튼튼한 기반을 만듭니다.
+                </p>
+            </div>
+            <div class="story-visual" data-scroll>
+                <div class="visual-card card-silver">
+                    <img src="assets/silver_image.webp" alt="Medical Care" class="card-image">
+                    <div class="floating-item item-3"><i class="fa-solid fa-syringe"></i></div>
+                    <div class="floating-item item-4"><i class="fa-solid fa-microchip"></i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Benefit Breakdown & Comparison -->
+    <section class="comparison-section">
+        <h3 class="section-title" data-scroll>FIND YOUR PERFECT START</h3>
+
+        <div class="compare-container">
+            <!-- White Card -->
+            <div class="plan-card plan-white" data-scroll>
+                <div class="plan-header">
+                    <h4>WHITE</h4>
+                    <div class="plan-price">50,000<span>원/월</span></div>
+                    <p class="plan-desc">부담 없는 데일리 케어</p>
+                </div>
+                <div class="plan-benefits">
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> <span>유기농 사료+패드+간식 배송</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span>주오몰 20% 상시 할인</span></li>
+                    </ul>
+                    <div class="total-benefit-box white-benefit">
+                        <span class="label">연간 혜택 가치</span>
+                        <span class="amount">72<small>만원</small></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Silver Card -->
+            <div class="plan-card plan-silver" data-scroll>
+                <div class="best-badge">MOST POPULAR</div>
+                <div class="plan-header">
+                    <h4>SILVER</h4>
+                    <div class="plan-price">100,000<span>원/월</span></div>
+                    <p class="plan-desc">의료비 걱정 없는 표준</p>
+                </div>
+                <div class="plan-benefits">
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> <span><strong>White 모든 혜택 포함</strong></span></li>
+                        <li><i class="fa-solid fa-check"></i> <span>주오몰 20% 상시 할인</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span>필수 예방접종 6회 지원</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span>중성화 수술 (5kg 미만)</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span>동물등록 내장형 칩</span></li>
+                    </ul>
+                    <div class="total-benefit-box silver-benefit">
+                        <span class="label">연간 혜택 가치</span>
+                        <span class="amount">167<small>만원</small></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Intersection Observer for Scroll Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('[data-scroll]').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (scrollTop / scrollHeight) * 100;
+            document.querySelector('.scroll-progress').style.width = scrolled + '%';
+        });
+    </script>
+</body>
+
+</html>

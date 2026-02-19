@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="css/materials.css">
     <!-- Scenario Pages Styles (for HTML-based counseling) -->
     <link rel="stylesheet" href="css/scenario-pages.css">
+    <link rel="stylesheet" href="css/counseling-landing.css">
+    <link rel="stylesheet" href="css/counseling-interactive.css">
+    <link rel="stylesheet" href="css/counseling-vip-detail.css">
     <!-- Pretendard Font -->
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
@@ -114,30 +117,66 @@
             </div>
         </section>
 
-        <div id="counseling-overlay" class="fixed inset-0 z-40 hidden bg-slate-900">
-            <div id="counseling-content" class="w-full h-full flex items-center justify-center p-4">
-                <div id="counseling-html" class="scenario-html-content w-full h-full overflow-auto"></div>
-                <img id="counseling-image" class="hidden max-w-full max-h-full object-contain" src="" alt="상담 자료">
-            </div>
-
-            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-50">
-                <button id="counseling-prev" class="w-14 h-14 rounded-full bg-white/90 backdrop-blur shadow-lg flex items-center justify-center text-slate-700 hover:bg-white active:scale-95 transition">
-                    <i data-lucide="chevron-left" class="w-7 h-7"></i>
-                </button>
-                <div id="counseling-page-indicator" class="bg-slate-900/80 backdrop-blur text-white px-5 py-2.5 rounded-full text-base font-bold">
-                    1 / 7
+        <section id="tab-counseling" class="hidden h-full flex flex-col relative">
+            <!-- Header for Counseling Tab -->
+            <div class="mb-4 flex items-center justify-between shrink-0">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800">입양 상담</h2>
+                    <p class="text-sm text-slate-500">효과적인 상담을 위한 가이드 자료</p>
                 </div>
-                <button id="counseling-next" class="w-14 h-14 rounded-full bg-juo-orange shadow-lg shadow-orange-200 flex items-center justify-center text-white hover:bg-orange-600 active:scale-95 transition">
-                    <i data-lucide="chevron-right" class="w-7 h-7"></i>
+                <div class="flex items-center gap-2">
+                    <div id="counseling-page-indicator"
+                        class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold">
+                        1 / 7
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div id="counseling-content"
+                class="flex-1 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden relative flex items-center justify-center">
+                <div id="counseling-html"
+                    class="scenario-html-content w-full h-full overflow-auto custom-scroll p-4 md:p-8 hidden"></div>
+
+                <!-- Start View -->
+                <div id="counseling-start-view"
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-slate-50">
+                    <div class="text-center p-10">
+                        <div class="mb-8 relative inline-block">
+                            <div class="absolute -inset-4 bg-orange-100 rounded-full blur-xl opacity-70 animate-pulse">
+                            </div>
+                            <img src="LOGO.png" alt="JUO" class="h-16 relative z-10 mx-auto">
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-800 mb-2">토탈펫케어 멤버십 상담</h3>
+                        <p class="text-slate-500 mb-10">보호자님을 위한 맞춤형 상담을 시작합니다.</p>
+                        <button id="btn-open-counseling"
+                            class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-slate-900 font-pj rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 hover:bg-slate-800 hover:shadow-xl hover:-translate-y-1">
+                            <span class="mr-3">상담 시작하기</span>
+                            <i data-lucide="arrow-right"
+                                class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                            <div
+                                class="absolute -inset-3 rounded-full bg-slate-400 opacity-20 group-hover:opacity-40 blur-lg transition duration-200">
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <img id="counseling-image" class="hidden max-w-full max-h-full object-contain" src="" alt="상담 자료">
+
+                <!-- Navigation Buttons (Floating inside content area) -->
+                <button id="counseling-prev"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/80 backdrop-blur shadow-lg flex items-center justify-center text-slate-700 hover:bg-white active:scale-95 transition border border-slate-100 z-10">
+                    <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                </button>
+                <button id="counseling-next"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-juo-orange shadow-lg shadow-orange-100 flex items-center justify-center text-white hover:bg-orange-600 active:scale-95 transition z-10">
+                    <i data-lucide="chevron-right" class="w-6 h-6"></i>
                 </button>
             </div>
 
-            <button id="counseling-close" class="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white hover:bg-white/20 active:scale-95 transition z-50">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
-        </div>
-
-        <section id="tab-counseling" class="hidden"></section>
+            <!-- Bottom Spacer for Nav -->
+            <div class="h-6 shrink-0"></div>
+        </section>
 
         <section id="tab-contracts"
             class="hidden animate-fade-in flex flex-col h-[calc(100vh-185px)] md:h-[calc(100vh-210px)]">
@@ -281,7 +320,7 @@
                             <div class="bg-slate-50 rounded-xl p-3">
                                 <p class="text-[10px] text-slate-400 font-bold mb-0.5">지점</p>
                                 <p class="text-sm text-slate-600" id="detail-branch-name"></p>
-                                                         </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -510,7 +549,19 @@
         </div>
     </div>
 
-    <script type="module" src="js/app.js"></script>
+    <!-- Fullscreen Overlay for Counseling -->
+    <div id="counseling-overlay"
+        class="hidden fixed inset-0 z-50 bg-white flex flex-col overflow-hidden animate-fade-in">
+        <button id="counseling-close"
+            class="absolute top-6 right-6 z-50 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-slate-500 hover:bg-white hover:text-slate-800 shadow-lg transition"
+            title="상담 종료">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+        <div id="overlay-content" class="w-full h-full relative overflow-y-auto"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/app.js" type="module"></script>
 </body>
 
 </html>

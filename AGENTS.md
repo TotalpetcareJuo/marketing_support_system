@@ -1,7 +1,7 @@
 # AGENTS.md - Coding Guidelines for JUO Marketing Support System
 
 ## Project Overview
-Frontend marketing support system for JUO COMPANY (pet adoption business). Hybrid architecture with vanilla HTML/CSS/JavaScript - uses both ES modules and global script patterns. Tailwind CSS via CDN, localStorage state management.
+Frontend marketing support system for JUO COMPANY (pet adoption business). Hybrid architecture with vanilla HTML/CSS/JavaScript - uses both ES modules and global script patterns. Tailwind CSS via CDN, localStorage state management, Supabase backend.
 
 ## Tech Stack
 - **Languages**: HTML5, CSS3, Vanilla JavaScript (ES6+)
@@ -13,13 +13,14 @@ Frontend marketing support system for JUO COMPANY (pet adoption business). Hybri
 ## Build/Test Commands
 ```bash
 npm install                              # Install dependencies
-python3 -m http.server 8000              # Serve locally
+python3 -m http.server 8000              # Serve locally (port 8000 required for tests)
 npx serve                                # Alternative: npm run dev
 
-npx playwright test                      # Run all tests
+npx playwright test                      # Run all Playwright tests
 npx playwright test <file>.spec.js       # Run single test file
-npx playwright test --headed             # Run with browser visible
-node test-localstorage-compat.js         # Custom migration test
+npx playwright test --headed             # Run with visible browser
+npx playwright test --debug              # Debug mode with Playwright Inspector
+node test-localstorage-compat.js         # Custom migration test (requires server on :8000)
 ```
 
 ## File Structure
@@ -28,11 +29,14 @@ node test-localstorage-compat.js         # Custom migration test
 ├── display_system.html        # Store display manager (global scripts)
 ├── display_system.js          # Main entry for display system
 ├── materials.html             # Sales library (ES modules)
+├── contract-create.html       # Contract creation form
+├── membership_*.html          # Membership landing/detail pages
 ├── display_system/            # Global script modules (NO ES modules)
 │   ├── state.js               # State mgmt, defaults, migrations
 │   ├── admin.js, editor.js, slideshow.js, slideshow_templates.js
 ├── js/                        # ES modules (materials.html)
 │   ├── app.js, ui.js, store.js, supabase.js, data.js, drawing.js
+│   └── scenarioContent.js, contract-form.js
 └── css/                       # materials.css, scenario-pages.css
 ```
 
@@ -43,6 +47,7 @@ node test-localstorage-compat.js         # Custom migration test
 - Brand color: `#FF7A00` (JUO Orange)
 - Font: Noto Sans KR or Pretendard, Background: `#f8fafc` (slate-50)
 - Tailwind utilities primary; custom CSS uses standard syntax (no `@apply`)
+- CSS custom utilities: `.text-juo-orange`, `.bg-juo-orange`, `.border-juo-orange`
 
 ### JavaScript - Two Module Systems
 
@@ -92,6 +97,8 @@ if (!grid) return;
 - Active: brand orange bg | Disabled: `opacity-40 pointer-events-none`
 - Border radius: `rounded-3xl` (cards), `rounded-xl` (buttons)
 - **Always call `lucide.createIcons()` after DOM updates**
+- Card transitions: `transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1)`
+- Custom scrollbar: `.custom-scroll` class with webkit-scrollbar styles
 
 ## Data Patterns
 - State via global `config` object with localStorage persistence

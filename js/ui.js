@@ -80,7 +80,7 @@ function showContractDetail(contract) {
     set('detail-branch-name', contract.branch_name);
 
     lucide.createIcons();
-    
+
     history.pushState({ tabId: 'contracts', showDetail: true }, '', '#contracts');
 }
 
@@ -291,47 +291,507 @@ function renderImageScenarioViewer() {
 export async function initCounseling() {
     currentScenario = await getScenarioById('scenario-membership');
     if (!currentScenario) return;
-    
-    currentScenarioPage = 0;
-    
-    const overlay = document.getElementById('counseling-overlay');
+
+    // Show Start View
+    const startView = document.getElementById('counseling-start-view');
     const htmlContainer = document.getElementById('counseling-html');
     const img = document.getElementById('counseling-image');
-    
-    if (!overlay) return;
-    
-    overlay.classList.remove('hidden');
-    
-    const isHtmlScenario = currentScenario.type === 'HTML_SCENARIO';
-    
-    if (isHtmlScenario) {
-        const page = currentScenario.pages[currentScenarioPage];
-        const content = getScenarioContent(page.contentId);
-        
-        if (htmlContainer && content) {
-            htmlContainer.innerHTML = content.html;
-            htmlContainer.classList.remove('hidden');
-            if (img) img.classList.add('hidden');
-        }
-    } else {
-        if (img) {
-            img.src = currentScenario.pages[0];
-            img.classList.remove('hidden');
-        }
-        if (htmlContainer) htmlContainer.classList.add('hidden');
+
+    if (startView) startView.classList.remove('hidden');
+    if (htmlContainer) htmlContainer.classList.add('hidden');
+    if (img) img.classList.add('hidden');
+
+    // Hide inline navigation
+    document.getElementById('counseling-prev')?.classList.add('hidden');
+    document.getElementById('counseling-next')?.classList.add('hidden');
+    document.getElementById('counseling-page-indicator')?.classList.add('hidden');
+
+    // Setup Start Button
+    const startBtn = document.getElementById('btn-open-counseling');
+    if (startBtn) {
+        // Remove old listeners to prevent duplicates
+        const newBtn = startBtn.cloneNode(true);
+        startBtn.parentNode.replaceChild(newBtn, startBtn);
+        newBtn.addEventListener('click', () => {
+            openCounselingOverlay();
+        });
     }
-    
-    updateCounselingIndicator();
+
     lucide.createIcons();
 }
 
-export function closeCounseling() {
+function openCounselingOverlay() {
     const overlay = document.getElementById('counseling-overlay');
-    if (overlay) overlay.classList.add('hidden');
-    
-    currentScenario = null;
-    currentScenarioPage = 0;
+    if (overlay) {
+        overlay.classList.remove('hidden');
+        renderCounselingLanding();
+    }
 }
+
+function renderCounselingLanding() {
+    const overlayContent = document.getElementById('overlay-content');
+    if (!overlayContent) return;
+
+    // Reset scroll
+    overlayContent.scrollTop = 0;
+
+    // Inject Landing Page HTML
+    overlayContent.innerHTML = `
+    <div class="landing">
+        <!-- Floating particles -->
+        <div class="particles" id="particles"></div>
+
+        <!-- Soft gradient orbs -->
+        <div class="orb orb--1"></div>
+        <div class="orb orb--2"></div>
+        <div class="orb orb--3"></div>
+
+        <!-- Main Content -->
+        <div class="landing__content">
+            <!-- Logo Image -->
+            <img src="LOGO.png" alt="JUO Total Pet Care" class="landing__logo-img">
+
+            <!-- Headline -->
+            <div class="landing__headline">
+                <h1 class="landing__title">
+                    우리 아이를 위한<br>
+                    <span class="title-accent">완벽한 시작</span>
+                </h1>
+                <p class="landing__description">
+                    토탈펫케어 멤버십
+                </p>
+            </div>
+
+            <!-- Feature Highlights -->
+            <div class="landing__features">
+                <div class="feature">
+                    <div class="feature__icon">
+                        <i class="fa-solid fa-notes-medical"></i>
+                    </div>
+                    <span class="feature__label">의료비 지원</span>
+                </div>
+                <div class="feature">
+                    <div class="feature__icon">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <span class="feature__label">매월 용품</span>
+                </div>
+                <div class="feature">
+                    <div class="feature__icon">
+                        <i class="fa-solid fa-school"></i>
+                    </div>
+                    <span class="feature__label">교육 훈련</span>
+                </div>
+            </div>
+
+            <!-- CTA Button -->
+            <div id="btn-start-counseling" class="landing__cta">
+                <span class="cta__text">멤버십 혜택 보기</span>
+            </div>
+
+            <!-- Trust -->
+            <div class="landing__trust">
+                White · Silver · Gold · VIP Plan
+            </div>
+        </div>
+    </div>
+    `;
+
+    // Setup Particles
+    initLandingParticles();
+
+    // Setup Animation
+    setTimeout(() => {
+        const elements = overlayContent.querySelectorAll('.landing__logo-img, .landing__title, .landing__description, .feature, .landing__cta, .landing__trust');
+        elements.forEach((el, i) => {
+            el.style.animationDelay = (i * 0.15) + 's';
+            el.classList.add('fade-in-up');
+        });
+    }, 50);
+
+    // Setup CTA Event
+    const cta = overlayContent.querySelector('#btn-start-counseling');
+    if (cta) {
+        cta.addEventListener('click', (e) => {
+            e.preventDefault();
+            startCounselingScenario();
+        });
+    }
+
+    lucide.createIcons();
+}
+
+function initLandingParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+
+    // Clear existing
+    container.innerHTML = '';
+
+    for (let i = 0; i < 25; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        const size = Math.random() * 8 + 4; // Larger particles
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.setProperty('--float-duration', (Math.random() * 10 + 5) + 's');
+        particle.style.setProperty('--float-delay', (Math.random() * 5) + 's');
+        particle.style.setProperty('--float-distance', (Math.random() * 50 + 20) + 'px');
+        container.appendChild(particle);
+    }
+}
+
+async function startCounselingScenario() {
+    // Replace scenario flow with Interactive Membership Page
+    const overlayContent = document.getElementById('overlay-content');
+    if (!overlayContent) return;
+
+    // Reset Scroll
+    overlayContent.scrollTop = 0;
+
+    // Inject Interactive Membership HTML
+    overlayContent.innerHTML = `
+    <div class="page page--interactive">
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">JUO</div>
+                <div>
+                    <h1 class="header-title">멤버십 선택</h1>
+                    <p class="header-subtitle">반려동물에게 딱 맞는 플랜을 선택해보세요.</p>
+                </div>
+            </div>
+            <div class="page-indicator">Step 1</div>
+        </header>
+
+        <main class="interactive-container">
+            <!-- VIP Tier -->
+            <div class="tier-card tier-card--vip" onclick="window.counselingShowVIPDetail()">
+                <div class="tier-card__bg"></div>
+                <div class="vip-glow"></div>
+                <div class="tier-best-badge">BEST</div>
+                <div class="tier-card__content">
+                    <div class="tier-header">
+                        <div class="vip-crown-icon"><i class="fa-solid fa-crown"></i></div>
+                        <span class="tier-badge">Exclusive</span>
+                        <h2 class="tier-name">VIP</h2>
+                        <div class="tier-price">
+                            <span class="amount">79,900</span>
+                            <span class="unit">원 / 월</span>
+                        </div>
+                    </div>
+                    <ul class="tier-benefits">
+                        <li><i class="fa-solid fa-syringe"></i> <span><strong>필수 예방접종 (종합/코로나/켄넬) 6회</strong></span></li>
+                        <li><i class="fa-solid fa-user-doctor"></i> <span><strong>중성화 수술 (5kg 미만) 무료지원</strong></span></li>
+                        <li><i class="fa-solid fa-microscope"></i> <span><strong>동물등록 내장형칩 무상지원</strong></span></li>
+                        <li><i class="fa-solid fa-heart-pulse"></i> <span><strong>심장사상충 예방 (연 12회)</strong></span></li>
+                        <li><i class="fa-solid fa-stethoscope"></i> <span><strong>기초 건강검진 (신체/혈액 등)</strong></span></li>
+                        <li><i class="fa-solid fa-school"></i> <span><strong>방문 행동교정 훈련 교육</strong></span></li>
+                        <li><i class="fa-solid fa-gift"></i> <span>매월 프리미엄 사료/패드/간식 배송</span></li>
+                        <li><i class="fa-solid fa-tags"></i> <span>주오몰 30% 할인 + <strong>무료배송</strong></span></li>
+                    </ul>
+                    <button class="tier-select-btn" onclick="window.counselingShowVIPDetail(); event.stopPropagation();">혜택 자세히 보기</button>
+                </div>
+            </div>
+
+            <!-- Gold Tier -->
+            <div class="tier-card tier-card--gold" onclick="window.counselingShowGoldDetail()">
+                <div class="tier-card__bg"></div>
+                <div class="tier-card__content">
+                    <div class="tier-header">
+                        <span class="tier-badge">Premium</span>
+                        <h2 class="tier-name">Gold</h2>
+                        <div class="tier-price">
+                            <span class="amount">39,900</span>
+                            <span class="unit">원 / 월</span>
+                        </div>
+                    </div>
+                    <ul class="tier-benefits">
+                        <li><i class="fa-solid fa-won-sign"></i> <span><strong>질병/상해 의료비 50만원 지원</strong></span></li>
+                        <li><i class="fa-solid fa-stethoscope"></i> <span><strong>종합 건강검진 (초음파/X-ray)</strong></span></li>
+                        <li><i class="fa-solid fa-vial"></i> <span>항체가 검사 지원</span></li>
+                        <li><i class="fa-solid fa-syringe"></i> <span>종합백신 + 광견병 (기초 이후)</span></li>
+                        <li><i class="fa-solid fa-heart-pulse"></i> <span>심장사상충 예방 (연 12회)</span></li>
+                        <li><i class="fa-solid fa-gift"></i> <span>매월 프리미엄 사료/패드/간식 배송</span></li>
+                        <li><i class="fa-solid fa-tags"></i> <span>주오몰 30% 할인 + 무료배송</span></li>
+                    </ul>
+                    <button class="tier-select-btn" onclick="window.counselingShowGoldDetail(); event.stopPropagation();">혜택 자세히 보기</button>
+                </div>
+            </div>
+
+            <!-- Silver Tier -->
+            <div class="tier-card tier-card--silver" onclick="window.counselingShowWhiteSilverDetail('silver')">
+                <div class="tier-card__bg"></div>
+                <div class="tier-card__content">
+                    <div class="tier-header">
+                        <span class="tier-badge">Standard</span>
+                        <h2 class="tier-name">Silver</h2>
+                        <div class="tier-price">
+                            <span class="amount">19,900</span>
+                            <span class="unit">원 / 월</span>
+                        </div>
+                    </div>
+                    <ul class="tier-benefits">
+                        <li><i class="fa-solid fa-syringe"></i> <span>필수 예방접종 (6회) 지원</span></li>
+                        <li><i class="fa-solid fa-user-doctor"></i> <span>중성화 수술 (5kg 미만) 지원</span></li>
+                        <li><i class="fa-solid fa-microscope"></i> <span>동물등록 내장형 칩 지원</span></li>
+                        <li><i class="fa-solid fa-gift"></i> <span>매월 프리미엄 사료/패드/간식 배송</span></li>
+                        <li><i class="fa-solid fa-tags"></i> <span>주오몰 20% 할인</span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span><strong>심장사상충 예방 (12회) 미포함</strong></span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>기초 건강검진 미포함</span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>방문 훈련 교육 미포함</span></li>
+                    </ul>
+                    <button class="tier-select-btn" onclick="window.counselingShowWhiteSilverDetail('silver'); event.stopPropagation();">혜택 자세히 보기</button>
+                </div>
+            </div>
+
+            <!-- White Tier -->
+            <div class="tier-card tier-card--white" onclick="window.counselingShowWhiteSilverDetail('white')">
+                <div class="tier-card__bg"></div>
+                <div class="tier-card__content">
+                    <div class="tier-header">
+                        <span class="tier-badge">Basic</span>
+                        <h2 class="tier-name">White</h2>
+                        <div class="tier-price">
+                            <span class="amount">0</span>
+                            <span class="unit">원 / 월</span>
+                        </div>
+                    </div>
+                    <ul class="tier-benefits">
+                        <li><i class="fa-solid fa-gift"></i> <span>매월 프리미엄 사료/패드/간식 배송</span></li>
+                        <li><i class="fa-solid fa-tags"></i> <span>주오몰 20% 할인</span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span><strong>필수 예방접종 / 중성화 미포함</strong></span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>내장형 칩 / 항체가 검사 미포함</span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>심장사상충 / 건강검진 미포함</span></li>
+                        <li class="benefit--missing"><i class="fa-solid fa-xmark"></i> <span>방문 훈련 교육 미포함</span></li>
+                    </ul>
+                    <button class="tier-select-btn" onclick="window.counselingShowWhiteSilverDetail('white'); event.stopPropagation();">혜택 자세히 보기</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    `;
+
+    lucide.createIcons();
+}
+
+// Global function for onclick events in injected HTML
+window.counselingSelectTier = function (tier) {
+    const overlayContent = document.getElementById('overlay-content');
+    if (!overlayContent) return;
+
+    // Remove active class from all
+    overlayContent.querySelectorAll('.tier-card').forEach(c => c.classList.remove('active'));
+    // Add active class to selected
+    const selected = overlayContent.querySelector(`.tier-card--${tier}`);
+    if (selected) selected.classList.add('active');
+
+    console.log(`Selected Tier: ${tier}`);
+}
+
+// --- VIP Detail View (1:1 Faithful Reproduction) ---
+window.counselingShowVIPDetail = function () {
+    const overlayContent = document.getElementById('overlay-content');
+
+    // Direct Iframe Integration for 100% Parity
+    overlayContent.innerHTML = `
+        <div class="vip-iframe-container">
+            <button class="btn-back" onclick="counselingBackToMembership()">
+                <i class="fa-solid fa-arrow-left"></i> 돌아가기
+            </button>
+            <iframe src="membership_vip_detail.html" frameborder="0" class="vip-detail-iframe"></iframe>
+        </div>
+    `;
+
+    // Ensure viewport starts at top
+    overlayContent.scrollTop = 0;
+};
+
+// --- Gold Detail View ---
+window.counselingShowGoldDetail = function () {
+    const overlayContent = document.getElementById('overlay-content');
+
+    // Direct Iframe Integration for Gold
+    overlayContent.innerHTML = `
+        <div class="vip-iframe-container">
+            <button class="btn-back" onclick="counselingBackToMembership()">
+                <i class="fa-solid fa-arrow-left"></i> 돌아가기
+            </button>
+            <iframe src="membership_gold_detail.html" frameborder="0" class="vip-detail-iframe"></iframe>
+        </div>
+    `;
+    // Ensure viewport starts at top
+    overlayContent.scrollTop = 0;
+};
+
+window.counselingShowWhiteSilverDetail = function (targetTier) {
+    const overlayContent = document.getElementById('overlay-content');
+
+    // Direct Iframe Integration for Combined View
+    overlayContent.innerHTML = `
+        <div class="vip-iframe-container">
+            <button class="btn-back" style="color: #333;" onclick="counselingBackToMembership()">
+                <i class="fa-solid fa-arrow-left"></i> 돌아가기
+            </button>
+            <iframe src="membership_white_silver_detail.html" frameborder="0" class="vip-detail-iframe" onload="highlightTierInIframe('${targetTier}')"></iframe>
+        </div>
+    `;
+
+    // Ensure viewport starts at top
+    overlayContent.scrollTop = 0;
+};
+
+// Helper to highlight specific tier in iframe
+window.highlightTierInIframe = function (tier) {
+    // This function will be called by the iframe onload if needed,
+    // but the CSS hover effects handle the visual focus mostly.
+    // Ideally we could postMessage to the iframe to scroll or highlight.
+};
+
+
+window.counselingBackToMembership = function () {
+    startCounselingScenario();
+}
+
+function initVIPStars() {
+    const starContainer = document.getElementById('starContainer');
+    if (!starContainer) return;
+    for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+        star.style.setProperty('--delay', Math.random() * 5 + 's');
+        star.style.setProperty('--opacity', Math.random() * 0.7 + 0.3);
+        starContainer.appendChild(star);
+    }
+}
+
+// VIP Interaction Helpers
+let vipCurrentTotal = 0;
+const vipMaxTotal = 2570000;
+
+window.counselingToggleVIPBenefit = function (card) {
+    const price = parseInt(card.dataset.price);
+    const icon = card.querySelector('.check-mark i');
+    const giftBox = document.getElementById('giftBox');
+    const overlay = card.querySelector('.card-overlay');
+
+    // Close all OTHER overlays (accordion)
+    document.querySelectorAll('.benefit-card .card-overlay.show').forEach(o => {
+        if (o !== overlay) o.classList.remove('show');
+    });
+
+    if (card.classList.contains('active')) {
+        card.classList.remove('active');
+        vipCurrentTotal -= price;
+        icon.classList.remove('fa-check');
+        icon.classList.add('fa-plus');
+        overlay.classList.remove('show');
+    } else {
+        card.classList.add('active');
+        vipCurrentTotal += price;
+        icon.classList.remove('fa-plus');
+        icon.classList.add('fa-check');
+        // Trigger Shake
+        giftBox.classList.remove('snake-shake');
+        void giftBox.offsetWidth;
+        giftBox.classList.add('snake-shake');
+        overlay.classList.add('show');
+    }
+
+    updateVIPTotalDisplay();
+};
+
+function updateVIPTotalDisplay() {
+    const totalEl = document.getElementById('cartTotal');
+    const currentPrice = parseInt(totalEl.innerText.replace(/,/g, '')) || 0;
+    animateVIPValue(totalEl, currentPrice, vipCurrentTotal, 500);
+
+    const giftBox = document.getElementById('giftBox');
+    const giftPercent = document.getElementById('giftPercent');
+    const giftMessage = document.getElementById('giftMessage');
+    const percent = Math.min(100, Math.round((vipCurrentTotal / vipMaxTotal) * 100));
+
+    giftPercent.innerText = percent + "%";
+    if (percent > 0) {
+        giftBox.classList.add('filling');
+        giftMessage.innerHTML = "선물이 가득 차고 있어요!";
+    } else {
+        giftBox.classList.remove('filling');
+        giftMessage.innerHTML = "아이를 위한 선물을<br>골라주세요!";
+    }
+
+    if (percent >= 100) {
+        giftBox.classList.add('complete');
+        giftMessage.innerHTML = "<span class='text-gold'>완벽한 선물</span>이<br>준비되었습니다!<br><small style='color:var(--text-dim); font-size:0.8rem;'>🎁 선물을 터치하세요!</small>";
+    } else {
+        giftBox.classList.remove('complete');
+        const dr = document.getElementById('discountReveal');
+        if (dr) dr.classList.remove('show');
+    }
+}
+
+window.counselingSwitchVIPTab = function (index) {
+    const tabs = document.querySelectorAll('.evo-tab');
+    const panels = document.querySelectorAll('.evo-panel');
+    tabs.forEach((t, i) => t.classList.toggle('active', i === index));
+    panels.forEach((p, i) => {
+        if (i === index) {
+            p.classList.add('active');
+            p.querySelectorAll('.evo-item').forEach((item, idx) => {
+                item.style.animationDelay = (idx * 0.1) + 's';
+            });
+        } else {
+            p.classList.remove('active');
+        }
+    });
+};
+
+function animateVIPValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerText = Math.floor(progress * (end - start) + start).toLocaleString();
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            obj.innerText = end.toLocaleString();
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
+function initVIPObserver() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (entry.target.id === 'calculator' || entry.target.closest('#calculator')) {
+                    const card = document.querySelector('.vc-card');
+                    if (card && !card.classList.contains('animated')) {
+                        card.classList.add('animated');
+                        document.querySelectorAll('.counter').forEach(c => {
+                            const target = +c.getAttribute('data-target');
+                            animateVIPValue(c, 0, target, 2000);
+                        });
+                        document.querySelectorAll('.bar-fill').forEach(b => {
+                            b.style.width = b.getAttribute('data-width');
+                        });
+                    }
+                }
+            }
+        });
+    }, { threshold: 0.1 });
+
+    const calc = document.getElementById('calculator');
+    if (calc) observer.observe(calc);
+}
+
 
 function counselingPrev() {
     if (currentScenario && currentScenarioPage > 0) {
@@ -350,13 +810,13 @@ function counselingNext() {
 function updateCounselingPage() {
     const htmlContainer = document.getElementById('counseling-html');
     const img = document.getElementById('counseling-image');
-    
+
     const isHtmlScenario = currentScenario.type === 'HTML_SCENARIO';
-    
+
     if (isHtmlScenario) {
         const page = currentScenario.pages[currentScenarioPage];
         const content = getScenarioContent(page.contentId);
-        
+
         if (htmlContainer && content) {
             htmlContainer.innerHTML = content.html;
             htmlContainer.classList.remove('hidden');
@@ -369,7 +829,7 @@ function updateCounselingPage() {
         }
         if (htmlContainer) htmlContainer.classList.add('hidden');
     }
-    
+
     updateCounselingIndicator();
     lucide.createIcons();
 }
@@ -381,19 +841,26 @@ function updateCounselingIndicator() {
     }
 }
 
+function closeCounseling() {
+    const overlay = document.getElementById('counseling-overlay');
+    if (overlay) {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+    }
+}
+
 export function setupCounselingEvents() {
     const closeBtn = document.getElementById('counseling-close');
-    const prevBtn = document.getElementById('counseling-prev');
-    const nextBtn = document.getElementById('counseling-next');
-    
     if (closeBtn) closeBtn.addEventListener('click', closeCounseling);
-    if (prevBtn) prevBtn.addEventListener('click', counselingPrev);
-    if (nextBtn) nextBtn.addEventListener('click', counselingNext);
-    
+
+    // Keyboard navigation for overlay
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeCounseling();
-        if (e.key === 'ArrowLeft') counselingPrev();
-        if (e.key === 'ArrowRight') counselingNext();
+        const overlay = document.getElementById('counseling-overlay');
+        if (overlay && !overlay.classList.contains('hidden')) {
+            if (e.key === 'ArrowLeft') overlayPrev();
+            if (e.key === 'ArrowRight') overlayNext();
+            if (e.key === 'Escape') closeCounseling();
+        }
     });
 }
 
@@ -421,7 +888,7 @@ export function closeViewer() {
     const overlay = elements.viewerOverlay();
     overlay.classList.add('hidden');
     overlay.classList.remove('flex');
-    
+
     currentScenario = null;
     currentScenarioPage = 0;
 }
@@ -441,14 +908,14 @@ export function showNext() {
 export function switchTab(tabId, pushState = true) {
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     document.querySelector(`[data-tab="${tabId}"]`)?.classList.add('active');
-    
+
     document.querySelectorAll('section[id^="tab-"]').forEach(sec => sec.classList.add('hidden'));
     document.getElementById(`tab-${tabId}`)?.classList.remove('hidden');
-    
+
     if (tabId === 'counseling') {
         initCounseling();
     }
-    
+
     if (tabId === 'contracts') {
         const listView = elements.contractListView();
         const detailView = document.getElementById('contract-detail-view');
@@ -459,7 +926,7 @@ export function switchTab(tabId, pushState = true) {
         }
         renderContracts(AppState.user);
     }
-    
+
     if (pushState) {
         history.pushState({ tabId }, '', `#${tabId}`);
     }
